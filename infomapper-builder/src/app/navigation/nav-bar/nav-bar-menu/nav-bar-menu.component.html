@@ -1,0 +1,111 @@
+<!-- MainMenu with SubMenus enabled. -->
+<div *ngIf="mainMenu.menus" class="dropdown">
+  <li class="nav-item dropdown">
+    
+    <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
+    routerLinkActive="mat-selected" class="nav-link" id="navbarDropdown"
+    mainMenu-toggle="dropdown">
+      {{mainMenu.name}}
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown"
+    [attr.data-cy]="mainMenu.name + '-dropdown-menu'">
+      <div *ngFor="let subMenu of mainMenu.menus;">
+
+        <div *ngIf="subMenu.separatorBefore === true" class="dropdown-divider"></div>
+        <div *ngIf="subMenu.doubleSeparatorBefore === true">
+          <hr class="double-separator">
+          <hr class="double-separator">
+        </div>
+
+        <div *ngIf="subMenu | checkElement : 'subMenuBuild'">
+          <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': subMenu.enabled === false }">
+            <a [matTooltip]="subMenu.tooltip" matTooltipPosition="right"
+            class="dropdown-item" [routerLink]="['/build/', subMenu.id]"
+            routerLinkActive="mat-selected">
+              <fa-icon class="fa-file-text" [icon]=faFileLines size="lg"></fa-icon>
+              {{subMenu.name}}
+            </a>
+          </li>
+        </div>
+
+        <div *ngIf="subMenu | checkElement : 'subMenuContentPage'">
+          <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': subMenu.enabled === false }">
+            <a [matTooltip]="subMenu.tooltip" matTooltipPosition="right"
+            class="dropdown-item" [routerLink]="['/content-page/', subMenu.id]"
+            routerLinkActive="mat-selected">
+              <fa-icon class="fa-file-text" [icon]=faFileLines size="lg"></fa-icon>
+              {{subMenu.name}}
+            </a>
+          </li>
+        </div>
+
+        <div *ngIf="subMenu | checkElement : 'subMenuStory'">
+          <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': subMenu.enabled === false }">
+            <a [matTooltip]="subMenu.tooltip" matTooltipPosition="right"
+            class="dropdown-item" [routerLink]="['/story/', subMenu.id]" 
+            routerLinkActive="mat-selected">
+              <fa-icon class="fa-book-open" [icon]=faBookOpen size="lg"></fa-icon>
+              {{subMenu.name}}
+            </a>
+          </li>
+        </div>
+
+        <div *ngIf="subMenu | checkElement : 'subMenuExternalLink'">
+          <li class="activate .ml-auto" [ngClass]="{ 'li-disabled': subMenu.enabled === false }">
+            <a [matTooltip]="subMenu.tooltip" matTooltipPosition="right"
+            class="dropdown-item" [href]="subMenu.url" target="_blank">
+              <img src="assets/app-default/img/baseline-open_in_new-24px.svg"/>
+              {{subMenu.name}}
+            </a>
+          </li>
+        </div>
+
+      </div>
+    </div>
+  </li>
+</div>
+
+<!-- Build MainMenu. -->
+<div *ngIf="mainMenu.action === 'build'">
+  <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
+    <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
+    class="nav-link" routerLinkActive="mat-selected" [routerLink]="['/build/', mainMenu.id]"
+    [attr.data-cy]="mainMenu.name">
+      {{mainMenu.name}}
+    </a>
+  </li>
+</div>
+
+<!-- MainMenus with no SubMenus. -->
+<!-- Content Page MainMenu. -->
+<div *ngIf="mainMenu.action === 'contentPage'">
+  <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
+    <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
+    class="nav-link" routerLinkActive="mat-selected" [routerLink]="['/content-page/', mainMenu.id]"
+    [attr.data-cy]="mainMenu.name">
+      {{mainMenu.name}}
+    </a>
+  </li>
+</div>
+
+<!-- Story MainMenu. -->
+<div *ngIf="mainMenu.action === 'story'">
+  <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
+    <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
+    class="nav-link" routerLinkActive="mat-selected" [routerLink]="['/story/', mainMenu.id]"
+    [attr.data-cy]="mainMenu.name">
+      {{mainMenu.name}}
+    </a>
+  </li>
+</div>
+
+<!-- External Link MainMenu. -->
+<div *ngIf="mainMenu.action === 'externalLink'">
+  <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
+    <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
+    [attr.href]="mainMenu.url" target="_blank" class="nav-link" [attr.data-cy]="mainMenu.name">
+      {{mainMenu.name}}
+    </a>
+  </li>
+</div>

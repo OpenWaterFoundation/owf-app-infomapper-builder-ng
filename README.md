@@ -37,3 +37,9 @@ If the version of TypeScript that VSCode is using is less than the installed ver
 in the Angular project, this error will display. An update and restart of VSCode
 resolved this issue, and checking the TypeScript before and after the update confirmed
 this.
+
+### Angular Material core theme ###
+
+When using Angular Material, a theme must be defined. Add the desired theme's path
+to its CSS file in the project's `angular.json` styles array. If using a pre-built
+theme, it will be in the `@angular/material/prebuilt-themes` folder in node_modules.

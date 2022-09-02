@@ -1,0 +1,23 @@
+<mat-toolbar>
+  <div fxHide.gt-md>
+    <button mat-icon-button (click)="onToggleSidenav()">
+      <fa-icon [icon]="faBars" size="lg"></fa-icon>
+    </button>
+  </div>
+
+  <button mat-button class="home-button" [routerLink]="['/home']">
+    {{title}}
+  </button>
+
+  <div fxFlex fxLayout fxLayoutAlign="start" fxHide.lt-lg>
+    <ul fxLayout fxLayoutGap="1px" class="main-menu-buttons">
+
+      <div *ngFor="let mainMenu of appConfig.mainMenu">
+        <div *ngIf="mainMenu | checkElement : 'mainMenuIsVisible'">
+          <nav-bar-menu [mainMenu]="mainMenu"></nav-bar-menu>
+        </div>
+      </div>
+
+    </ul>
+  </div>
+</mat-toolbar>

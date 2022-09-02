@@ -1,0 +1,12 @@
+<div *ngIf="validContentPageID === true;" fxLayout="row" fxLayoutAlign="center"
+class="main-container">
+  <div fxFlex="75%" fxFlex.lt-md="100%" fxFlex.gt-lg="50%" class="display-container">
+    <!-- The Showdown container that users can change to different font types, sizes, etc. -->
+    <showdown [value]="showdownHTML" [options]="showdownOptions"></showdown>
+  </div>
+</div>
+
+<div *ngIf="validContentPageID === false">
+  <!-- <app-not-found pageType="Content"></app-not-found> -->
+  UH OH
+</div>
