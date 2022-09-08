@@ -22,7 +22,7 @@
 scriptFolder=$(cd "$(dirname "$0")" && pwd)
 # repoFolder is owf-app-infomapper-builder-ng/.
 repoFolder=$(dirname "${scriptFolder}")
-# mainFolder is infomapper/.
+# mainFolder is infomapper-builder/.
 mainFolder="${repoFolder}/infomapper-builder"
 
 # Build the Common package production files and use npm to pack them into a

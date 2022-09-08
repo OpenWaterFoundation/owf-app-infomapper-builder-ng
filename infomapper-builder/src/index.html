@@ -1,11 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- Replace the ${Google_Analytics_Tracking_Id} property with the company Google Analytics property ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=${Google_Analytics_Tracking_Id}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script>
+
   <meta charset="utf-8">
-  <title>InfomapperBuilder</title>
+
   <base href="/">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico" id="appFavicon">
+  <link id="appFavicon" rel="icon" type="image/x-icon" href="favicon.ico">
+
 </head>
 <body>
   <app-root></app-root>

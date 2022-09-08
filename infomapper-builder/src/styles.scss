@@ -1,17 +1,85 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'assets/css/showdown-default.scss';
 
-/* Ensures the body has not margin or padding. */
+@import "../node_modules/select2/dist/css/select2.min.css";
+/* Import the styling for fullpage.js, the library used for Stories. */
+@import '~fullpage.js/dist/fullpage.min.css';
+/* @import "./app/map-components/dialog-content/dialog-gapminder/css/style.css"; */
+
+/* TAGS */
+
+/* You can add global styles to this file, and also import other style files */
 body {
-  font-family: Trebuchet MS, Helvetica, sans-serif !important;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
+	overflow-y: hidden;
+  color: black;
+  /* The !important tag is overriding whatever is setting the InfoMapper's Content Page Components and Map Components
+  background colors to black */
+  background-color: #fafafa !important;
+  font-family: Trebuchet MS,Helvetica,sans-serif!important;
 }
 
+/* Removes outline from most buttons on a global scale. */
+button:focus, 
+button:active:focus, 
+button.active:focus {
+    outline: none !important;
+    outline-style: none !important;
+}
 
-app-root {
-  width: 100vw;
-  height: 100vh;
-  background: red;
+html, body {
+  height: 100%;
+}
+
+/* CLASSES */
+
+/* This is for a Dialog Content Component. It is CSS that overrides the default behavior for the mat-dialog-container
+created and shown as the background for the Dialog popup. Whereas the class call below changes both this div and its
+child, this will change only the sizing on the outer div. VERY IMPORTANT for resizing all dialogs. */
+.custom-dialog-container {
+  overflow: auto;
+  resize: both; 
+}
+
+/* Sets the padding and height of both the .custom-dialog-container outer div and its child .mat-dialog-container. */
+.custom-dialog-container .mat-dialog-container {
+  padding-top: 0%;
+  padding-left: 0%;
+  padding-right: 0%;
+  padding-bottom: 0%;
+  height: 100%;
+}
+
+/* Similar to .custom-dialog-container, but does not have the option for resizing, so the resizing lines in the bottom-left
+hand corner of the Dialog do not appear to the user. */
+.custom-dialog-container-no-resize .mat-dialog-container {
+  padding-top: 0%;
+  padding-left: 0%;
+  padding-right: 0%;
+  padding-bottom: 0%;
+  height: 100%;
+}
+
+/* Might not be needed */
+.mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
+  transform: none !important;
+}
+
+/* IDs */
+
+/* Container around the right justified list of navigation circles for a Fullpage
+story. */
+#fp-nav {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 5px;
+}
+
+/* Each individual nav circle tooltip for a Fullpage story. */
+#fp-nav ul li .fp-tooltip {
+  color: black!important;
+  background-color: rgb(255,255,255, .8);
+  border: black solid 1px;
+  border-radius: 5px;
+  padding:5px;
+  max-width:none!important;
+  right:25px!important;
+  top: -7px!important;
 }

@@ -1,37 +1,44 @@
 import { APP_INITIALIZER,
-          NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+          NgModule }               from '@angular/core';
+import { BrowserModule }           from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient,
           HttpClientModule }       from '@angular/common/http';
 import { FlexLayoutModule }        from '@angular/flex-layout';
 
-import { MatButtonModule }          from '@angular/material/button';
-import { MatIconModule }            from '@angular/material/icon';
-import { MatListModule }            from '@angular/material/list';
-import { MatMenuModule }            from '@angular/material/menu';
-import { MatSidenavModule }         from '@angular/material/sidenav';
-import { MatToolbarModule }         from '@angular/material/toolbar';
-import { MatTooltipModule }         from '@angular/material/tooltip';
+import { LoggerModule,
+          NgxLoggerLevel }         from 'ngx-logger';
 
-import { FontAwesomeModule }        from '@fortawesome/angular-fontawesome';
+import { MatButtonModule }         from '@angular/material/button';
+import { MatIconModule }           from '@angular/material/icon';
+import { MatListModule }           from '@angular/material/list';
+import { MatMenuModule }           from '@angular/material/menu';
+import { MatSidenavModule }        from '@angular/material/sidenav';
+import { MatToolbarModule }        from '@angular/material/toolbar';
+import { MatTooltipModule }        from '@angular/material/tooltip';
 
-import { Observable }               from 'rxjs/internal/Observable';
+import { FontAwesomeModule }       from '@fortawesome/angular-fontawesome';
+import { AngularFullpageModule }   from '@fullpage/angular-fullpage';
 
-import { ShowdownModule }           from 'ngx-showdown';
+// import { StoryModule }             from '@OpenWaterFoundation/common/ui/story';
+// import { MapModule }                from '@OpenWaterFoundation/common/leaflet';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { NavBarComponent } from './navigation/nav-bar/nav-bar.component';
-import { NavBarMenuComponent } from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
-import { SideNavComponent } from './navigation/side-nav/side-nav.component';
-import { ContentPageComponent } from './content-page/content-page.component';
-import { AppService } from './app.service';
-import { CheckElementPipe } from './check-element.pipe';
+import { Observable }              from 'rxjs/internal/Observable';
+
+import { ShowdownModule }          from 'ngx-showdown';
+
+import { AppRoutingModule }        from './app-routing.module';
+import { AppComponent }            from './app.component';
+import { NavBarComponent }         from './navigation/nav-bar/nav-bar.component';
+import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
+import { SideNavComponent }        from './navigation/side-nav/side-nav.component';
+import { ContentPageComponent }    from './content-page/content-page.component';
+import { AppService }              from './app.service';
+import { CheckElementPipe }        from './check-element.pipe';
 
 // Showdown, to convert markdown to HTML.
-import * as Showdown                from 'showdown';
-import { BuildComponent } from './build/build.component';
+import * as Showdown               from 'showdown';
+import { BuildComponent }          from './build/build.component';
 
 
 const classMap: any = {
@@ -80,12 +87,28 @@ function appInit(appService: AppService): () => Observable<any> {
     BuildComponent
   ],
   imports: [
+    AngularFullpageModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
     FlexLayoutModule,
     FontAwesomeModule,
+
+    // MapModule,
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      // timestampFormat: "medium",
+      colorScheme: [
+        'mediumorchid',
+        'teal',
+        'royalblue',
+        'teal',
+        'orange',
+        'red',
+        'red'
+      ]
+    }),
     
     MatButtonModule,
     MatIconModule,
@@ -105,6 +128,7 @@ function appInit(appService: AppService): () => Observable<any> {
       strikethrough: true,
       tables: true
     }),
+    // StoryModule
   ],
   providers: [
     {

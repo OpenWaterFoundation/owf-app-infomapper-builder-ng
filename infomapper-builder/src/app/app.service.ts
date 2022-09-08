@@ -1,12 +1,14 @@
-import { Injectable }  from '@angular/core';
-import { HttpClient }  from '@angular/common/http';
+import { Injectable }        from '@angular/core';
+import { HttpClient }        from '@angular/common/http';
 import { catchError,
           first,
           Observable,
           of,
-          Subscriber } from 'rxjs';
+          Subscriber }       from 'rxjs';
 
-import * as IM         from '@OpenWaterFoundation/common/services';
+import { CommonLoggerService,
+          OwfCommonService } from '@OpenWaterFoundation/common/services';
+import * as IM               from '@OpenWaterFoundation/common/services';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +40,8 @@ export class AppService {
    * 
    * @param http 
    */
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private logger: CommonLoggerService,
+  private commonService: OwfCommonService) { }
 
 
   get appConfigObj(): any {
@@ -233,7 +236,6 @@ export class AppService {
    */
   loadConfigFiles(): Observable<any> {
 
-
     return new Observable((subscriber: Subscriber<any>) => {
 
       this.urlExists(this.getAppPath() + this.getAppConfigFile()).pipe(first()).subscribe({
@@ -243,13 +245,15 @@ export class AppService {
           this.getJSONData(this.getAppPath() + this.getAppConfigFile(), IM.Path.aCP)
           .subscribe((appConfig: IM.AppConfig) => {
             this.setAppConfig(appConfig);
+            this.commonService.setAppConfig(appConfig);
 
             subscriber.complete();
           });
         },
         error: (error: any) => {
-          // HERE!
-          throw new Error('Configuration file "app-config.json" not given.');
+          this.logger.print('error', 'Configuration file "app-config.json" not provided, ' +
+          'and is required to create an InfoMapper application.');
+          throw new Error();
         }
       });
     });

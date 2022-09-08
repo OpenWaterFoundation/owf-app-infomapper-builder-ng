@@ -1,8 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { Title }     from '@angular/platform-browser';
+import { Component,
+          Inject,
+          OnInit }    from '@angular/core';
+import { DOCUMENT }   from '@angular/common';
+import { Title }      from '@angular/platform-browser';
 
 import { AppService } from './app.service';
+import * as IM        from '@OpenWaterFoundation/common/services';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +20,7 @@ export class AppComponent implements OnInit {
   @Inject(DOCUMENT) private document: Document) {}
 
 
-  get appConfig(): any { return this.appService.appConfigObj; }
+  get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
 
   ngOnInit(): void {
     this.titleService.setTitle(this.title);
@@ -30,8 +33,9 @@ export class AppComponent implements OnInit {
    */
    private setFavicon(): void {
 
-    if (this.appConfig.favicon)
+    if (this.appConfig.favicon) {
       this.appService.setFaviconPath(this.appConfig.favicon);
+    }
     else {
       // Favicon app configuration property not given. Use a default.
       this.document.getElementById('appFavicon').setAttribute('href', this.appService.getDefaultFaviconPath());
