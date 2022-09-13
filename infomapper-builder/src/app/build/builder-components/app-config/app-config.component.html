@@ -1,114 +1,38 @@
-<!-- <h1>Application configuration</h1>
-
-<div class="app-config-form-container">
-
-  <p>All fields marked with an asterisk (*) are required.</p>
-
-  <form [formGroup]="appBuilderFormGroup">
-
-    <div class="app-config-form-fields-container">
-      <mat-form-field appearance="outline">
-        <mat-label>Title</mat-label>
-        <input matInput
-                formControlName="title"
-                placeholder="Poudre Basin Information">
-        <mat-hint></mat-hint>
-      </mat-form-field>
-    
-      <mat-form-field appearance="outline">
-        <mat-label>Home Page</mat-label>
-        <input matInput
-                class="home-page-input"
-                formControlName="homePage">
-        <mat-hint>Home page location cannot be changed</mat-hint>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Favicon path</mat-label>
-        <input matInput
-                formControlName="favicon"
-                placeholder="assets/app/img/favicon.ico">
-        <mat-hint>The image to be displayed Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-hint>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Version</mat-label>
-        <input matInput
-                formControlName="version"
-                placeholder="1.6.2">
-      </mat-form-field>
-    </div>
-    
-  </form>
-</div> -->
-
-<mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" class="example-tree">
-  <!-- This is the tree node template for leaf nodes with no children. -->
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-    <b>{{node.name}}</b>
-  </mat-tree-node>
-
-  <!-- This is the tree node template for expandable nodes (children). -->
-  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-    <div class="mat-tree-node">
-      <div>
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
-          <fa-icon [icon]="treeControl.isExpanded(node) ? faChevronDown : faChevronRight"
-          size="lg"></fa-icon>
-        </button>
-        <b>{{node.name}}</b>
-      </div>
-      
-      <div *ngIf="node.name === 'Application configuration'" [class.example-tree-invisible]="!treeControl.isExpanded(node)"
-      [class.example-tree-visible]="treeControl.isExpanded(node)">
-        
-        <div class="app-config-form-container">
-
-          <p>All fields marked with an asterisk (<b>*</b>) are required.</p>
-        
-          <form [formGroup]="appBuilderFormGroup">
-        
-            <div class="app-config-form-fields-container">
-              <mat-form-field appearance="outline">
-                <mat-label>Title</mat-label>
-                <input matInput
-                        formControlName="title"
-                        placeholder="Poudre Basin Information">
-                <mat-hint></mat-hint>
-              </mat-form-field>
+<p>All fields marked with an asterisk (*) are required.</p>
             
-              <mat-form-field appearance="outline">
-                <mat-label>Home Page</mat-label>
-                <input matInput
-                        class="home-page-input"
-                        formControlName="homePage">
-                <mat-hint>Home page location cannot be changed</mat-hint>
-              </mat-form-field>
-        
-              <mat-form-field appearance="outline">
-                <mat-label>Favicon path</mat-label>
-                <input matInput
-                        formControlName="favicon"
-                        placeholder="assets/app/img/favicon.ico">
-                <mat-hint>The image to be displayed Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-hint>
-              </mat-form-field>
-        
-              <mat-form-field appearance="outline">
-                <mat-label>Version</mat-label>
-                <input matInput
-                        formControlName="version"
-                        placeholder="1.6.2">
-              </mat-form-field>
-            </div>
-            
-          </form>
-        </div>
-      </div>
-      
-    </div>
+<form [formGroup]="appBuilderFormGroup">
 
-    <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
-      <ng-container matTreeNodeOutlet></ng-container>
-    </div>
-  </mat-nested-tree-node>
-</mat-tree>
+  <div class="app-config-form-fields-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput
+      formControlName="title"
+      placeholder="Poudre Basin Information">
+      <mat-hint></mat-hint>
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Home Page</mat-label>
+      <input matInput
+      class="home-page-input"
+      formControlName="homePage">
+      <mat-hint>Home page location cannot be changed</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Favicon path</mat-label>
+      <input matInput
+      formControlName="favicon"
+      placeholder="assets/app/img/favicon.ico">
+      <mat-hint>Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Version</mat-label>
+      <input matInput
+      formControlName="version"
+      placeholder="1.6.2">
+    </mat-form-field>
+  </div>
+  
+</form>

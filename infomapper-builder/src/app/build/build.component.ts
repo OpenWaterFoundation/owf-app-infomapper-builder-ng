@@ -1,14 +1,23 @@
 import { Component,
+          OnDestroy,
           OnInit }                 from '@angular/core';
 import { FormControl,
           FormGroup,
           Validators }             from '@angular/forms';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { NestedTreeControl }       from '@angular/cdk/tree';
+
+import { faChevronDown,
+          faChevronRight }         from '@fortawesome/free-solid-svg-icons';
+import { Subject,
+          takeUntil }              from 'rxjs'; 
 
 import { ActivatedRoute,
-          ParamMap,
-          Router }                 from '@angular/router';
-import { Subject,
-          takeUntil }              from 'rxjs';
+          ParamMap }               from '@angular/router';
+
+import { CommonLoggerService }     from '@OpenWaterFoundation/common/services';
+import * as IM                     from '@OpenWaterFoundation/common/services';
+
 import { AppService }              from '../app.service';
 
 
@@ -17,8 +26,11 @@ import { AppService }              from '../app.service';
   templateUrl: './build.component.html',
   styleUrls: ['./build.component.scss']
 })
-export class BuildComponent implements OnInit {
+export class BuildComponent implements OnInit, OnDestroy {
 
+  /**
+   * 
+   */
   appBuilderForm = new FormGroup({
     title: new FormControl('', Validators.required),
     homePage: new FormControl({ value: '/content-page/home.md', disabled: true }),
@@ -33,13 +45,54 @@ export class BuildComponent implements OnInit {
   });
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
+  /** All used FontAwesome icons in the AppConfigComponent. */
+  faChevronDown = faChevronDown;
+  faChevronRight = faChevronRight;
+  /**
+   * 
+   */
+  treeControl = new NestedTreeControl<IM.TreeNodeData>(node => node.children);
+  /**
+   * 
+   */
+  treeDataSource = new MatTreeNestedDataSource<IM.TreeNodeData>();
+  /**
+   * 
+   */
+  treeNodeData: IM.TreeNodeData[] = [
+    {
+      name: 'Application configuration',
+      children: [{name: 'Menu'}]
+    }
+  ];
   /** Boolean set to false if the URL id for this Build component does not exist
    * in any `app-config.json` mainMenu or subMenu id. */
   validBuildID = true;
 
 
-  constructor(private router: Router, private actRoute: ActivatedRoute,
+  constructor(private logger: CommonLoggerService, private actRoute: ActivatedRoute,
   private appService: AppService) { }
+
+
+  /**
+   * 
+   */
+  addMainMenuToApp(): void {
+
+    this.treeNodeData[0].children.push({
+      name: 'Menu'
+    });
+    this.treeDataSource.data = this.treeNodeData;
+  }
+  
+  hasChild = (_: number, node: any) => !!node.children && node.children.length > 0;
+
+  /**
+   * 
+   */
+  initTreeNode(): void {
+    this.treeDataSource.data = this.treeNodeData;
+  }
 
   ngOnInit(): void {
     // When the parameters in the URL are changed the map will refresh and load
@@ -53,10 +106,13 @@ export class BuildComponent implements OnInit {
         return;
       }
 
-
+      this.initTreeNode();
     });
   }
 
-
+  ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
 
 }

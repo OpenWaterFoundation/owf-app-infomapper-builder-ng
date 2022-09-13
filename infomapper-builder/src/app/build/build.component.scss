@@ -1,5 +1,10 @@
 /* CLASSES */
 
+/* Container holding the app-config form in the app-config. */
+.app-config-form-container {
+  margin-top: 20px;
+}
+
 /* The inner container that displays the Content Page contents based on browser
 width. */
 .build-container {
@@ -7,8 +12,79 @@ width. */
   margin: 15px 10px;
 }
 
+/*  */
+.example-tree-invisible {
+  display: none;
+}
+
+/*  */
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+/* This padding sets alignment of the nested nodes. */
+.example-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 40px;
+}
+
+/* Padding for leaf nodes. Leaf nodes need to have padding so as to align with other
+non-leaf nodes under the same parent. */
+.example-tree div[role=group] > .mat-tree-node {
+  padding-left: 40px;
+}
+
+/**/
+.example-tree-visible {
+  margin: 10px;
+}
+
 /* The overarching container for a Build component. */
 .main-container {
   height: calc(100% - 15px);
   overflow: auto;
+}
+
+/*  */
+.mat-tree-node {
+  flex-direction: column;
+  justify-content: start;
+  align-items: flex-start !important;
+}
+
+/* Button for adding a new Menu, SubMenu, etc. */
+.tree-node-add-node-button {
+  background-color: #9db66b;
+  margin-left: 15px;
+}
+
+/* The top level div to display the node's name, add node button, etc. */
+.tree-node-header {
+  display: flex;
+  align-items: center;
+}
+
+/* The tree node's name. */
+.tree-node-name {
+  font-size: large;
+  font-weight: 600;
+}
+
+/* MISCELLANEOUS */
+
+/* Input outline color */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #9db66b !important;
+}
+
+/* Focused color */
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #9db66b !important;
+}
+
+/* mat-label focused style */
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #9db66b!important;
 }
