@@ -41,9 +41,8 @@ export class ContentPageComponent implements OnInit, OnDestroy {
   }
   /** A string representing the content to be converted to HTML to display on the Home or Content Page. */
   showdownHTML = '';
-  /**
-  * 
-  */
+  /** Boolean set to false if the URL id for this Content Page does not exist in
+   * any `app-config.json` mainMenu or subMenu id. */
   validContentPageID = true;
 
 

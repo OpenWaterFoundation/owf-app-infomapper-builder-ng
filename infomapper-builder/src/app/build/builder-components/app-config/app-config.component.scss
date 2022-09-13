@@ -1,0 +1,87 @@
+/* CLASSES */
+
+/* Container holding the app-config form in the app-config. */
+.app-config-form-container {
+  margin-top: 20px;
+}
+
+/* Container holding all form fields & inputs in the app-config. */
+.app-config-form-fields-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/*  */
+.example-tree-invisible {
+  display: none;
+}
+
+/*  */
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+/* This padding sets alignment of the nested nodes. */
+.example-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 40px;
+}
+
+/* Padding for leaf nodes. Leaf nodes need to have padding so as to align with other
+non-leaf nodes under the same parent. */
+.example-tree div[role=group] > .mat-tree-node {
+  padding-left: 40px;
+}
+
+/**/
+.example-tree-visible {
+  margin: 10px;
+}
+
+/*  */
+.favicon-hint-default-path {
+  color: #ba6600;
+}
+
+/* Text in the home page input field cannot be selected. */
+.home-page-input {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/*  */
+.mat-tree-node {
+  flex-direction: column;
+  justify-content: start;
+  align-items: flex-start !important;
+}
+
+/* TAGS */
+
+/* Main */
+mat-form-field {
+  width: 250px;
+  height: 110px;
+}
+
+/* MISCELLANEOUS */
+
+/* Input outline color */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #9db66b !important;
+}
+
+/* Focused color */
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #9db66b !important;
+}
+
+/* mat-label focused style */
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #9db66b!important;
+}

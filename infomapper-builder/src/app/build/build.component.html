@@ -1,1 +1,7 @@
-<p>build works!</p>
+<div *ngIf="validBuildID === true;" fxLayout="row" fxLayoutAlign="center"
+class="main-container">
+  <div fxFlex="75%" fxFlex.lt-md="100%" fxFlex.gt-lg="50%" class="build-container">
+
+    <app-config [appBuilderForm]="appBuilderForm"></app-config>
+  </div>
+</div>

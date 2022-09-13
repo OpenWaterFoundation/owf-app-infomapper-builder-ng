@@ -10,18 +10,20 @@ import { LoggerModule,
           NgxLoggerLevel }         from 'ngx-logger';
 
 import { MatButtonModule }         from '@angular/material/button';
+import { FormsModule,
+          ReactiveFormsModule }    from '@angular/forms';
+import { MatFormFieldModule }      from '@angular/material/form-field';
 import { MatIconModule }           from '@angular/material/icon';
+import { MatInputModule }          from '@angular/material/input';
 import { MatListModule }           from '@angular/material/list';
 import { MatMenuModule }           from '@angular/material/menu';
 import { MatSidenavModule }        from '@angular/material/sidenav';
 import { MatToolbarModule }        from '@angular/material/toolbar';
 import { MatTooltipModule }        from '@angular/material/tooltip';
+import { MatTreeModule }           from '@angular/material/tree';
 
 import { FontAwesomeModule }       from '@fortawesome/angular-fontawesome';
 import { AngularFullpageModule }   from '@fullpage/angular-fullpage';
-
-// import { StoryModule }             from '@OpenWaterFoundation/common/ui/story';
-// import { MapModule }                from '@OpenWaterFoundation/common/leaflet';
 
 import { Observable }              from 'rxjs/internal/Observable';
 
@@ -39,6 +41,7 @@ import { CheckElementPipe }        from './check-element.pipe';
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
 import { BuildComponent }          from './build/build.component';
+import { AppConfigComponent } from './build/builder-components/app-config/app-config.component';
 
 
 const classMap: any = {
@@ -84,7 +87,8 @@ function appInit(appService: AppService): () => Observable<any> {
     SideNavComponent,
     NavBarMenuComponent,
     CheckElementPipe,
-    BuildComponent
+    BuildComponent,
+    AppConfigComponent
   ],
   imports: [
     AngularFullpageModule,
@@ -94,8 +98,9 @@ function appInit(appService: AppService): () => Observable<any> {
     HttpClientModule,
     FlexLayoutModule,
     FontAwesomeModule,
+    FormsModule,
+    ReactiveFormsModule,
 
-    // MapModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
       // timestampFormat: "medium",
@@ -111,12 +116,16 @@ function appInit(appService: AppService): () => Observable<any> {
     }),
     
     MatButtonModule,
+    MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
     MatListModule,
     MatMenuModule,
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatTreeModule,
+
     ShowdownModule.forRoot({
       emoji: true,
       flavor: 'github',
@@ -127,8 +136,7 @@ function appInit(appService: AppService): () => Observable<any> {
       simpleLineBreaks: false,
       strikethrough: true,
       tables: true
-    }),
-    // StoryModule
+    })
   ],
   providers: [
     {

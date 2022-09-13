@@ -34,6 +34,8 @@ export class AppService {
   faviconPath: string;
   /** Boolean representing if a favicon path has been provided by the user. */
   FAVICON_SET = false;
+  /** The initial website title to be displayed in the browser tab. */
+  readonly mainWebsiteTitle = 'InfoMapper Builder';
 
   
   /**
@@ -200,6 +202,13 @@ export class AppService {
   }
 
   /**
+   * @returns The main website title to be displayed in the browser tab.
+   */
+  getMainWebsiteTitle(): string {
+    return this.mainWebsiteTitle;
+  }
+
+  /**
    * Read data asynchronously from a file or URL and return it as plain text.
    * @param path The path to the file to be read, or the URL to send the GET request
    * @param type Optional type of request sent, e.g. IM.Path.cPP. Used for error handling and messaging
@@ -329,9 +338,11 @@ export class AppService {
   }
 
   /**
-   * 
-   * @param ID 
-   * @returns 
+   * Determines if the ID in the URL exists in any mainMenu or subMenu id from the
+   * app-config.json.
+   * @param ID The ID taken from the current URL.
+   * @returns True if the ID from the URL matches any id in the app-config object,
+   * and false otherwise.
    */
   validURLConfigID(ID: string): boolean {
 
@@ -354,9 +365,7 @@ export class AppService {
           return true;
         }
       }
-      
     }
-    
     return false;
   }
 

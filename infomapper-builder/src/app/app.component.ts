@@ -13,7 +13,6 @@ import * as IM        from '@OpenWaterFoundation/common/services';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'InfoMapper Builder';
 
 
   constructor(private titleService: Title, private appService: AppService,
@@ -23,7 +22,7 @@ export class AppComponent implements OnInit {
   get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
+    this.setWebsiteTitle();
     this.setFavicon();
   }
 
@@ -49,6 +48,12 @@ export class AppComponent implements OnInit {
 
       this.appService.setFaviconTrue();
     }
+  }
 
+  /**
+   * Sets the initial website title to the static 'InfoMapper Builder' string.
+   */
+  private setWebsiteTitle(): void {
+    this.titleService.setTitle(this.appService.getMainWebsiteTitle());
   }
 }

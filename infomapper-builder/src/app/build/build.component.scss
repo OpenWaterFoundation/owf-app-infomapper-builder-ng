@@ -1,0 +1,14 @@
+/* CLASSES */
+
+/* The inner container that displays the Content Page contents based on browser
+width. */
+.build-container {
+  height: 100%;
+  margin: 15px 10px;
+}
+
+/* The overarching container for a Build component. */
+.main-container {
+  height: calc(100% - 15px);
+  overflow: auto;
+}
