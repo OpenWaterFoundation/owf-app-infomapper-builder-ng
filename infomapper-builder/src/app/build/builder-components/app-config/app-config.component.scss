@@ -11,6 +11,13 @@
   color: #ba6600;
 }
 
+/*  */
+.help-string {
+  font-size: small;
+  margin: 0;
+  padding: 10px 0px;
+}
+
 /* Text in the home page input field cannot be selected. */
 .home-page-input {
   -webkit-user-select: none;

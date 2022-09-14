@@ -13,6 +13,20 @@ width. */
 }
 
 /*  */
+.build-utility-group-container {
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*  */
+.create-IM-button {
+  background-color: #9db66b;
+  font-size: 26px;
+}
+
+/*  */
 .example-tree-invisible {
   display: none;
 }
@@ -43,7 +57,7 @@ non-leaf nodes under the same parent. */
 
 /* The overarching container for a Build component. */
 .main-container {
-  height: calc(100% - 15px);
+  height: calc(100% - 75px);
   overflow: auto;
 }
 
@@ -57,7 +71,7 @@ non-leaf nodes under the same parent. */
 /* Button for adding a new Menu, SubMenu, etc. */
 .tree-node-add-node-button {
   background-color: #9db66b;
-  margin-left: 15px;
+  margin-left: 25px;
 }
 
 /* The top level div to display the node's name, add node button, etc. */
@@ -88,3 +102,42 @@ non-leaf nodes under the same parent. */
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
   color: #9db66b!important;
 }
+
+// mat-input error outline color
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+  color: red!important;
+  opacity: 0.8!important;
+}
+
+/////////////////////////////////
+
+// // mat-icon-stepper selected color change 
+// ::ng-deep .mat-step-header .mat-step-icon-selected, .mat-step-header .mat-step-icon-state-done, .mat-step-header .mat-step-icon-state-edit {
+//   background-color: red!important;
+// }
+
+// // mat-input caret color
+// ::ng-deep .mat-input-element {
+//   caret-color: red!important;
+// }
+
+// // mat-input error caret color
+// ::ng-deep .mat-form-field-invalid .mat-input-element, .mat-warn .mat-input-element {
+//   caret-color: red!important;
+// }
+
+// // mat-label normal state style
+// ::ng-deep .mat-form-field-label {
+//   color: rgba(0,0,0,.6)!important;
+//   // color: $mainColor!important;
+// }
+
+// // mat-label focused style
+// ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+//   color: red!important;
+// }
+
+// // mat-label error style
+// ::ng-deep .mat-form-field.mat-form-field-invalid .mat-form-field-label {
+//   color: red!important;
+// }

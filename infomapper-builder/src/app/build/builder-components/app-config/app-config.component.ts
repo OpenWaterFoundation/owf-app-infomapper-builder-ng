@@ -1,10 +1,7 @@
 import { Component,
           Input,
-          OnInit }                 from '@angular/core';
-import { FormGroup }               from '@angular/forms';
-
-
-
+          OnInit }   from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -17,10 +14,12 @@ export class AppConfigComponent implements OnInit {
   /**
    * 
    */
-  @Input('appBuilderForm') appBuilderFormGroup: FormGroup;
+  @Input('appBuilderForm') appBuilderForm: FormGroup;
 
 
-  constructor() { }
+  constructor() {
+
+  }
 
 
   ngOnInit(): void {

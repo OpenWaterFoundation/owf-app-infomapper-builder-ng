@@ -5,13 +5,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient,
           HttpClientModule }       from '@angular/common/http';
 import { FlexLayoutModule }        from '@angular/flex-layout';
-
-import { LoggerModule,
-          NgxLoggerLevel }         from 'ngx-logger';
-
-import { MatButtonModule }         from '@angular/material/button';
 import { FormsModule,
           ReactiveFormsModule }    from '@angular/forms';
+
+import { MatButtonModule }         from '@angular/material/button';
+import { MatDialogModule }         from '@angular/material/dialog';
+import { DragDropModule }          from '@angular/cdk/drag-drop';
 import { MatFormFieldModule }      from '@angular/material/form-field';
 import { MatIconModule }           from '@angular/material/icon';
 import { MatInputModule }          from '@angular/material/input';
@@ -28,20 +27,26 @@ import { AngularFullpageModule }   from '@fullpage/angular-fullpage';
 import { Observable }              from 'rxjs/internal/Observable';
 
 import { ShowdownModule }          from 'ngx-showdown';
+import { LoggerModule,
+          NgxLoggerLevel }         from 'ngx-logger';
 
 import { AppRoutingModule }        from './app-routing.module';
 import { AppComponent }            from './app.component';
+import { AppConfigComponent }      from './build/builder-components/app-config/app-config.component';
+import { BuildComponent }          from './build/build.component';
 import { NavBarComponent }         from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { SideNavComponent }        from './navigation/side-nav/side-nav.component';
 import { ContentPageComponent }    from './content-page/content-page.component';
+import { AddToTreePipe }           from './pipes/add-to-tree.pipe';
 import { AppService }              from './app.service';
-import { CheckElementPipe }        from './check-element.pipe';
+import { CheckElementPipe }        from './pipes/check-element.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
-import { BuildComponent }          from './build/build.component';
-import { AppConfigComponent } from './build/builder-components/app-config/app-config.component';
+import { MenuComponent } from './build/builder-components/menu/menu.component';
+import { DialogComponent } from './build/builder-components/dialog/dialog.component';
+
 
 
 const classMap: any = {
@@ -88,7 +93,10 @@ function appInit(appService: AppService): () => Observable<any> {
     NavBarMenuComponent,
     CheckElementPipe,
     BuildComponent,
-    AppConfigComponent
+    AppConfigComponent,
+    AddToTreePipe,
+    MenuComponent,
+    DialogComponent
   ],
   imports: [
     AngularFullpageModule,
@@ -116,6 +124,8 @@ function appInit(appService: AppService): () => Observable<any> {
     }),
     
     MatButtonModule,
+    MatDialogModule,
+    DragDropModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,

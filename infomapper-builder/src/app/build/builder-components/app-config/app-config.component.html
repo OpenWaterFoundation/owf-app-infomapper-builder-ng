@@ -1,38 +1,32 @@
-<p>All fields marked with an asterisk (*) are required.</p>
+<p class="help-string">All fields marked with an asterisk (*) are required.</p>
             
-<form [formGroup]="appBuilderFormGroup">
+<form [formGroup]="appBuilderForm">
 
-  <div class="app-config-form-fields-container">
-    <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input matInput
-      formControlName="title"
-      placeholder="Poudre Basin Information">
-      <mat-hint></mat-hint>
-    </mat-form-field>
+  <div formGroupName="appConfigFG">
+    <div class="app-config-form-fields-container">
+      <mat-form-field appearance="outline">
+        <!-- <mat-label>Title</mat-label> -->
+        <input matInput formControlName="title" placeholder="Poudre Basin Information">
+        <mat-hint></mat-hint>
+      </mat-form-field>
+    
+      <mat-form-field appearance="outline">
+        <!-- <mat-label>Home Page</mat-label> -->
+        <input matInput class="home-page-input" formControlName="homePage">
+        <mat-hint>Home page location cannot be changed</mat-hint>
+      </mat-form-field>
   
-    <mat-form-field appearance="outline">
-      <mat-label>Home Page</mat-label>
-      <input matInput
-      class="home-page-input"
-      formControlName="homePage">
-      <mat-hint>Home page location cannot be changed</mat-hint>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Favicon path</mat-label>
-      <input matInput
-      formControlName="favicon"
-      placeholder="assets/app/img/favicon.ico">
-      <mat-hint>Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-hint>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Version</mat-label>
-      <input matInput
-      formControlName="version"
-      placeholder="1.6.2">
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <!-- <mat-label>Favicon path</mat-label> -->
+        <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico">
+        <mat-hint>Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-hint>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <!-- <mat-label>Version</mat-label> -->
+        <input matInput formControlName="version" placeholder="1.6.2">
+      </mat-form-field>
+    </div>
   </div>
   
 </form>

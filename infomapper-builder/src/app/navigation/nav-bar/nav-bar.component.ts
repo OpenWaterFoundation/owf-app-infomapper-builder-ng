@@ -1,4 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component,
+          EventEmitter,
+          OnInit,
+          Output } from '@angular/core';
 
 import { faBars }     from '@fortawesome/free-solid-svg-icons';
 

@@ -1,0 +1,40 @@
+
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" class="cdk-drag">
+  <div mat-dialog-title class="drag-header-main" cdkDragHandle
+  data-cy="dialog-drag-header-main">
+
+    <div class="header">
+      <p class="header-title">
+        TEST
+      </p>
+    </div>
+
+    <button mat-button (click)="closeDialog()" class="upper-dialog-close-button"
+    attr.data-cy="dialog-upper-close-NEEDS-TO-BE-CHANGED">
+      <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <app-config [appBuilderForm]="appBuilderForm"></app-config>
+  </div>
+
+  <div class="dialog-utility-container">
+
+    <button mat-raised-button
+    (click)="saveData()"
+    class="dialog-save-button"
+    attr.data-cy="dialog-lower-save-NEEDS-TO-BE-CHANGED">
+      Save
+    </button>
+
+    <button mat-raised-button
+    (click)="closeDialog()"
+    class="dialog-cancel-button"
+    attr.data-cy="dialog-lower-cancel-NEEDS-TO-BE-CHANGED">
+      Cancel
+    </button>
+
+  </div>
+
+</div>
