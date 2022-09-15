@@ -12,6 +12,30 @@
 }
 
 /*  */
+.form-container {
+  display: flex;
+  align-items: center;
+}
+
+/*  */
+.form-description {
+  font-size: 14px;
+  margin: 0px 0px 40px 20px;
+  text-align: center;
+  user-select: none;
+  width: 300px;
+}
+
+/*  */
+.form-title {
+  font-size: 16px;
+  margin: 0px 20px 40px 0px;
+  text-align: center;
+  user-select: none;
+  width: 100px;
+}
+
+/*  */
 .help-string {
   font-size: small;
   margin: 0;

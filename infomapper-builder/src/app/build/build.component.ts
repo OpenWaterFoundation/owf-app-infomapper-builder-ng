@@ -145,9 +145,9 @@ export class BuildComponent implements OnInit, OnDestroy {
       data: dialogConfigData,
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
       height: isMobile ? "90vh" : "700px",
-      width: isMobile ? "100vw" : "910px",
-      minHeight: isMobile ? "90vh" : "400px",
-      minWidth: isMobile ? "100vw" : "610px",
+      width: isMobile ? "100vw" : "800px",
+      minHeight: isMobile ? "90vh" : "300px",
+      minWidth: isMobile ? "100vw" : "785px",
       maxHeight: isMobile ? "90vh" : "70vh",
       maxWidth: isMobile ? "100vw" : "95vw"
     }

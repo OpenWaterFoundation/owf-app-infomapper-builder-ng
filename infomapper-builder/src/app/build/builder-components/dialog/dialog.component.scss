@@ -1,5 +1,6 @@
 /* CLASSES */
 
+/* Top level container for the component. */
 .cdk-drag {
   height: 100%;
 }
@@ -11,8 +12,9 @@
 
 /* The main dialog content to display. */
 .dialog-content {
-  height: calc(100% - 120px);
+  height: calc(100% - 130px);
   padding: 0px 15px 10px 15px;
+  overflow: auto;
 }
 
 /* The lower left Save button. */
@@ -22,6 +24,7 @@
 
 /* Container for all dialog utility buttons. */
 .dialog-utility-container {
+  background-color: #e6e6e6;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,8 +33,8 @@
 
 /* All buttons in the lower dialog utility section. */
 .dialog-utility-container button {
-  font-size: 20px;
-  margin: 0px 20px 0px 20px;
+  font-size: 22px;
+  margin: 0px 50px;
 }
 
 /* Div class that takes up 5.5% of the height of the dialog and is gray to differentiate

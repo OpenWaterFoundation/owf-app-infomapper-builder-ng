@@ -4,28 +4,38 @@
 
   <div formGroupName="appConfigFG">
     <div class="app-config-form-fields-container">
-      <mat-form-field appearance="outline">
-        <!-- <mat-label>Title</mat-label> -->
-        <input matInput formControlName="title" placeholder="Poudre Basin Information">
-        <mat-hint></mat-hint>
-      </mat-form-field>
-    
-      <mat-form-field appearance="outline">
-        <!-- <mat-label>Home Page</mat-label> -->
-        <input matInput class="home-page-input" formControlName="homePage">
-        <mat-hint>Home page location cannot be changed</mat-hint>
-      </mat-form-field>
-  
-      <mat-form-field appearance="outline">
-        <!-- <mat-label>Favicon path</mat-label> -->
-        <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico">
-        <mat-hint>Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-hint>
-      </mat-form-field>
-  
-      <mat-form-field appearance="outline">
-        <!-- <mat-label>Version</mat-label> -->
-        <input matInput formControlName="version" placeholder="1.6.2">
-      </mat-form-field>
+
+      <div class="form-container">
+        <mat-card class="form-title">Title</mat-card>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="title" placeholder="Poudre Basin Information">
+        </mat-form-field>
+      </div>
+
+      <div class="form-container">
+        <mat-card class="form-title">Home page</mat-card>
+        <mat-form-field appearance="outline">
+          <input matInput class="home-page-input" formControlName="homePage">
+        </mat-form-field>
+      </div>
+
+      <div class="form-container">
+        <mat-card class="form-title">Favicon path</mat-card>
+
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico">
+        </mat-form-field>
+
+        <mat-card class="form-description">Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-card>
+      </div>
+
+      <div class="form-container">
+        <mat-card class="form-title">Version</mat-card>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="version" placeholder="1.6.2">
+        </mat-form-field>
+      </div>
+
     </div>
   </div>
   
