@@ -8,10 +8,12 @@ import * as IM            from '@OpenWaterFoundation/common/services';
 })
 export class AddToTreePipe implements PipeTransform {
 
-  transform(node: IM.TreeNodeData): string {
+  transform(node: IM.TreeNodeData): string | boolean {
 
     if (node.name.includes('Application:')) {
       return 'Add Menu';
+    } else if (node.name.includes('subMenu:')) {
+      return false;
     } else if (node.name.includes('Menu:')) {
       return 'Add SubMenu';
     }

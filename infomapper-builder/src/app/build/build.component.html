@@ -1,18 +1,34 @@
 <ng-container *ngIf="validBuildID === true;">
 
+  <nav class="build-nav">
+    <div class="build-nav-container">
+
+      <mat-nav-list>
+        <button mat-raised-button>Publish to GitHub</button>
+        <button mat-raised-button>Publish to preview</button>
+        <button mat-raised-button>Publish to AWS</button>
+      </mat-nav-list>
+
+    </div>
+  </nav>
+
   <div fxLayout="row" fxLayoutAlign="center" class="main-container">
     <div fxFlex="75%" fxFlex.lt-md="100%" fxFlex.gt-lg="50%" class="build-container">
   
       <mat-tree #treeSelector [dataSource]="treeDataSource" [treeControl]="treeControl"
-      class="example-tree">
+      class="build-tree">
         <!-- Tree node template for leaf nodes with no children. -->
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
           <div class="tree-node-header">
-            <button mat-button (click)="openDialog()"
-            class="tree-node-name">{{ node.name }}</button>
-            <button mat-button (click)="addToTree(node.name)" class="tree-node-add-node-button">
-              {{ node | addToTree }}
+            <button mat-button (click)="openConfigDialog(node)" class="tree-node-name">
+              {{ node.name }}
             </button>
+
+            <ng-container *ngIf="!node.name.includes('subMenu')">
+              <button mat-button (click)="addToTree(node.name)" class="tree-node-add-node-button">
+                {{ node | addToTree }}
+              </button>
+            </ng-container>
           </div>
         </mat-tree-node>
   
@@ -26,28 +42,26 @@
                 </button>
   
                 <div>
-                  <button mat-button (click)="openDialog()"
-                  class="tree-node-name">{{ node.name }}</button>
-                  <button mat-button (click)="addToTree(node.name)" class="tree-node-add-node-button">
-                    {{ node | addToTree }}
+                  <button mat-button (click)="openConfigDialog(node)" class="tree-node-name">
+                    {{ node.name }}
                   </button>
+
+                  <ng-container *ngIf="!node.name.includes('subMenu')">
+                    <button mat-button (click)="addToTree(node.name)" class="tree-node-add-node-button">
+                      {{ node | addToTree }}
+                    </button>
+                  </ng-container>
                 </div>
               </div>
             </div>
   
-            <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+            <div [class.build-tree-invisible]="!treeControl.isExpanded(node)" role="group">
               <ng-container matTreeNodeOutlet></ng-container>
             </div>
           </mat-nested-tree-node>
       </mat-tree>
 
     </div>
-  </div>
-
-  <div class="build-utility-group-container">
-    <button mat-button (click)="createInfoMapper()" class="create-IM-button">
-      Create InfoMapper
-    </button>
   </div>
 
 </ng-container>

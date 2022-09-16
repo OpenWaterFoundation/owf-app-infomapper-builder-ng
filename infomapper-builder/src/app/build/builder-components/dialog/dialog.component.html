@@ -5,7 +5,7 @@
 
     <div class="header">
       <p class="header-title">
-        TEST
+        Application: {{ headerText }}
       </p>
     </div>
 
@@ -16,7 +16,7 @@
   </div>
 
   <div class="dialog-content">
-    <app-config [appBuilderForm]="appBuilderForm"></app-config>
+    <app-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)"></app-config>
   </div>
 
   <div class="dialog-utility-container">

@@ -18,7 +18,8 @@ import { NestedTreeControl }       from '@angular/cdk/tree';
 import { faChevronDown,
           faChevronRight }         from '@fortawesome/free-solid-svg-icons';
 
-import { Subject,
+import { first,
+          Subject,
           takeUntil }              from 'rxjs'; 
 
 import { CommonLoggerService }     from '@OpenWaterFoundation/common/services';
@@ -26,7 +27,7 @@ import * as IM                     from '@OpenWaterFoundation/common/services';
 
 import { AppService }              from '../app.service';
 import { DialogComponent }         from './builder-components/dialog/dialog.component';
-
+import { BuildManager }            from './build-manager';
 
 
 @Component({
@@ -36,31 +37,31 @@ import { DialogComponent }         from './builder-components/dialog/dialog.comp
 })
 export class BuildComponent implements OnInit, OnDestroy {
 
-  /**
-   * 
-   */
+  /** The main FormGroup for the entire application. */
   appBuilderForm = new FormGroup({});
-  /**
-   * 
-   */
+  /** FormGroup to be used by the AppConfigComponent. */
   appConfigFG = new FormGroup({
     title: new FormControl('', Validators.required),
     homePage: new FormControl({ value: '/content-page/home.md', disabled: true }),
+    version: new FormControl('', Validators.required),
+    dataUnitsPath: new FormControl(''),
     favicon: new FormControl(''),
-    version: new FormControl('')
+    googleAnalyticsTrackingId: new FormControl('')
   });
-
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
+  /** The current screen size. Used for dialogs to determine if they
+   * should be shown for desktop or mobile screens. */
   currentScreenSize: string;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
   /** All used FontAwesome icons in the AppConfigComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
-
+  /** Counter for each dynamically created mainMenu. */
   mainMenuCount = 0;
-  /**
-   * 
-   */
+  /** FormGroup to be used by the MenuComponent. */
   mainMenuFG = new FormGroup({
     name: new FormControl('', Validators.required),
     action: new FormControl('', Validators.required),
@@ -74,7 +75,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** Initial data for a new tree. */
   treeNodeData: IM.TreeNodeData[] = [
     {
-      name: 'Application:',
+      name: 'Application: New application',
       children: []
     }
   ];
@@ -117,12 +118,7 @@ export class BuildComponent implements OnInit, OnDestroy {
    * Adds a
    */
   addToTree(nodeName: string): void {
-
-    if (nodeName.includes('Application:')) {
-      this.treeNodeData[0].children.push({name: 'Menu:'});
-    } else if (nodeName.includes('Menu:')) {
-      this.treeNodeData[0].children[0].children.push({name: 'SubMenu:'});
-    }
+    this.buildManager.addNodeToTree(this.treeNodeData[0], nodeName);
     
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
@@ -139,16 +135,17 @@ export class BuildComponent implements OnInit, OnDestroy {
    private createDialogConfig(dialogConfigData: any): MatDialogConfig {
 
     var isMobile = (this.currentScreenSize === Breakpoints.XSmall ||
-      this.currentScreenSize === Breakpoints.Small);
+    this.currentScreenSize === Breakpoints.Small);
 
     return {
       data: dialogConfigData,
+      disableClose: true,
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
-      height: isMobile ? "90vh" : "700px",
+      height: isMobile ? "90vh" : "850px",
       width: isMobile ? "100vw" : "800px",
       minHeight: isMobile ? "90vh" : "300px",
-      minWidth: isMobile ? "100vw" : "785px",
-      maxHeight: isMobile ? "90vh" : "70vh",
+      minWidth: isMobile ? "100vw" : "800px",
+      maxHeight: isMobile ? "90vh" : "90vh",
       maxWidth: isMobile ? "100vw" : "95vw"
     }
   }
@@ -195,22 +192,31 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
   * 
   */
-   public openDialog(): void {
-    var windowID = 'dialog';
-    // if (this.windowManager.windowExists(windowID)) {
-    //   return;
-    // }
+   public openConfigDialog(): void {
 
     var dialogConfigData = {
-      appBuilderForm: this.appBuilderForm,
-      windowID: windowID
+      appBuilderForm: this.appBuilderForm
     }
 
     var dialogRef: MatDialogRef<DialogComponent, any> = this.dialog.open(
       DialogComponent, this.createDialogConfig(dialogConfigData)
     );
 
-    // this.windowManager.addWindow(windowID, WindowType.DOC);
+    dialogRef.afterClosed().pipe(first()).subscribe((form: FormGroup) => {
+
+      if (!form) {
+        return;
+      }
+
+      for (const field in form.controls) {
+        console.log('Input value from dialog for control ' + field + ': ', form.get(field).value);
+        if (!form.get(field).value.title) {
+          break;
+        }
+        this.treeNodeData[0].name = 'Application: ' + form.get(field).value.title;
+      }
+    });
+
   }
 
 }

@@ -1,6 +1,8 @@
 import { Component,
+          EventEmitter,
           Input,
-          OnInit }   from '@angular/core';
+          OnInit, 
+          Output}   from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 
@@ -15,6 +17,9 @@ export class AppConfigComponent implements OnInit {
    * 
    */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** EventEmitter that alerts the Map component (parent) that an update has happened,
+   * and sends the basin name. */
+  @Output() updateTitleInput = new EventEmitter<any>();
 
 
   constructor() {
@@ -23,6 +28,10 @@ export class AppConfigComponent implements OnInit {
 
 
   ngOnInit(): void {
+  }
+
+  titleInput(): void {
+    this.updateTitleInput.emit(this.appBuilderForm.get('appConfigFG.title').value);
   }
 
 }

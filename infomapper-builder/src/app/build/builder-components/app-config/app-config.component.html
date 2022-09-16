@@ -6,35 +6,58 @@
     <div class="app-config-form-fields-container">
 
       <div class="form-container">
-        <mat-card class="form-title">Title</mat-card>
+        <div class="form-title">Title*</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="title" placeholder="Poudre Basin Information">
+          <input matInput formControlName="title" placeholder="Poudre Basin Information"
+          (keyup)="titleInput()">
         </mat-form-field>
       </div>
 
       <div class="form-container">
-        <mat-card class="form-title">Home page</mat-card>
+        <div class="form-title">Home page*</div>
         <mat-form-field appearance="outline">
           <input matInput class="home-page-input" formControlName="homePage">
         </mat-form-field>
+
+        <mat-card class="form-description">
+          The home page path cannot be changed.
+        </mat-card>
       </div>
 
       <div class="form-container">
-        <mat-card class="form-title">Favicon path</mat-card>
+        <div class="form-title">Version*</div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="version" placeholder="1.0.0">
+        </mat-form-field>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">Data units path</div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="dataUnitsPath" placeholder="/system/DATAUNIT">
+        </mat-form-field>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">Favicon path</div>
 
         <mat-form-field appearance="outline">
           <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico">
         </mat-form-field>
 
-        <mat-card class="form-description">Default: <span class="favicon-hint-default-path">favicon.ico</span></mat-card>
+        <mat-card class="form-description">
+          Default: <span class="favicon-hint-default-path">favicon.ico</span>
+        </mat-card>
       </div>
 
       <div class="form-container">
-        <mat-card class="form-title">Version</mat-card>
+        <div class="form-title">Google analytics tracking Id</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="version" placeholder="1.6.2">
+          <input matInput formControlName="googleAnalyticsTrackingId" placeholder="UA-123456789-1">
         </mat-form-field>
       </div>
+
+      
 
     </div>
   </div>
