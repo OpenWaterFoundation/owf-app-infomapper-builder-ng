@@ -32,11 +32,15 @@ import { LoggerModule,
           NgxLoggerLevel }         from 'ngx-logger';
 
 import { AppRoutingModule }        from './app-routing.module';
+
 import { AppComponent }            from './app.component';
 import { AppConfigComponent }      from './build/builder-components/app-config/app-config.component';
 import { BuildComponent }          from './build/build.component';
+import { DialogComponent }         from './build/builder-utility/dialog/dialog.component';
+import { MenuComponent }           from './build/builder-components/menu/menu.component';
 import { NavBarComponent }         from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
+import { NodeMenuComponent }       from './build/builder-utility/node-menu/node-menu.component';
 import { SideNavComponent }        from './navigation/side-nav/side-nav.component';
 import { ContentPageComponent }    from './content-page/content-page.component';
 import { AddToTreePipe }           from './pipes/add-to-tree.pipe';
@@ -45,9 +49,6 @@ import { CheckElementPipe }        from './pipes/check-element.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
-import { MenuComponent } from './build/builder-components/menu/menu.component';
-import { DialogComponent } from './build/builder-components/dialog/dialog.component';
-
 
 
 const classMap: any = {
@@ -97,7 +98,8 @@ function appInit(appService: AppService): () => Observable<any> {
     AppConfigComponent,
     AddToTreePipe,
     MenuComponent,
-    DialogComponent
+    DialogComponent,
+    NodeMenuComponent
   ],
   imports: [
     AngularFullpageModule,

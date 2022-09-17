@@ -26,7 +26,7 @@ import { CommonLoggerService }     from '@OpenWaterFoundation/common/services';
 import * as IM                     from '@OpenWaterFoundation/common/services';
 
 import { AppService }              from '../app.service';
-import { DialogComponent }         from './builder-components/dialog/dialog.component';
+import { DialogComponent }         from './builder-utility/dialog/dialog.component';
 import { BuildManager }            from './build-manager';
 
 

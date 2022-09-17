@@ -24,11 +24,7 @@
               {{ node.name }}
             </button>
 
-            <ng-container *ngIf="!node.name.includes('subMenu')">
-              <button mat-button (click)="addToTree(node.name)" class="tree-node-add-node-button">
-                {{ node | addToTree }}
-              </button>
-            </ng-container>
+            <node-menu [node]="node"></node-menu>
           </div>
         </mat-tree-node>
   
@@ -46,11 +42,7 @@
                     {{ node.name }}
                   </button>
 
-                  <ng-container *ngIf="!node.name.includes('subMenu')">
-                    <button mat-button (click)="addToTree(node.name)" class="tree-node-add-node-button">
-                      {{ node | addToTree }}
-                    </button>
-                  </ng-container>
+                  <node-menu [node]="node"></node-menu>
                 </div>
               </div>
             </div>

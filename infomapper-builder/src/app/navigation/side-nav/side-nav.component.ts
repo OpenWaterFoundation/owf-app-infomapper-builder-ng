@@ -7,11 +7,12 @@ import { ActivatedRoute }      from '@angular/router';
 
 import { Subject }             from 'rxjs';
 
-import { AppService }          from 'src/app/app.service';
-
+import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 import { faBookOpen,
           faFileLines,
           faGaugeHigh }        from '@fortawesome/free-solid-svg-icons';
+
+import { AppService }          from 'src/app/app.service';
 
 
 @Component({
@@ -38,7 +39,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
    * @param logger Logger from the Common package for debugging and testing.
    * @param actRoute 
    */
-  constructor(private appService: AppService, private actRoute: ActivatedRoute) { }
+  constructor(private appService: AppService, private actRoute: ActivatedRoute,
+  private logger: CommonLoggerService) { }
 
 
   get appConfig(): any { return this.appService.appConfigObj; }
