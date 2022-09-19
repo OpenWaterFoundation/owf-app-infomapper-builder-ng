@@ -16,7 +16,17 @@
   </div>
 
   <div class="dialog-content">
-    <app-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)"></app-config>
+    
+    <ng-container *ngIf="nodeName.includes('Application:')">
+      <app-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)">
+      </app-config>
+    </ng-container>
+    
+    <ng-container *ngIf="nodeName.includes('Main Menu:')">
+      <main-menu-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)">
+      </main-menu-config>
+    </ng-container>
+    
   </div>
 
   <div class="dialog-utility-container">

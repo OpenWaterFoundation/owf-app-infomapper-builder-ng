@@ -3,9 +3,28 @@ data-cy="NEEDS-TO-BE-UPDATED">
   <fa-icon class="fa-icon" [icon]=faEllipsisVertical size="xl"></fa-icon>
 </button>
 <mat-menu #nodMenu="matMenu">
-  <button mat-menu-item
+  <button mat-menu-item (click)="sendMenuChoice(node.name, 'editConfig')"
   data-cy="NEEDS-TO-BE-UPDATED">
-      <!-- <fa-icon class="fa-icon" [icon]=faEllipsisVertical size="2xl"></fa-icon> -->
-      Edit
+    Edit configuration
   </button>
+
+  <ng-container *ngIf="node.name.includes('Application:')">
+    <button mat-menu-item (click)="sendMenuChoice(node.name, 'addMainMenu')"
+    data-cy="">
+      Add Menu
+    </button>
+
+    <button mat-menu-item data-cy="">
+      Add Datastore
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="node.name.includes('Main Menu:')">
+    <button mat-menu-item (click)="sendMenuChoice(node.name, 'addSubMenu')"
+    data-cy="">
+      Add SubMenu
+    </button>
+  </ng-container>
+  
+  
 </mat-menu>

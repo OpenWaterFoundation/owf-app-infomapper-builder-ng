@@ -49,9 +49,10 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * Called once before the component instance is destroyed.
+   */
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.destroyed.next();
     this.destroyed.complete();
   }

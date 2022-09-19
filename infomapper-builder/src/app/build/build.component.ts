@@ -169,10 +169,12 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     // When the parameters in the URL are changed the map will refresh and load
     // according to new configuration data.
     this.actRoute.paramMap.pipe(takeUntil(this.destroyed)).subscribe((paramMap: ParamMap) => {
 
+      console.log('paramMap:', paramMap);
       var buildID = paramMap.get('builderId');
       this.validBuildID = this.appService.validURLConfigID(buildID);
 
@@ -190,12 +192,29 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * 
+   * @param choice 
+   */
+  nodeMenuChoice(choice: IM.MenuChoice): void {
+
+    switch(choice.menuChoice) {
+      case 'addMainMenu':
+      case 'addSubmenu':
+        this.addToTree(choice.nodeName);
+        break;
+      case 'editConfig':
+        this.openConfigDialog(choice.nodeName);
+    }
+  }
+
+  /**
   * 
   */
-   public openConfigDialog(): void {
+   public openConfigDialog(nodeName: string): void {
 
     var dialogConfigData = {
-      appBuilderForm: this.appBuilderForm
+      appBuilderForm: this.appBuilderForm,
+      nodeName: nodeName
     }
 
     var dialogRef: MatDialogRef<DialogComponent, any> = this.dialog.open(
@@ -217,6 +236,10 @@ export class BuildComponent implements OnInit, OnDestroy {
       }
     });
 
+  }
+
+  updateTreeNodeName(): void {
+    // Use in the future.
   }
 
 }

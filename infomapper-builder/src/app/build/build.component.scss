@@ -59,7 +59,7 @@ width. */
 
 /*  */
 .build-tree {
-  padding-top: 12px;
+  padding-top: 8px;
 }
 
 /*  */
@@ -103,6 +103,13 @@ non-leaf nodes under the same parent. */
   flex-direction: column;
   justify-content: start;
   align-items: flex-start !important;
+}
+
+/* The text shown for each node in the tree. */
+.node-name {
+  font-family: 'Roboto,Helvetica Neue,sans-serif';
+  font-size: 22px;
+  margin: 0 10px;
 }
 
 /* Button for adding a new Menu, SubMenu, etc. */

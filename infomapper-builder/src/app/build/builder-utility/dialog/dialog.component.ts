@@ -23,11 +23,15 @@ export class DialogComponent implements OnInit {
   /** The string to be dynamically displayed on this component's top header. */
   headerText = '';
 
+  nodeName: string;
+
 
   constructor(@Inject(MAT_DIALOG_DATA) private dialogData: any,
   private dialogRef: MatDialogRef<DialogComponent>) {
 
     this.appBuilderForm = this.dialogData.appBuilderForm;
+    this.nodeName = this.dialogData.nodeName;
+    console.log('nodeName:', this.nodeName);
   }
 
 

@@ -30,6 +30,9 @@ export class NavBarComponent implements OnInit {
   constructor(private appService: AppService) { }
 
 
+  /**
+   * Getter for the application configuration JSON object.
+   */
   get appConfig(): any { return this.appService.appConfigObj; }
 
   ngOnInit(): void {

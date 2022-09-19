@@ -11,9 +11,13 @@ export class BuildManager {
   
   /** The instance of this WindowManager object. */
   private static instance: BuildManager;
-
+  /**
+   * 
+   */
   menuCounter = 1;
-
+  /**
+   * 
+   */
   subMenuCounter = 1;
 
 
@@ -39,9 +43,9 @@ export class BuildManager {
   addNodeToTree(treeNodeData: IM.TreeNodeData, nodeName: string): void {
 
     if (nodeName.includes('Application:')) {
-      treeNodeData.children.push({name: 'Menu: New menu ' + this.menuCounter});
+      treeNodeData.children.push({name: 'Main Menu: New menu ' + this.menuCounter});
       ++this.menuCounter;
-    } else if (nodeName.includes('Menu:')) {
+    } else if (nodeName.includes('Main Menu:')) {
 
       let menuIndex = +nodeName.slice(-1);
 

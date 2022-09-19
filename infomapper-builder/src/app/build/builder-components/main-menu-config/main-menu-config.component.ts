@@ -1,17 +1,17 @@
 import { Component,
           EventEmitter,
           Input,
-          OnInit, 
-          Output}   from '@angular/core';
+          OnInit,
+          Output }   from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 
 @Component({
-  selector: 'app-config',
-  templateUrl: './app-config.component.html',
-  styleUrls: ['./app-config.component.scss']
+  selector: 'main-menu-config',
+  templateUrl: './main-menu-config.component.html',
+  styleUrls: ['./main-menu-config.component.scss']
 })
-export class AppConfigComponent implements OnInit {
+export class MainMenuConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
@@ -20,16 +20,9 @@ export class AppConfigComponent implements OnInit {
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<any>();
 
 
-  constructor() {
-
-  }
-
+  constructor() { }
 
   ngOnInit(): void {
-  }
-
-  titleInput(): void {
-    this.updateTitleInput.emit(this.appBuilderForm.get('appConfigFG.title').value);
   }
 
 }

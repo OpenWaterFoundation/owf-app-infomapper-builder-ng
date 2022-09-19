@@ -1,9 +1,12 @@
 import { Component,
+          EventEmitter,
           Input,
           OnInit,
-          Output }            from '@angular/core';
+          Output }                 from '@angular/core';
 
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisVertical }      from '@fortawesome/free-solid-svg-icons';
+
+import * as IM                     from '@OpenWaterFoundation/common/services';
 
 @Component({
   selector: 'node-menu',
@@ -17,7 +20,11 @@ export class NodeMenuComponent implements OnInit {
   /**
    * 
    */
-  @Input('node') node: any;
+  @Output('menuChoice') menuChoice = new EventEmitter<IM.MenuChoice>();;
+  /**
+   * 
+   */
+  @Input('node') node: IM.TreeNodeData;
 
 
 
@@ -26,6 +33,18 @@ export class NodeMenuComponent implements OnInit {
 
 
   ngOnInit(): void {
+  }
+
+  /**
+   * 
+   * @param nodeName 
+   * @param menuChoice 
+   */
+  sendMenuChoice(nodeName: string, menuChoice: string): void {
+    this.menuChoice.emit({
+      nodeName: nodeName,
+      menuChoice: menuChoice
+    });
   }
 
 }

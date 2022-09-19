@@ -37,7 +37,7 @@ import { AppComponent }            from './app.component';
 import { AppConfigComponent }      from './build/builder-components/app-config/app-config.component';
 import { BuildComponent }          from './build/build.component';
 import { DialogComponent }         from './build/builder-utility/dialog/dialog.component';
-import { MenuComponent }           from './build/builder-components/menu/menu.component';
+import { MainMenuConfigComponent } from './build/builder-components/main-menu-config/main-menu-config.component';
 import { NavBarComponent }         from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { NodeMenuComponent }       from './build/builder-utility/node-menu/node-menu.component';
@@ -97,7 +97,7 @@ function appInit(appService: AppService): () => Observable<any> {
     BuildComponent,
     AppConfigComponent,
     AddToTreePipe,
-    MenuComponent,
+    MainMenuConfigComponent,
     DialogComponent,
     NodeMenuComponent
   ],
