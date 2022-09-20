@@ -63,9 +63,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   mainMenuCount = 0;
   /** FormGroup to be used by the MenuComponent. */
   mainMenuFG = new FormGroup({
+    id: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
     action: new FormControl('', Validators.required),
-    id: new FormControl('', Validators.required),
     tooltip: new FormControl('')
   });
   /** Structure for nested Trees. */
@@ -174,7 +174,6 @@ export class BuildComponent implements OnInit, OnDestroy {
     // according to new configuration data.
     this.actRoute.paramMap.pipe(takeUntil(this.destroyed)).subscribe((paramMap: ParamMap) => {
 
-      console.log('paramMap:', paramMap);
       var buildID = paramMap.get('builderId');
       this.validBuildID = this.appService.validURLConfigID(buildID);
 
@@ -195,11 +194,11 @@ export class BuildComponent implements OnInit, OnDestroy {
    * 
    * @param choice 
    */
-  nodeMenuChoice(choice: IM.MenuChoice): void {
+  receiveMenuChoice(choice: IM.MenuChoice): void {
 
-    switch(choice.menuChoice) {
+    switch(choice.choiceType) {
       case 'addMainMenu':
-      case 'addSubmenu':
+      case 'addSubMenu':
         this.addToTree(choice.nodeName);
         break;
       case 'editConfig':

@@ -31,7 +31,6 @@ export class DialogComponent implements OnInit {
 
     this.appBuilderForm = this.dialogData.appBuilderForm;
     this.nodeName = this.dialogData.nodeName;
-    console.log('nodeName:', this.nodeName);
   }
 
 

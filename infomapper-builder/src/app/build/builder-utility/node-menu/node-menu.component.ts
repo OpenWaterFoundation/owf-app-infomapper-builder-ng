@@ -38,12 +38,12 @@ export class NodeMenuComponent implements OnInit {
   /**
    * 
    * @param nodeName 
-   * @param menuChoice 
+   * @param menuChoiceType 
    */
-  sendMenuChoice(nodeName: string, menuChoice: string): void {
+  sendMenuChoice(nodeName: string, menuChoiceType: string): void {
     this.menuChoice.emit({
-      nodeName: nodeName,
-      menuChoice: menuChoice
+      choiceType: menuChoiceType,
+      nodeName: nodeName
     });
   }
 

@@ -54,7 +54,7 @@ export class BuildManager {
       }
 
       treeNodeData.children[menuIndex - 1].children.push({
-        name: 'SubMenu: New subMenu ' + this.subMenuCounter
+        name: 'SubMenu: New SubMenu ' + this.subMenuCounter
       });
       ++this.subMenuCounter;
     }
