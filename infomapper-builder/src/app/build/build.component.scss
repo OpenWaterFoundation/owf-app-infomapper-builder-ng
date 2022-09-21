@@ -123,8 +123,8 @@ non-leaf nodes under the same parent. */
 
 /* The text shown for each node in the tree. */
 .node-name {
-  font-family: 'Roboto,Helvetica Neue,sans-serif';
-  font-size: 22px;
+  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-size: 20px;
   margin: 0 10px;
 }
 
@@ -148,25 +148,30 @@ non-leaf nodes under the same parent. */
 
 /* MISCELLANEOUS */
 
-/* Input outline color */
+/* Input outline color. */
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
   color: #9db66b !important;
 }
 
-/* Focused color */
+/* Focused color. */
 ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
   color: #9db66b !important;
 }
 
-/* mat-label focused style */
+/* mat-label focused style. */
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
   color: #9db66b!important;
 }
 
-// mat-input error outline color
+/* mat-input error outline color. */
 ::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
   color: red!important;
   opacity: 0.8!important;
+}
+
+/* Angular Material form arrow color. */
+::ng-deep .mat-select-arrow {
+  color: #9DB66B !important;
 }
 
 /////////////////////////////////

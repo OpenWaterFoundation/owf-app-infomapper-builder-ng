@@ -3,13 +3,13 @@ data-cy="NEEDS-TO-BE-UPDATED">
   <fa-icon class="fa-icon" [icon]=faEllipsisVertical size="xl"></fa-icon>
 </button>
 <mat-menu #nodMenu="matMenu">
-  <button mat-menu-item (click)="sendMenuChoice(node.name, 'editConfig')"
+  <button mat-menu-item (click)="sendMenuChoice(node, 'editConfig')"
   data-cy="NEEDS-TO-BE-UPDATED">
     Edit configuration
   </button>
 
-  <ng-container *ngIf="node.name.includes('Application:')">
-    <button mat-menu-item (click)="sendMenuChoice(node.name, 'addMainMenu')"
+  <ng-container *ngIf="node.level === 'Application'">
+    <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
     data-cy="">
       Add Menu
     </button>
@@ -19,8 +19,8 @@ data-cy="NEEDS-TO-BE-UPDATED">
     </button>
   </ng-container>
 
-  <ng-container *ngIf="node.name.includes('Main Menu:')">
-    <button mat-menu-item (click)="sendMenuChoice(node.name, 'addSubMenu')"
+  <ng-container *ngIf="node.level === 'Main Menu'">
+    <button mat-menu-item (click)="sendMenuChoice(node, 'addSubMenu')"
     data-cy="">
       Add SubMenu
     </button>

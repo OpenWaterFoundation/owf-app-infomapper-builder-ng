@@ -25,7 +25,7 @@ export class NavBarComponent implements OnInit {
   
   /**
    * 
-   * @param appService 
+   * @param appService The IM Builder top level service.
    */
   constructor(private appService: AppService) { }
 
@@ -40,7 +40,7 @@ export class NavBarComponent implements OnInit {
   }
 
   /**
-   * Emits an event to the SideNav component 
+   * Emits an event to the SideNav component.
    */
   onToggleSidenav(): void {
     this.sidenavToggle.emit();

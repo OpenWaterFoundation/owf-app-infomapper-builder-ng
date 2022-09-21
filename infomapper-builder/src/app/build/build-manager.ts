@@ -1,4 +1,6 @@
-import * as IM from '@OpenWaterFoundation/common/services';
+import * as IM        from '@OpenWaterFoundation/common/services';
+
+import { AppService } from '../app.service';
 
 /**
  * A helper singleton class for creating, managing and maintaining multiple opened Material Dialogs (WindowManagerItem object)
@@ -22,7 +24,8 @@ export class BuildManager {
 
 
   /**
-   * A private constructor is declared so any instance of the class cannot be created elsewhere, getInstance must be called.
+   * A private constructor is declared so any instance of the class cannot be
+   * created elsewhere, getInstance must be called.
    */
   private constructor() { }
 
@@ -38,23 +41,27 @@ export class BuildManager {
   /**
    * 
    * @param treeNodeData 
-   * @param nodeName 
+   * @param parentNode 
    */
-  addNodeToTree(treeNodeData: IM.TreeNodeData, nodeName: string): void {
+  addNodeToTree(treeNodeData: IM.TreeNodeData, parentNode: IM.TreeNodeData): void {
 
-    if (nodeName.includes('Application:')) {
-      treeNodeData.children.push({name: 'Main Menu: New menu ' + this.menuCounter});
+    if (parentNode.level === 'Application') {
+      treeNodeData.children.push({
+        level: 'Main Menu',
+        name: 'New menu ' + this.menuCounter,
+        index: treeNodeData.children.length
+      });
       ++this.menuCounter;
-    } else if (nodeName.includes('Main Menu:')) {
+    } else if (parentNode.level === 'Main Menu') {
 
-      let menuIndex = +nodeName.slice(-1);
-
-      if (!treeNodeData.children[menuIndex - 1].children) {
-        treeNodeData.children[menuIndex - 1].children = [];
+      if (!treeNodeData.children[parentNode.index].children) {
+        treeNodeData.children[parentNode.index].children = [];
       }
 
-      treeNodeData.children[menuIndex - 1].children.push({
-        name: 'SubMenu: New SubMenu ' + this.subMenuCounter
+      treeNodeData.children[parentNode.index].children.push({
+        level: 'SubMenu',
+        name: 'New SubMenu ' + this.subMenuCounter,
+        index: treeNodeData.children[parentNode.index].children.length
       });
       ++this.subMenuCounter;
     }

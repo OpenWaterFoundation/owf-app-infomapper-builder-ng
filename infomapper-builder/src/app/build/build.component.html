@@ -9,6 +9,9 @@
       </button>
 
       <mat-menu #nodMenu="matMenu">
+        <button mat-button (click)="printFinalBuilderObject()">
+          TEST: Print to console
+        </button>
         <button mat-menu-item
         data-cy="NEEDS-TO-BE-UPDATED">
           Publish to GitHub
@@ -28,9 +31,12 @@
       <div fxLayout fxLayoutGap="1px" class="build-nav-container">
   
         <mat-nav-list>
-          <button mat-raised-button>Publish to GitHub</button>
-          <button mat-raised-button>Publish to preview</button>
-          <button mat-raised-button>Publish to AWS</button>
+          <button mat-button (click)="printFinalBuilderObject()">
+            TEST: Print to console
+          </button>
+          <button mat-button>Publish to GitHub</button>
+          <button mat-button>Publish to preview</button>
+          <button mat-button>Publish to AWS</button>
         </mat-nav-list>
   
       </div>
@@ -45,7 +51,7 @@
         <!-- Tree node template for leaf nodes with no children. -->
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
           <div class="tree-node-header">
-            <span class="node-name">{{ node.name }}</span>
+            <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
             <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
           </div>
         </mat-tree-node>
@@ -60,7 +66,7 @@
                 </button>
   
                 <div>
-                  <span class="node-name">{{ node.name }}</span>
+                  <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
                   <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
                 </div>
               </div>

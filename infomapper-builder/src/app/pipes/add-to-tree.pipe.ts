@@ -10,11 +10,11 @@ export class AddToTreePipe implements PipeTransform {
 
   transform(node: IM.TreeNodeData): string | boolean {
 
-    if (node.name.includes('Application:')) {
+    if (node.level === 'Application') {
       return 'Add Menu';
-    } else if (node.name.includes('Main Menu:')) {
+    } else if (node.level === 'Main Menu') {
       return 'Add SubMenu';
-    } else if (node.name.includes('SubMenu:')) {
+    } else if (node.level === 'SubMenu') {
       return false;
     } 
 

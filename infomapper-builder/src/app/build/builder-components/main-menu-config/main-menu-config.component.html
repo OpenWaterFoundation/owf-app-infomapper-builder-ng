@@ -1,65 +1,94 @@
-<!-- <p class="help-string">All fields marked with an asterisk (*) are required.</p>
+<p class="help-string">All fields marked with an asterisk (*) are required.</p>
             
 <form [formGroup]="appBuilderForm">
 
   <div formGroupName="mainMenuFG">
-    <div class="app-config-form-fields-container">
+    <div class="config-form-fields-container">
 
       <div class="form-container">
-        <div class="form-title">Title*</div>
+        <div class="form-title">name*</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="title" placeholder="Poudre Basin Information"
+          <input matInput formControlName="name" placeholder="About the Project"
           (keyup)="titleInput()">
         </mat-form-field>
-      </div>
-
-      <div class="form-container">
-        <div class="form-title">Home page*</div>
-        <mat-form-field appearance="outline">
-          <input matInput class="home-page-input" formControlName="homePage">
-        </mat-form-field>
 
         <mat-card class="form-description">
-          The home page path cannot be changed.
+          
         </mat-card>
       </div>
 
       <div class="form-container">
-        <div class="form-title">Version*</div>
+        <div class="form-title">id*</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="version" placeholder="1.0.0">
-        </mat-form-field>
-      </div>
-
-      <div class="form-container">
-        <div class="form-title">Data units path</div>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="dataUnitsPath" placeholder="/system/DATAUNIT">
-        </mat-form-field>
-      </div>
-
-      <div class="form-container">
-        <div class="form-title">Favicon path</div>
-
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico">
+          <input matInput formControlName="id" placeholder="about-the-project">
         </mat-form-field>
 
         <mat-card class="form-description">
-          Default: <span class="favicon-hint-default-path">favicon.ico</span>
+          
         </mat-card>
       </div>
 
       <div class="form-container">
-        <div class="form-title">Google analytics tracking Id</div>
+        <div class="form-title">action</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="googleAnalyticsTrackingId" placeholder="UA-123456789-1">
+          <mat-select formControlName="action">
+            <mat-option value="contentPage">contentPage</mat-option>
+            <mat-option value="dashboard">dashboard</mat-option>
+            <mat-option value="displayMap">displayMap</mat-option>
+            <mat-option value="externalLink">externalLink</mat-option>
+          </mat-select>
         </mat-form-field>
+
+        <mat-card class="form-description">
+          
+        </mat-card>
       </div>
 
+      <ng-container *ngIf="appBuilderForm.get('mainMenuFG.action').value !== ''">
+        <div class="form-container">
+          <div class="form-title">{{appBuilderForm.get('mainMenuFG.action').value}}*</div>
+          <mat-form-field appearance="outline">
+            <input matInput formControlName="id" placeholder="about-the-project"
+            (keyup)="titleInput()">
+          </mat-form-field>
+  
+          <mat-card class="form-description">
+            
+          </mat-card>
+        </div>
+      </ng-container>
       
+
+      <div class="form-container">
+        <div class="form-title">enabled</div>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="enabled">
+            <mat-option value="True">True</mat-option>
+            <mat-option value="False">False</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">visible</div>
+
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="visible">
+            <mat-option value="True">True</mat-option>
+            <mat-option value="False">False</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          
+        </mat-card>
+      </div>
 
     </div>
   </div>
   
-</form> -->
+</form>

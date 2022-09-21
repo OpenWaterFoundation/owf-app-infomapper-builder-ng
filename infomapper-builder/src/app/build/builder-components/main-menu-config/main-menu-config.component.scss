@@ -1,0 +1,59 @@
+/* CLASSES */
+
+/* Container holding all form fields & inputs in the app-config. */
+.app-config-form-fields-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/*  */
+.favicon-hint-default-path {
+  color: #ba6600;
+}
+
+/*  */
+.form-container {
+  display: flex;
+  align-items: center;
+}
+
+/*  */
+.form-description {
+  font-size: 14px;
+  margin: 0px 0px 40px 20px;
+  user-select: none;
+  width: 300px;
+}
+
+/*  */
+.form-title {
+  font-size: 18px;
+  margin: 0px 20px 40px 0px;
+  text-align: end;
+  user-select: none;
+  width: 150px;
+}
+
+/*  */
+.help-string {
+  font-size: small;
+  margin: 0;
+  padding: 10px 0px;
+}
+
+/* Text in the home page input field cannot be selected. */
+.home-page-input {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* TAGS */
+
+/* Main */
+mat-form-field {
+  width: 250px;
+  height: 110px;
+}

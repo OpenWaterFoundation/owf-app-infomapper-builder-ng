@@ -28,7 +28,6 @@ export class NodeMenuComponent implements OnInit {
 
 
 
-
   constructor() { }
 
 
@@ -37,13 +36,13 @@ export class NodeMenuComponent implements OnInit {
 
   /**
    * 
-   * @param nodeName 
+   * @param node
    * @param menuChoiceType 
    */
-  sendMenuChoice(nodeName: string, menuChoiceType: string): void {
+  sendMenuChoice(node: IM.TreeNodeData, menuChoiceType: string): void {
     this.menuChoice.emit({
       choiceType: menuChoiceType,
-      nodeName: nodeName
+      node: node
     });
   }
 

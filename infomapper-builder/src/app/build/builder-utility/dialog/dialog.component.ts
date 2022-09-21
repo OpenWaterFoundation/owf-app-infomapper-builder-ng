@@ -7,6 +7,8 @@ import { MatDialogRef,
 
 import { faXmark }          from '@fortawesome/free-solid-svg-icons';
 
+import * as IM              from '@OpenWaterFoundation/common/services';
+
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.component.html',
@@ -22,15 +24,17 @@ export class DialogComponent implements OnInit {
   faXmark = faXmark;
   /** The string to be dynamically displayed on this component's top header. */
   headerText = '';
-
-  nodeName: string;
+  /**
+   * 
+   */
+  node: IM.TreeNodeData;
 
 
   constructor(@Inject(MAT_DIALOG_DATA) private dialogData: any,
   private dialogRef: MatDialogRef<DialogComponent>) {
 
     this.appBuilderForm = this.dialogData.appBuilderForm;
-    this.nodeName = this.dialogData.nodeName;
+    this.node = this.dialogData.node;
   }
 
 
@@ -60,10 +64,10 @@ export class DialogComponent implements OnInit {
   }
 
   /**
-   * Actions to perform when the Save button is clicked.
+   * When the Save button is clicked, close the dialog with the form result.
    */
-  saveData(): void {
-    this.dialogRef.close(this.appBuilderForm);
+  saveData(node: IM.TreeNodeData): void {
+    this.dialogRef.close(node);
   }
 
   /**

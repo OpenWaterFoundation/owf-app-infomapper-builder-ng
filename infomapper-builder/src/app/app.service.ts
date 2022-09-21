@@ -1,5 +1,6 @@
 import { Injectable }        from '@angular/core';
 import { HttpClient }        from '@angular/common/http';
+import { FormGroup }         from '@angular/forms';
 import { catchError,
           first,
           Observable,
@@ -10,6 +11,7 @@ import { CommonLoggerService,
           OwfCommonService } from '@OpenWaterFoundation/common/services';
 import * as IM               from '@OpenWaterFoundation/common/services';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +20,7 @@ export class AppService {
   /**
    * 
    */
-  appConfig: IM.AppConfig | undefined;
+  private appConfig: IM.AppConfig | undefined;
   /** The hard-coded string of the name of the application config file. It is readonly,
    * because it must be named app-config.json by the user. */
   readonly appConfigFile = 'app-config.json';
@@ -27,6 +29,8 @@ export class AppService {
    * under assets/app. If not, this string will be changed to 'assets/app-default'
    * and the default InfoMapper set up will be used instead. */
   appPath = 'assets/app/';
+  /** The object used to create the final app configuration file. (?) */
+  private finalBuilderJSON: IM.AppConfig = { title: '', homePage: '', version: '' };
   /** The hard-coded string of the path to the default icon path that will be used
    * for the website if none is given. */
   readonly defaultFaviconPath = 'favicon.ico';
@@ -46,8 +50,18 @@ export class AppService {
   private commonService: OwfCommonService) { }
 
 
+  /**
+   * 
+   */
   get appConfigObj(): any {
     return this.appConfig;
+  }
+
+  /**
+   * 
+   */
+  get fullBuilderJSON(): IM.AppConfig {
+    return this.finalBuilderJSON;
   }
 
   /**
@@ -107,6 +121,23 @@ export class AppService {
       return this.getAppPath() + this.getHomePage();
     }
     
+  }
+
+  /**
+   * 
+   * @param node 
+   */
+  private confirmAllMenusExist(node: IM.TreeNodeData): void {
+
+    if (!this.finalBuilderJSON.mainMenu) {
+      this.finalBuilderJSON.mainMenu = [{}];
+    }
+
+    for (let index = 0; index <= node.index; ++index) {
+      if (!this.finalBuilderJSON.mainMenu[index]) {
+        this.finalBuilderJSON.mainMenu.push({});
+      }
+    }
   }
 
   /**
@@ -313,6 +344,21 @@ export class AppService {
    * file as an object.
    */
   setAppConfig(appConfig: IM.AppConfig): void { this.appConfig = appConfig; }
+
+  /**
+   * 
+   * @param resultForm 
+   * @param node 
+   */
+  setBuilderObject(resultForm: FormGroup, node: IM.TreeNodeData): void {
+
+    if (node.level === 'Application') {
+      Object.assign(this.finalBuilderJSON, resultForm);
+    } else if (node.level === 'Main Menu') {
+      this.confirmAllMenusExist(node);
+      Object.assign(this.finalBuilderJSON.mainMenu[node.index], resultForm);
+    }
+  }
 
   /**
    * Sets the app service @var faviconPath to the user-provided path given in the

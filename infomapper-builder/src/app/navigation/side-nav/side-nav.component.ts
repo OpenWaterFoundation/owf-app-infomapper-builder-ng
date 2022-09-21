@@ -3,7 +3,6 @@ import { Component,
           OnDestroy,
           OnInit,
           Output }             from '@angular/core';
-import { ActivatedRoute }      from '@angular/router';
 
 import { Subject }             from 'rxjs';
 
@@ -37,16 +36,15 @@ export class SideNavComponent implements OnInit, OnDestroy {
    * @param appService The InfoMapper app service with globally set variables from
    * configuration files and other useful top level methods.
    * @param logger Logger from the Common package for debugging and testing.
-   * @param actRoute 
    */
-  constructor(private appService: AppService, private actRoute: ActivatedRoute,
-  private logger: CommonLoggerService) { }
+  constructor(private appService: AppService, private logger: CommonLoggerService) {
+
+  }
 
 
   get appConfig(): any { return this.appService.appConfigObj; }
 
   ngOnInit(): void {
-
   }
 
   /**

@@ -1,8 +1,7 @@
 import { Component,
           OnDestroy,
           OnInit }                 from '@angular/core';
-import { FormBuilder,
-          FormControl,
+import { FormControl,
           FormGroup,
           Validators }             from '@angular/forms';
 import { ActivatedRoute,
@@ -42,10 +41,10 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** FormGroup to be used by the AppConfigComponent. */
   appConfigFG = new FormGroup({
     title: new FormControl('', Validators.required),
-    homePage: new FormControl({ value: '/content-page/home.md', disabled: true }),
+    homePage: new FormControl({ value: '/content-page/home.md', disabled: true}),
     version: new FormControl('', Validators.required),
     dataUnitsPath: new FormControl(''),
-    favicon: new FormControl(''),
+    favicon: new FormControl('favicon.ico'),
     googleAnalyticsTrackingId: new FormControl('')
   });
   /** Singleton BuildManager instance to uniquely add different nodes to the
@@ -59,14 +58,14 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** All used FontAwesome icons in the AppConfigComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
-  /** Counter for each dynamically created mainMenu. */
-  mainMenuCount = 0;
   /** FormGroup to be used by the MenuComponent. */
   mainMenuFG = new FormGroup({
     id: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
-    action: new FormControl('', Validators.required),
-    tooltip: new FormControl('')
+    description: new FormControl('', Validators.required),
+    action: new FormControl(''),
+    enabled: new FormControl('True'),
+    visible: new FormControl('True')
   });
   /** Structure for nested Trees. */
   treeControl = new NestedTreeControl<IM.TreeNodeData>(node => node.children);
@@ -75,7 +74,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** Initial data for a new tree. */
   treeNodeData: IM.TreeNodeData[] = [
     {
-      name: 'Application: New application',
+      level: 'Application',
+      name: 'New application',
+      index: 0,
       children: []
     }
   ];
@@ -91,10 +92,11 @@ export class BuildComponent implements OnInit, OnDestroy {
    * @param appService The InfoMapper Builder's top level service.
    */
   constructor(private breakpointObserver: BreakpointObserver, private logger: CommonLoggerService,
-  private actRoute: ActivatedRoute, private appService: AppService, private fb: FormBuilder,
+  private actRoute: ActivatedRoute, private appService: AppService,
   private dialog: MatDialog) {
 
     this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
+    this.appBuilderForm.addControl('mainMenuFG', this.mainMenuFG);
 
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -117,8 +119,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
    * Adds a
    */
-  addToTree(nodeName: string): void {
-    this.buildManager.addNodeToTree(this.treeNodeData[0], nodeName);
+  addToTree(node: IM.TreeNodeData): void {
+    this.buildManager.addNodeToTree(this.treeNodeData[0], node);
     
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
@@ -141,12 +143,12 @@ export class BuildComponent implements OnInit, OnDestroy {
       data: dialogConfigData,
       disableClose: true,
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
-      height: isMobile ? "90vh" : "850px",
+      height: isMobile ? "100vh" : "850px",
       width: isMobile ? "100vw" : "800px",
-      minHeight: isMobile ? "90vh" : "300px",
+      minHeight: isMobile ? "100vh" : "850px",
       minWidth: isMobile ? "100vw" : "800px",
-      maxHeight: isMobile ? "90vh" : "90vh",
-      maxWidth: isMobile ? "100vw" : "95vw"
+      maxHeight: isMobile ? "100vh" : "850px",
+      maxWidth: isMobile ? "100vw" : "800px"
     }
   }
 
@@ -199,46 +201,72 @@ export class BuildComponent implements OnInit, OnDestroy {
     switch(choice.choiceType) {
       case 'addMainMenu':
       case 'addSubMenu':
-        this.addToTree(choice.nodeName);
+        this.addToTree(choice.node);
         break;
       case 'editConfig':
-        this.openConfigDialog(choice.nodeName);
+        this.openConfigDialog(choice.node);
     }
   }
 
   /**
   * 
   */
-   public openConfigDialog(nodeName: string): void {
+   public openConfigDialog(node: IM.TreeNodeData): void {
 
     var dialogConfigData = {
       appBuilderForm: this.appBuilderForm,
-      nodeName: nodeName
+      node: node
     }
 
     var dialogRef: MatDialogRef<DialogComponent, any> = this.dialog.open(
       DialogComponent, this.createDialogConfig(dialogConfigData)
     );
 
-    dialogRef.afterClosed().pipe(first()).subscribe((form: FormGroup) => {
-
-      if (!form) {
+    dialogRef.afterClosed().pipe(first()).subscribe((node: IM.TreeNodeData) => {
+      // If the dialog was closed without saving, don't do anything.
+      if (!node) {
         return;
       }
-
-      for (const field in form.controls) {
-        console.log('Input value from dialog for control ' + field + ': ', form.get(field).value);
-        if (!form.get(field).value.title) {
-          break;
-        }
-        this.treeNodeData[0].name = 'Application: ' + form.get(field).value.title;
-      }
+      this.updateTreeNodeLevelAndNameText(node);
+      this.saveFormToFinalBuilderObject(node);
     });
 
   }
 
-  updateTreeNodeName(): void {
-    // Use in the future.
+  printFinalBuilderObject(): void {
+    console.log(this.appService.fullBuilderJSON);
+  }
+
+  /**
+   * 
+   * @param node 
+   */
+  private saveFormToFinalBuilderObject(node: IM.TreeNodeData): void {
+
+    if (node.level === 'Application') {
+      this.appService.setBuilderObject(this.appBuilderForm.getRawValue()['appConfigFG'], node);
+    } else if (node.level === 'Main Menu') {
+      this.appService.setBuilderObject(this.appBuilderForm.get('mainMenuFG').value, node);
+    }
+  }
+
+  /**
+   * 
+   * @param node 
+   */
+  private updateTreeNodeLevelAndNameText(node: IM.TreeNodeData): void {
+
+    if (node.level === 'Application') {
+      this.treeNodeData[0].level = node.level;
+      this.treeNodeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
+    } else if (node.level === 'Main Menu') {
+      this.treeNodeData[0].children[node.index].level = node.level;
+      this.treeNodeData[0].children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
+    } else if (node.level === 'SubMenu') {
+      // TODO add submenu
+    }
+
+    
   }
 
 }
