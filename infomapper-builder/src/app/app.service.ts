@@ -17,9 +17,7 @@ import * as IM               from '@OpenWaterFoundation/common/services';
 })
 export class AppService {
 
-  /**
-   * 
-   */
+  /** The application configuration object read from the `app-config.json` file. */
   private appConfig: IM.AppConfig | undefined;
   /** The hard-coded string of the name of the application config file. It is readonly,
    * because it must be named app-config.json by the user. */
@@ -30,7 +28,7 @@ export class AppService {
    * and the default InfoMapper set up will be used instead. */
   appPath = 'assets/app/';
   /** The object used to create the final app configuration file. (?) */
-  private finalBuilderJSON: IM.AppConfig = { title: '', homePage: '', version: '' };
+  private builderJSON: IM.AppConfig = { title: '', homePage: '', version: '' };
   /** The hard-coded string of the path to the default icon path that will be used
    * for the website if none is given. */
   readonly defaultFaviconPath = 'favicon.ico';
@@ -40,6 +38,8 @@ export class AppService {
   FAVICON_SET = false;
   /** The initial website title to be displayed in the browser tab. */
   readonly mainWebsiteTitle = 'InfoMapper Builder';
+  /** If each node in the tree has been saved yet (true) or not (false). */
+  nodeSaved = {};
 
   
   /**
@@ -51,17 +51,18 @@ export class AppService {
 
 
   /**
-   * 
+   * Getter for the application configuration object read from the `app-config.json` file.
    */
-  get appConfigObj(): any {
+  get appConfigObj(): IM.AppConfig {
     return this.appConfig;
   }
 
   /**
-   * 
+   * Getter for the entire AppConfig object, used to write to a JSON file as the
+   * `app-config.json`.
    */
   get fullBuilderJSON(): IM.AppConfig {
-    return this.finalBuilderJSON;
+    return this.builderJSON;
   }
 
   /**
@@ -129,13 +130,13 @@ export class AppService {
    */
   private confirmAllMenusExist(node: IM.TreeNodeData): void {
 
-    if (!this.finalBuilderJSON.mainMenu) {
-      this.finalBuilderJSON.mainMenu = [{}];
+    if (!this.builderJSON.mainMenu) {
+      this.builderJSON.mainMenu = [{}];
     }
 
     for (let index = 0; index <= node.index; ++index) {
-      if (!this.finalBuilderJSON.mainMenu[index]) {
-        this.finalBuilderJSON.mainMenu.push({});
+      if (!this.builderJSON.mainMenu[index]) {
+        this.builderJSON.mainMenu.push({});
       }
     }
   }
@@ -268,6 +269,15 @@ export class AppService {
   }
 
   /**
+   * Checks if the current node's form has been saved before.
+   * @param nodeLevel The tree node level.
+   * @returns True if the node config has been previously saved.
+   */
+  hasNodeBeenSaved(nodeLevel: string): boolean {
+    return this.nodeSaved[nodeLevel];
+  }
+
+  /**
    * Asynchronously loads the application configuration file and sets the necessary
    * variables that describes what kind of application is being created:
    *   A user-provided app.
@@ -353,10 +363,12 @@ export class AppService {
   setBuilderObject(resultForm: FormGroup, node: IM.TreeNodeData): void {
 
     if (node.level === 'Application') {
-      Object.assign(this.finalBuilderJSON, resultForm);
+      Object.assign(this.builderJSON, resultForm);
+      this.nodeSaved['Application'] = true;
     } else if (node.level === 'Main Menu') {
       this.confirmAllMenusExist(node);
-      Object.assign(this.finalBuilderJSON.mainMenu[node.index], resultForm);
+      Object.assign(this.builderJSON.mainMenu[node.index], resultForm);
+      this.nodeSaved['Main Menu ' + node.index] = true;
     }
   }
 

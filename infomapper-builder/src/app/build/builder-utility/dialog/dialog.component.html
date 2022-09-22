@@ -23,7 +23,8 @@
     </ng-container>
     
     <ng-container *ngIf="node.level === 'Main Menu'">
-      <main-menu-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)">
+      <main-menu-config [appBuilderForm]="appBuilderForm" [node]="node"
+      (updateTitleInput)="updateHeaderText($event)">
       </main-menu-config>
     </ng-container>
     

@@ -16,17 +16,13 @@ import * as IM              from '@OpenWaterFoundation/common/services';
 })
 export class DialogComponent implements OnInit {
 
-  /**
-   * 
-   */
+  /** The main FormGroup for the entire application. */
   appBuilderForm: FormGroup;
   /** All used FontAwesome icons in the DialogComponent. */
   faXmark = faXmark;
   /** The string to be dynamically displayed on this component's top header. */
   headerText = '';
-  /**
-   * 
-   */
+  /** The currently edited Tree Node. */
   node: IM.TreeNodeData;
 
 
@@ -67,6 +63,13 @@ export class DialogComponent implements OnInit {
    * When the Save button is clicked, close the dialog with the form result.
    */
   saveData(node: IM.TreeNodeData): void {
+    console.log(this.appBuilderForm.get('appConfigFG'));
+
+    for (const control in this.appBuilderForm.controls) {
+      if (this.appBuilderForm.controls[control].invalid) {
+        console.log('Invalid:', control);
+      }
+    }
     this.dialogRef.close(node);
   }
 

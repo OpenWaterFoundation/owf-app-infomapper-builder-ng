@@ -38,7 +38,6 @@ export class SideNavComponent implements OnInit, OnDestroy {
    * @param logger Logger from the Common package for debugging and testing.
    */
   constructor(private appService: AppService, private logger: CommonLoggerService) {
-
   }
 
 

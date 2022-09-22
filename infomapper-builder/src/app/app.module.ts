@@ -50,6 +50,7 @@ import { CheckElementPipe }        from './pipes/check-element.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
+import { ConvertFormNamePipe } from './pipes/convert-form-name.pipe';
 
 
 const classMap: any = {
@@ -100,7 +101,8 @@ function appInit(appService: AppService): () => Observable<any> {
     AddToTreePipe,
     MainMenuConfigComponent,
     DialogComponent,
-    NodeMenuComponent
+    NodeMenuComponent,
+    ConvertFormNamePipe
   ],
   imports: [
     AngularFullpageModule,

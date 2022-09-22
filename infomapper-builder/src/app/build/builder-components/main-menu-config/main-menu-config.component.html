@@ -6,7 +6,7 @@
     <div class="config-form-fields-container">
 
       <div class="form-container">
-        <div class="form-title">name*</div>
+        <div class="form-title">Name*</div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="name" placeholder="About the Project"
           (keyup)="titleInput()">
@@ -18,7 +18,7 @@
       </div>
 
       <div class="form-container">
-        <div class="form-title">id*</div>
+        <div class="form-title">ID*</div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="id" placeholder="about-the-project">
         </mat-form-field>
@@ -29,7 +29,7 @@
       </div>
 
       <div class="form-container">
-        <div class="form-title">action</div>
+        <div class="form-title">Action</div>
         <mat-form-field appearance="outline">
           <mat-select formControlName="action">
             <mat-option value="contentPage">contentPage</mat-option>
@@ -46,9 +46,13 @@
 
       <ng-container *ngIf="appBuilderForm.get('mainMenuFG.action').value !== ''">
         <div class="form-container">
-          <div class="form-title">{{appBuilderForm.get('mainMenuFG.action').value}}*</div>
+          <div class="form-title">
+            {{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'title' }}*
+          </div>
           <mat-form-field appearance="outline">
-            <input matInput formControlName="id" placeholder="about-the-project"
+            <input matInput
+            formControlName="{{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'property' }}"
+            placeholder="Path or URL"
             (keyup)="titleInput()">
           </mat-form-field>
   
@@ -60,7 +64,7 @@
       
 
       <div class="form-container">
-        <div class="form-title">enabled</div>
+        <div class="form-title">Enabled</div>
         <mat-form-field appearance="outline">
           <mat-select formControlName="enabled">
             <mat-option value="True">True</mat-option>
@@ -74,7 +78,7 @@
       </div>
 
       <div class="form-container">
-        <div class="form-title">visible</div>
+        <div class="form-title">Visible</div>
 
         <mat-form-field appearance="outline">
           <mat-select formControlName="visible">

@@ -64,6 +64,10 @@ export class BuildComponent implements OnInit, OnDestroy {
     name: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
     action: new FormControl(''),
+    markdownFile: new FormControl(''),
+    dashboardFile: new FormControl(''),
+    mapProject: new FormControl(''),
+    url: new FormControl(''),
     enabled: new FormControl('True'),
     visible: new FormControl('True')
   });
@@ -144,11 +148,11 @@ export class BuildComponent implements OnInit, OnDestroy {
       disableClose: true,
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
       height: isMobile ? "100vh" : "850px",
-      width: isMobile ? "100vw" : "800px",
+      width: isMobile ? "100vw" : "875px",
       minHeight: isMobile ? "100vh" : "850px",
-      minWidth: isMobile ? "100vw" : "800px",
+      minWidth: isMobile ? "100vw" : "875px",
       maxHeight: isMobile ? "100vh" : "850px",
-      maxWidth: isMobile ? "100vw" : "800px"
+      maxWidth: isMobile ? "100vw" : "875px"
     }
   }
 

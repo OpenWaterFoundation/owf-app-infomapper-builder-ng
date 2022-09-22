@@ -2,8 +2,10 @@ import { Component,
           EventEmitter,
           Input,
           OnInit, 
-          Output}   from '@angular/core';
-import { FormGroup } from '@angular/forms';
+          Output}     from '@angular/core';
+import { FormGroup }  from '@angular/forms';
+
+import { AppService } from 'src/app/app.service';
 
 
 @Component({
@@ -20,17 +22,34 @@ export class AppConfigComponent implements OnInit {
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
-  constructor() {
+  constructor(private appService: AppService) {
 
   }
 
 
   ngOnInit(): void {
-    this.populateFromBusinessObject();
+
+    if (this.appService.hasNodeBeenSaved('Application')) {
+      this.populateFromBuilderJSON();
+    }
   }
 
-  private populateFromBusinessObject(): void {
-    this.updateTitleInput.emit('');
+  /**
+   * The app configuration form has been previously saved, so update the form
+   * fields with that data.
+   */
+  private populateFromBuilderJSON(): void {
+
+    var fullBuilderJSON = this.appService.fullBuilderJSON;
+
+    this.updateTitleInput.emit(fullBuilderJSON.title);
+
+    this.appBuilderForm.get('appConfigFG.title').setValue(fullBuilderJSON.title);
+    this.appBuilderForm.get('appConfigFG.homePage').setValue(fullBuilderJSON.homePage);
+    this.appBuilderForm.get('appConfigFG.version').setValue(fullBuilderJSON.version);
+    this.appBuilderForm.get('appConfigFG.dataUnitsPath').setValue(fullBuilderJSON.dataUnitsPath);
+    this.appBuilderForm.get('appConfigFG.favicon').setValue(fullBuilderJSON.favicon);
+    this.appBuilderForm.get('appConfigFG.googleAnalyticsTrackingId').setValue(fullBuilderJSON.googleAnalyticsTrackingId);
   }
 
   /**
@@ -38,6 +57,7 @@ export class AppConfigComponent implements OnInit {
    */
   titleInput(): void {
     this.updateTitleInput.emit(this.appBuilderForm.get('appConfigFG.title').value);
+    
   }
 
 }
