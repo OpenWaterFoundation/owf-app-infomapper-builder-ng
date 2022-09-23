@@ -17,9 +17,7 @@ export class NodeMenuComponent implements OnInit {
 
   /** All used FontAwesome icons in the NodeMenuComponent. */
   faEllipsisVertical = faEllipsisVertical;
-  /**
-   * 
-   */
+  /** The selected menu choice to send back to the DialogComponent. */
   @Output('menuChoice') menuChoice = new EventEmitter<IM.MenuChoice>();;
   /**
    * 

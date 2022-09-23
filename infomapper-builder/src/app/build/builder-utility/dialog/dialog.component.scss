@@ -64,6 +64,11 @@ itself from the dialog content */
   margin: 0;
 }
 
+/*  */
+.invalid-form-card {
+  color: red;
+}
+
 /* The class for the upper-right close button in a dialog. The inline-block display
 makes it so that it will share with the title header div, rendering them side-by-side. */
 .upper-dialog-close-button {

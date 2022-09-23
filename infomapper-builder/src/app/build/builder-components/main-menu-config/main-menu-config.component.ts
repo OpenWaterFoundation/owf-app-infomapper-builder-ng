@@ -12,7 +12,7 @@ import * as IM        from '@OpenWaterFoundation/common/services';
 @Component({
   selector: 'main-menu-config',
   templateUrl: './main-menu-config.component.html',
-  styleUrls: ['./main-menu-config.component.scss']
+  styleUrls: ['./main-menu-config.component.scss', '../shared-styles.scss']
 })
 export class MainMenuConfigComponent implements OnInit {
 
@@ -43,39 +43,38 @@ export class MainMenuConfigComponent implements OnInit {
    */
   private populateFromBuilderJSON(): void {
 
-    var fullBuilderJSON = this.appService.fullBuilderJSON;
-    console.log('All Main Menus:', fullBuilderJSON.mainMenu);
-    console.log('This Main Menu:', fullBuilderJSON.mainMenu[this.node.index]);
-    this.updateTitleInput.emit(fullBuilderJSON.mainMenu[this.node.index].name);
+    var builderJSON = this.appService.fullBuilderJSON;
 
-    this.appBuilderForm.get('mainMenuFG.name')
-    .setValue(fullBuilderJSON.mainMenu[this.node.index].name);
+    this.updateTitleInput.emit(builderJSON.mainMenu[this.node.index].name);
 
     this.appBuilderForm.get('mainMenuFG.id')
-    .setValue(fullBuilderJSON.mainMenu[this.node.index].id);
+    .setValue(builderJSON.mainMenu[this.node.index].id);
+
+    this.appBuilderForm.get('mainMenuFG.name')
+    .setValue(builderJSON.mainMenu[this.node.index].name);
 
     this.appBuilderForm.get('mainMenuFG.action')
-    .setValue(fullBuilderJSON.mainMenu[this.node.index].action);
+    .setValue(builderJSON.mainMenu[this.node.index].action);
 
-    if (fullBuilderJSON.mainMenu[this.node.index].action === 'contentPage') {
+    if (builderJSON.mainMenu[this.node.index].action === 'contentPage') {
       this.appBuilderForm.get('mainMenuFG.markdownFile')
-      .setValue(fullBuilderJSON.mainMenu[this.node.index].markdownFile);
-    } else if (fullBuilderJSON.mainMenu[this.node.index].action === 'dashboard') {
+      .setValue(builderJSON.mainMenu[this.node.index].markdownFile);
+    } else if (builderJSON.mainMenu[this.node.index].action === 'dashboard') {
       this.appBuilderForm.get('mainMenuFG.dashboardFile')
-      .setValue(fullBuilderJSON.mainMenu[this.node.index].dashboardFile);
-    } else if (fullBuilderJSON.mainMenu[this.node.index].action === 'displayMap') {
+      .setValue(builderJSON.mainMenu[this.node.index].dashboardFile);
+    } else if (builderJSON.mainMenu[this.node.index].action === 'displayMap') {
       this.appBuilderForm.get('mainMenuFG.mapProject')
-      .setValue(fullBuilderJSON.mainMenu[this.node.index].mapProject);
-    } else if (fullBuilderJSON.mainMenu[this.node.index].action === 'externalLink') {
+      .setValue(builderJSON.mainMenu[this.node.index].mapProject);
+    } else if (builderJSON.mainMenu[this.node.index].action === 'externalLink') {
       this.appBuilderForm.get('mainMenuFG.url')
-      .setValue(fullBuilderJSON.mainMenu[this.node.index].url);
+      .setValue(builderJSON.mainMenu[this.node.index].url);
     }
 
     this.appBuilderForm.get('mainMenuFG.enabled')
-    .setValue(fullBuilderJSON.mainMenu[this.node.index].enabled);
+    .setValue(builderJSON.mainMenu[this.node.index].enabled);
 
     this.appBuilderForm.get('mainMenuFG.visible')
-    .setValue(fullBuilderJSON.mainMenu[this.node.index].visible);
+    .setValue(builderJSON.mainMenu[this.node.index].visible);
   }
 
   /**
@@ -83,8 +82,18 @@ export class MainMenuConfigComponent implements OnInit {
    */
   private setDefaults(): void {
 
-    this.appBuilderForm.get('mainMenuFG.name').setValue('');
-    this.appBuilderForm.get('mainMenuFG.id').setValue('');
+    var idControl = this.appBuilderForm.get('mainMenuFG.id')
+    idControl.setValue('');
+    idControl.markAsTouched();
+
+    var nameControl = this.appBuilderForm.get('mainMenuFG.name')
+    nameControl.setValue('');
+    nameControl.markAsTouched();
+
+    var descriptionControl = this.appBuilderForm.get('mainMenuFG.description')
+    descriptionControl.setValue('');
+    descriptionControl.markAsTouched();
+
     this.appBuilderForm.get('mainMenuFG.action').setValue('');
     this.appBuilderForm.get('mainMenuFG.enabled').setValue('True');
     this.appBuilderForm.get('mainMenuFG.visible').setValue('True');

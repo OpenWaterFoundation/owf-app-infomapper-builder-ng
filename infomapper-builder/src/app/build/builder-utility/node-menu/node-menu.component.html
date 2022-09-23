@@ -1,8 +1,8 @@
-<button mat-icon-button [matMenuTriggerFor]="nodMenu" class="node-icon-button"
+<button mat-icon-button [matMenuTriggerFor]="nodeMenu" class="node-icon-button"
 data-cy="NEEDS-TO-BE-UPDATED">
   <fa-icon class="fa-icon" [icon]=faEllipsisVertical size="xl"></fa-icon>
 </button>
-<mat-menu #nodMenu="matMenu">
+<mat-menu #nodeMenu="matMenu">
   <button mat-menu-item (click)="sendMenuChoice(node, 'editConfig')"
   data-cy="NEEDS-TO-BE-UPDATED">
     Edit configuration
@@ -11,7 +11,7 @@ data-cy="NEEDS-TO-BE-UPDATED">
   <ng-container *ngIf="node.level === 'Application'">
     <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
     data-cy="">
-      Add Menu
+      Add Main Menu
     </button>
 
     <button mat-menu-item data-cy="">

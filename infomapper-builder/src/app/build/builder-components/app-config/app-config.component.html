@@ -1,34 +1,57 @@
-<p class="help-string">All fields marked with an asterisk (*) are required.</p>
+<p class="help-string">
+  All fields marked with an asterisk ( <span class="required-asterisk">*</span> ) are required.
+</p>
             
 <form [formGroup]="appBuilderForm">
 
   <div formGroupName="appConfigFG">
-    <div class="app-config-form-fields-container">
+    <div class="config-form-fields-container">
 
       <div class="form-container">
-        <div class="form-title">Title*</div>
+        <div class="form-title">
+          Title<span class="required-asterisk">*</span>
+        </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="title" placeholder="Poudre Basin Information"
           (keyup)="titleInput()">
+
+          <!-- <mat-error>
+            <ng-container *ngIf="appBuilderForm.get('startDate').hasErrors()">
+              {{ appBuilderForm.get('startDate').errors }}
+            </ng-container>
+          </mat-error> -->
         </mat-form-field>
+
+        <mat-card class="form-description">
+          Title for the application. Shown in the navbar and browser tabs.
+        </mat-card>
       </div>
 
       <div class="form-container">
-        <div class="form-title">Home page*</div>
+        <div class="form-title">
+          Home page<span class="required-asterisk">*</span>
+        </div>
         <mat-form-field appearance="outline">
           <input matInput class="home-page-input" formControlName="homePage">
         </mat-form-field>
 
         <mat-card class="form-description">
-          The home page path cannot be changed.
+          Path to file used as the home page. Cannot be changed, and the both path
+          and file must exist in <span class="code-block">assets/app/</span>.
         </mat-card>
       </div>
 
       <div class="form-container">
-        <div class="form-title">Version*</div>
+        <div class="form-title">
+          Version<span class="required-asterisk">*</span>
+        </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="version" placeholder="1.0.0">
         </mat-form-field>
+
+        <mat-card class="form-description">
+          Version of this app configuration file.
+        </mat-card>
       </div>
 
       <div class="form-container">
@@ -36,6 +59,11 @@
         <mat-form-field appearance="outline">
           <input matInput formControlName="dataUnitsPath" placeholder="/system/DATAUNIT">
         </mat-form-field>
+
+        <mat-card class="form-description">
+          Path to the data units file, used to specify output precision for units
+          in the application.
+        </mat-card>
       </div>
 
       <div class="form-container">
@@ -46,7 +74,7 @@
         </mat-form-field>
 
         <mat-card class="form-description">
-          Default: <span class="favicon-hint-default-path">favicon.ico</span>
+          Path to a favicon image file to be shown in the browser tab.
         </mat-card>
       </div>
 
@@ -55,6 +83,10 @@
         <mat-form-field appearance="outline">
           <input matInput formControlName="googleAnalyticsTrackingId" placeholder="UA-123456789-1">
         </mat-form-field>
+
+        <mat-card class="form-description">
+          Google Analytics identifier for tracking web page traffic.
+        </mat-card>
       </div>
 
       

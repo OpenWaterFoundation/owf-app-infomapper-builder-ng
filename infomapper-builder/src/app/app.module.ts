@@ -44,13 +44,13 @@ import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-b
 import { NodeMenuComponent }       from './build/builder-utility/node-menu/node-menu.component';
 import { SideNavComponent }        from './navigation/side-nav/side-nav.component';
 import { ContentPageComponent }    from './content-page/content-page.component';
-import { AddToTreePipe }           from './pipes/add-to-tree.pipe';
 import { AppService }              from './app.service';
 import { CheckElementPipe }        from './pipes/check-element.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
 import { ConvertFormNamePipe } from './pipes/convert-form-name.pipe';
+import { SubMenuConfigComponent } from './build/builder-components/sub-menu-config/sub-menu-config.component';
 
 
 const classMap: any = {
@@ -98,11 +98,11 @@ function appInit(appService: AppService): () => Observable<any> {
     CheckElementPipe,
     BuildComponent,
     AppConfigComponent,
-    AddToTreePipe,
     MainMenuConfigComponent,
     DialogComponent,
     NodeMenuComponent,
-    ConvertFormNamePipe
+    ConvertFormNamePipe,
+    SubMenuConfigComponent
   ],
   imports: [
     AngularFullpageModule,

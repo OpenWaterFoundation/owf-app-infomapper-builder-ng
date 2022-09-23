@@ -128,15 +128,40 @@ export class AppService {
    * 
    * @param node 
    */
-  private confirmAllMenusExist(node: IM.TreeNodeData): void {
-
+  private confirmAllMainMenusExist(node: IM.TreeNodeData): void {
     if (!this.builderJSON.mainMenu) {
       this.builderJSON.mainMenu = [{}];
     }
-
     for (let index = 0; index <= node.index; ++index) {
       if (!this.builderJSON.mainMenu[index]) {
         this.builderJSON.mainMenu.push({});
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param node 
+   */
+  private confirmAllSubMenusExist(node: IM.TreeNodeData): void {
+    
+    // Check if the empty Main Menus exist and create the ones that don't yet.
+    if (!this.builderJSON.mainMenu) {
+      this.builderJSON.mainMenu = [{}];
+    }
+    for (let pIndex = 0; pIndex <= node.parentIndex; ++pIndex) {
+      if (!this.builderJSON.mainMenu[pIndex]) {
+        this.builderJSON.mainMenu.push({});
+      }
+    }
+
+    // Check if the empty SubMenus exist and create the ones that don't yet.
+    if (!this.builderJSON.mainMenu[node.parentIndex].menus) {
+      this.builderJSON.mainMenu[node.parentIndex].menus = [{}];
+    }
+    for (let index = 0; index <= node.index; ++index) {
+      if (!this.builderJSON.mainMenu[node.parentIndex].menus[node.index]) {
+        this.builderJSON.mainMenu[node.parentIndex].menus.push({});
       }
     }
   }
@@ -366,9 +391,13 @@ export class AppService {
       Object.assign(this.builderJSON, resultForm);
       this.nodeSaved['Application'] = true;
     } else if (node.level === 'Main Menu') {
-      this.confirmAllMenusExist(node);
+      this.confirmAllMainMenusExist(node);
       Object.assign(this.builderJSON.mainMenu[node.index], resultForm);
       this.nodeSaved['Main Menu ' + node.index] = true;
+    } else if (node.level === 'SubMenu') {
+      this.confirmAllSubMenusExist(node);
+      Object.assign(this.builderJSON.mainMenu[node.parentIndex].menus[node.index], resultForm);
+      this.nodeSaved['SubMenu ' + node.parentIndex + ',' + node.index] = true;
     }
   }
 

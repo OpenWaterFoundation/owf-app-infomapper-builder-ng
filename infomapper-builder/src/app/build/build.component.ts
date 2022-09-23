@@ -38,7 +38,7 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   /** The main FormGroup for the entire application. */
   appBuilderForm = new FormGroup({});
-  /** FormGroup to be used by the AppConfigComponent. */
+  /** FormGroup used by the AppConfigComponent. */
   appConfigFG = new FormGroup({
     title: new FormControl('', Validators.required),
     homePage: new FormControl({ value: '/content-page/home.md', disabled: true}),
@@ -58,18 +58,32 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** All used FontAwesome icons in the AppConfigComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
-  /** FormGroup to be used by the MenuComponent. */
+  /** FormGroup used by the MenuComponent. */
   mainMenuFG = new FormGroup({
     id: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
     action: new FormControl(''),
-    markdownFile: new FormControl(''),
-    dashboardFile: new FormControl(''),
-    mapProject: new FormControl(''),
-    url: new FormControl(''),
     enabled: new FormControl('True'),
-    visible: new FormControl('True')
+    visible: new FormControl('True'),
+    markdownFile: new FormControl(''),  // <-- Conditional required
+    dashboardFile: new FormControl(''), // <-- Conditional required
+    mapProject: new FormControl(''),    // <-- Conditional required
+    url: new FormControl('')            // <-- Conditional required
+  });
+  /** FormGroup used by the SubMenuComponent. */
+  subMenuFG = new FormGroup({
+    name: new FormControl('', Validators.required),
+    description: new FormControl('', Validators.required),
+    action: new FormControl(''),
+    enabled: new FormControl('True'),
+    doubleSeparatorBefore: new FormControl('False'),
+    separatorBefore: new FormControl('False'),
+    visible: new FormControl('True'),
+    markdownFile: new FormControl(''),  // <-- Conditional required
+    dashboardFile: new FormControl(''), // <-- Conditional required
+    mapProject: new FormControl(''),    // <-- Conditional required
+    url: new FormControl('')            // <-- Conditional required
   });
   /** Structure for nested Trees. */
   treeControl = new NestedTreeControl<IM.TreeNodeData>(node => node.children);
@@ -99,9 +113,6 @@ export class BuildComponent implements OnInit, OnDestroy {
   private actRoute: ActivatedRoute, private appService: AppService,
   private dialog: MatDialog) {
 
-    this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
-    this.appBuilderForm.addControl('mainMenuFG', this.mainMenuFG);
-
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
       Breakpoints.Small,
@@ -130,6 +141,10 @@ export class BuildComponent implements OnInit, OnDestroy {
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
     this.treeDataSource.data = null;
     this.treeDataSource.data = this.treeNodeData;
+
+    if (!this.treeControl.isExpanded(node)) {
+      this.treeControl.expand(node);
+    }
   }
 
   /**
@@ -170,8 +185,12 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
    * 
    */
-  initTreeNode(): void {
+  initTreeNodeAndFormGroup(): void {
     this.treeDataSource.data = this.treeNodeData;
+
+    this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
+    this.appBuilderForm.addControl('mainMenuFG', this.mainMenuFG);
+    this.appBuilderForm.addControl('subMenuFG', this.subMenuFG);
   }
 
   ngOnInit(): void {
@@ -187,29 +206,13 @@ export class BuildComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.initTreeNode();
+      this.initTreeNodeAndFormGroup();
     });
   }
 
   ngOnDestroy(): void {
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  /**
-   * 
-   * @param choice 
-   */
-  receiveMenuChoice(choice: IM.MenuChoice): void {
-
-    switch(choice.choiceType) {
-      case 'addMainMenu':
-      case 'addSubMenu':
-        this.addToTree(choice.node);
-        break;
-      case 'editConfig':
-        this.openConfigDialog(choice.node);
-    }
   }
 
   /**
@@ -237,8 +240,27 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * 
+   */
   printFinalBuilderObject(): void {
     console.log(this.appService.fullBuilderJSON);
+  }
+
+  /**
+   * 
+   * @param choice 
+   */
+  receiveMenuChoice(choice: IM.MenuChoice): void {
+
+    switch(choice.choiceType) {
+      case 'addMainMenu':
+      case 'addSubMenu':
+        this.addToTree(choice.node);
+        break;
+      case 'editConfig':
+        this.openConfigDialog(choice.node);
+    }
   }
 
   /**
@@ -251,6 +273,8 @@ export class BuildComponent implements OnInit, OnDestroy {
       this.appService.setBuilderObject(this.appBuilderForm.getRawValue()['appConfigFG'], node);
     } else if (node.level === 'Main Menu') {
       this.appService.setBuilderObject(this.appBuilderForm.get('mainMenuFG').value, node);
+    } else if (node.level === 'SubMenu') {
+      this.appService.setBuilderObject(this.appBuilderForm.get('subMenuFG').value, node);
     }
   }
 
@@ -267,10 +291,9 @@ export class BuildComponent implements OnInit, OnDestroy {
       this.treeNodeData[0].children[node.index].level = node.level;
       this.treeNodeData[0].children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
     } else if (node.level === 'SubMenu') {
-      // TODO add submenu
+      this.treeNodeData[0].children[node.parentIndex].children[node.index].level = node.level;
+      this.treeNodeData[0].children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
-
-    
   }
 
 }

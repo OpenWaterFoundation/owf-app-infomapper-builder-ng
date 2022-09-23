@@ -4,21 +4,8 @@
             
 <form [formGroup]="appBuilderForm">
 
-  <div formGroupName="mainMenuFG">
+  <div formGroupName="subMenuFG">
     <div class="config-form-fields-container">
-
-      <div class="form-container">
-        <div class="form-title">
-          ID<span class="required-asterisk">*</span>
-        </div>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
-        </mat-form-field>
-
-        <mat-card class="form-description">
-          Unique internal identifier that's also used in the URL.
-        </mat-card>
-      </div>
 
       <div class="form-container">
         <div class="form-title">
@@ -45,7 +32,7 @@
         </mat-form-field>
 
         <mat-card class="form-description">
-          A simple explanation of what this Main Menu does in the application.
+          A simple explanation of what this SubMenu does in the application.
         </mat-card>
       </div>
 
@@ -61,7 +48,7 @@
         </mat-form-field>
 
         <mat-card class="form-description">
-          The action to take when the Main Menu item is clicked.
+          The action to take when the SubMenu item is clicked.
         </mat-card>
       </div>
 
@@ -96,6 +83,36 @@
         <mat-card class="form-description">
           Whether or not the Main Menu is enabled. Disabled menus will be greyed
           out and won't be selectable.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">Double separator before menu</div>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="doubleSeparatorBefore">
+            <mat-option value="True">True</mat-option>
+            <mat-option value="False">False</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          Whether or not double separator lines (2 lines) should be drawn above
+          the SubMenu item to group SubMenu items.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">Separator before menu</div>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="separatorBefore">
+            <mat-option value="True">True</mat-option>
+            <mat-option value="False">False</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          Whether or not a separator line should be drawn above the SubMenu item
+          to group SubMenu items.
         </mat-card>
       </div>
 

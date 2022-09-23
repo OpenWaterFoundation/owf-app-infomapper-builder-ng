@@ -21,6 +21,29 @@ export class ConvertFormNamePipe implements PipeTransform {
         return this.getTitleName(formName);
       case 'property':
         return this.getPropertyName(formName);
+      case 'description':
+        return this.getFormNameDescription(formName);
+    }
+    return '';
+  }
+
+  /**
+   * 
+   * @param formName 
+   * @returns 
+   */
+  private getFormNameDescription(formName: string): string {
+
+    switch(formName) {
+      case 'contentPage':
+        return 'Path to a Markdown file to display as a Content Page.';
+      case 'dashboard':
+        return 'Path to a dashboard file to display as a Dashboard Page.';
+      case 'displayMap':
+        return 'Path to a <a href="https://software.openwaterfoundation.org/geoprocessor/latest/doc-user/appendix-geomapproject/geomapproject/"' +
+        '>GeoMapProject JSON file</a> to display as a Map Page.';
+      case 'externalLink':
+        return 'URL of page to link to. A new web browser tab will be opened.';
     }
     return '';
   }

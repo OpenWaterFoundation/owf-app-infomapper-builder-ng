@@ -14,9 +14,9 @@ export class BuildManager {
   /** The instance of this WindowManager object. */
   private static instance: BuildManager;
   /**
-   * 
+   * Number to be appended to each Main Menu
    */
-  menuCounter = 1;
+  mainMenuCounter = 1;
   /**
    * 
    */
@@ -48,10 +48,10 @@ export class BuildManager {
     if (parentNode.level === 'Application') {
       treeNodeData.children.push({
         level: 'Main Menu',
-        name: 'New menu ' + this.menuCounter,
+        name: 'New menu ' + this.mainMenuCounter,
         index: treeNodeData.children.length
       });
-      ++this.menuCounter;
+      ++this.mainMenuCounter;
     } else if (parentNode.level === 'Main Menu') {
 
       if (!treeNodeData.children[parentNode.index].children) {
@@ -61,7 +61,8 @@ export class BuildManager {
       treeNodeData.children[parentNode.index].children.push({
         level: 'SubMenu',
         name: 'New SubMenu ' + this.subMenuCounter,
-        index: treeNodeData.children[parentNode.index].children.length
+        index: treeNodeData.children[parentNode.index].children.length,
+        parentIndex: parentNode.index
       });
       ++this.subMenuCounter;
     }

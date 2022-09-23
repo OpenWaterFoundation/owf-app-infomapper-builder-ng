@@ -27,6 +27,13 @@
       (updateTitleInput)="updateHeaderText($event)">
       </main-menu-config>
     </ng-container>
+
+    <ng-container *ngIf="node.level === 'SubMenu'">
+      <sub-menu-config [appBuilderForm]="appBuilderForm" [node]="node"
+      (updateTitleInput)="updateHeaderText($event)">
+      </sub-menu-config>
+    </ng-container>
+    
     
   </div>
 
@@ -36,6 +43,13 @@
     attr.data-cy="dialog-lower-save-NEEDS-TO-BE-CHANGED">
       Save
     </button>
+
+    <ng-container *ngIf="formInvalid">
+      <mat-card class="invalid-form-card">
+        YOU SHALL NOT CLOSE
+      </mat-card>
+    </ng-container>
+    
 
     <button mat-raised-button (click)="closeDialog()" class="dialog-cancel-button"
     attr.data-cy="dialog-lower-cancel-NEEDS-TO-BE-CHANGED">

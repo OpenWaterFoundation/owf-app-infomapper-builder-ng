@@ -11,7 +11,7 @@ import { AppService } from 'src/app/app.service';
 @Component({
   selector: 'app-config',
   templateUrl: './app-config.component.html',
-  styleUrls: ['./app-config.component.scss']
+  styleUrls: ['./app-config.component.scss', '../shared-styles.scss']
 })
 export class AppConfigComponent implements OnInit {
 
@@ -31,6 +31,8 @@ export class AppConfigComponent implements OnInit {
 
     if (this.appService.hasNodeBeenSaved('Application')) {
       this.populateFromBuilderJSON();
+    } else {
+      this.setRequiredDefaults();
     }
   }
 
@@ -40,7 +42,7 @@ export class AppConfigComponent implements OnInit {
    */
   private populateFromBuilderJSON(): void {
 
-    var fullBuilderJSON = this.appService.fullBuilderJSON;
+    let fullBuilderJSON = this.appService.fullBuilderJSON;
 
     this.updateTitleInput.emit(fullBuilderJSON.title);
 
@@ -53,11 +55,27 @@ export class AppConfigComponent implements OnInit {
   }
 
   /**
+   * 
+   */
+  private setRequiredDefaults(): void {
+
+    let fullBuilderJSON = this.appService.fullBuilderJSON;
+
+    let titleControl = this.appBuilderForm.get('appConfigFG.title')
+    titleControl.setValue(fullBuilderJSON.title);
+    titleControl.markAsTouched();
+    
+    let versionControl = this.appBuilderForm.get('appConfigFG.version')
+    versionControl.setValue(fullBuilderJSON.version);
+    versionControl.markAsTouched();
+  }
+
+  /**
    * Called after each key press by the user in the title field.
    */
   titleInput(): void {
     this.updateTitleInput.emit(this.appBuilderForm.get('appConfigFG.title').value);
-    
+
   }
 
 }

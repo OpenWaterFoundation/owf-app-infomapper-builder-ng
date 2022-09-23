@@ -3,12 +3,12 @@
   <nav class="build-nav">
     <div fxHide.gt-md class="mobile-build-nav-container">
 
-      <button mat-raised-button [matMenuTriggerFor]="nodMenu" class="mobile-build-nav-button"
+      <button mat-raised-button [matMenuTriggerFor]="nodeMenu" class="mobile-build-nav-button"
       data-cy="NEEDS-TO-BE-UPDATED">
         Build Options
       </button>
 
-      <mat-menu #nodMenu="matMenu">
+      <mat-menu #nodeMenu="matMenu">
         <button mat-button (click)="printFinalBuilderObject()">
           TEST: Print to console
         </button>
@@ -49,7 +49,7 @@
       <mat-tree #treeSelector [dataSource]="treeDataSource" [treeControl]="treeControl"
       class="build-tree">
         <!-- Tree node template for leaf nodes with no children. -->
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+        <mat-tree-node *matTreeNodeDef="let node">
           <div class="tree-node-header">
             <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
             <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
