@@ -2,10 +2,11 @@ import { Component,
           EventEmitter,
           Input,
           OnInit, 
-          Output}     from '@angular/core';
-import { FormGroup }  from '@angular/forms';
+          Output}      from '@angular/core';
+import { AbstractControl,
+          FormGroup }  from '@angular/forms';
 
-import { AppService } from 'src/app/app.service';
+import { AppService }  from 'src/app/app.service';
 
 
 @Component({
@@ -17,11 +18,19 @@ export class AppConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** The custom & built-in error messages to be displayed under a form with an error. */
+  formErrorMessages = {
+    required: 'Required'
+  }
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
    * and sends the basin name. */
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
+  /**
+   * 
+   * @param appService 
+   */
   constructor(private appService: AppService) {
 
   }
@@ -34,6 +43,15 @@ export class AppConfigComponent implements OnInit {
     } else {
       this.setRequiredDefaults();
     }
+  }
+
+  /**
+   * 
+   * @param control The FormControl that will be checked for errors.
+   * @returns An array with each error key as a string.
+   */
+  formErrors(control: AbstractControl): string[] {
+    return control.errors ? Object.keys(control.errors) : [];
   }
 
   /**

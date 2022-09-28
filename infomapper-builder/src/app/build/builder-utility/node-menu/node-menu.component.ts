@@ -18,10 +18,8 @@ export class NodeMenuComponent implements OnInit {
   /** All used FontAwesome icons in the NodeMenuComponent. */
   faEllipsisVertical = faEllipsisVertical;
   /** The selected menu choice to send back to the DialogComponent. */
-  @Output('menuChoice') menuChoice = new EventEmitter<IM.MenuChoice>();;
-  /**
-   * 
-   */
+  @Output('menuChoice') menuChoice = new EventEmitter<IM.MenuChoice>();
+  /** The current tree node, passed in as input from the Build Component. */
   @Input('node') node: IM.TreeNodeData;
 
 
@@ -33,7 +31,7 @@ export class NodeMenuComponent implements OnInit {
   }
 
   /**
-   * 
+   * Sends the selected menu choice back to the Build Component.
    * @param node
    * @param menuChoiceType 
    */

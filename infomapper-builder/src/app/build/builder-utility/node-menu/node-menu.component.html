@@ -26,5 +26,15 @@ data-cy="NEEDS-TO-BE-UPDATED">
     </button>
   </ng-container>
   
-  
+  <ng-container *ngIf="node.level !== 'Application'">
+    <mat-divider></mat-divider>
+    <mat-divider></mat-divider>
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="sendMenuChoice(node, 'deleteConfig')"
+    data-cy="NEEDS-TO-BE-UPDATED">
+      Delete {{ node.level }}
+    </button>
+  </ng-container>
+
 </mat-menu>

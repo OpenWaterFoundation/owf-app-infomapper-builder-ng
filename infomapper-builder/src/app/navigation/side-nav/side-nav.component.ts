@@ -41,9 +41,13 @@ export class SideNavComponent implements OnInit, OnDestroy {
   }
 
 
+  /**
+   * 
+   */
   get appConfig(): any { return this.appService.appConfigObj; }
 
   ngOnInit(): void {
+    this.logger.print('info', 'Sidenav initialization.');
   }
 
   /**

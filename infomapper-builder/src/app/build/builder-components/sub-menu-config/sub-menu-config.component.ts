@@ -3,7 +3,8 @@ import { Component,
           Input,
           OnInit,
           Output }    from '@angular/core';
-import { FormGroup }  from '@angular/forms';
+import { AbstractControl,
+          FormGroup } from '@angular/forms';
 
 import * as IM        from '@OpenWaterFoundation/common/services';
 import { AppService } from 'src/app/app.service';
@@ -17,6 +18,10 @@ export class SubMenuConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** The custom & built-in error messages to be displayed under a form with an error. */
+  formErrorMessages = {
+    required: 'Required'
+  }
   /** The currently edited Tree Node. */
   @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
@@ -24,12 +29,14 @@ export class SubMenuConfigComponent implements OnInit {
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
+  /**
+   * 
+   * @param appService 
+   */
   constructor(private appService: AppService) { }
 
 
   ngOnInit(): void {
-    console.log('node saved:', this.appService.hasNodeBeenSaved('SubMenu ' +
-    this.node.parentIndex + ',' + this.node.index));
     this.updateTitleInput.emit('');
 
     if (this.appService.hasNodeBeenSaved('SubMenu ' + this.node.parentIndex + ',' + this.node.index)) {
@@ -37,6 +44,15 @@ export class SubMenuConfigComponent implements OnInit {
     } else {
       this.setDefaults();
     }
+  }
+
+  /**
+   * 
+   * @param control The FormControl that will be checked for errors.
+   * @returns An array with each 
+   */
+  formErrors(control: AbstractControl): string[] {
+    return control.errors ? Object.keys(control.errors) : [];
   }
 
   /**

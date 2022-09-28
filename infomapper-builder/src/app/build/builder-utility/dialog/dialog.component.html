@@ -1,5 +1,6 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" class="cdk-drag">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container"
+class="cdk-drag">
   <div mat-dialog-title class="drag-header-main" cdkDragHandle
   data-cy="dialog-drag-header-main">
 
@@ -39,21 +40,15 @@
 
   <div class="dialog-utility-container">
 
-    <button mat-raised-button (click)="saveData(node)" class="dialog-save-button"
-    attr.data-cy="dialog-lower-save-NEEDS-TO-BE-CHANGED">
-      Save
-    </button>
-
-    <ng-container *ngIf="formInvalid">
-      <mat-card class="invalid-form-card">
-        YOU SHALL NOT CLOSE
-      </mat-card>
-    </ng-container>
-    
-
     <button mat-raised-button (click)="closeDialog()" class="dialog-cancel-button"
     attr.data-cy="dialog-lower-cancel-NEEDS-TO-BE-CHANGED">
       Cancel
+    </button>
+
+    <button mat-raised-button (click)="saveData(node)"
+    [disabled]="isSaveDisabled()"
+    class="dialog-save-button" attr.data-cy="dialog-lower-save-NEEDS-TO-BE-CHANGED">
+      Save
     </button>
 
   </div>

@@ -1,8 +1,10 @@
 import { Component,
           OnDestroy,
           OnInit }                 from '@angular/core';
-import { FormControl,
+import { AbstractControl, FormControl,
           FormGroup,
+          ValidationErrors,
+          ValidatorFn,
           Validators }             from '@angular/forms';
 import { ActivatedRoute,
           ParamMap }               from '@angular/router';
@@ -66,10 +68,10 @@ export class BuildComponent implements OnInit, OnDestroy {
     action: new FormControl(''),
     enabled: new FormControl('True'),
     visible: new FormControl('True'),
-    markdownFile: new FormControl(''),  // <-- Conditional required
-    dashboardFile: new FormControl(''), // <-- Conditional required
-    mapProject: new FormControl(''),    // <-- Conditional required
-    url: new FormControl('')            // <-- Conditional required
+    markdownFile: new FormControl('', this.isActionEnabled()),
+    dashboardFile: new FormControl(''),
+    mapProject: new FormControl(''),
+    url: new FormControl('')
   });
   /** FormGroup used by the SubMenuComponent. */
   subMenuFG = new FormGroup({
@@ -128,6 +130,10 @@ export class BuildComponent implements OnInit, OnDestroy {
         }
       }
     });
+    // Add controls at component creation so it's always performed.
+    this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
+    this.appBuilderForm.addControl('mainMenuFG', this.mainMenuFG);
+    this.appBuilderForm.addControl('subMenuFG', this.subMenuFG);
   }
 
 
@@ -141,6 +147,11 @@ export class BuildComponent implements OnInit, OnDestroy {
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
     this.treeDataSource.data = null;
     this.treeDataSource.data = this.treeNodeData;
+    this.treeControl.dataNodes = this.treeNodeData;
+
+    // Save the tree object to the app service for persistence after a user route
+    // change.
+    this.appService.setBuilderTreeObject(this.treeNodeData);
 
     if (!this.treeControl.isExpanded(node)) {
       this.treeControl.expand(node);
@@ -179,7 +190,32 @@ export class BuildComponent implements OnInit, OnDestroy {
       console.log('Input value for control ' + field + ': ', this.appBuilderForm.get(field).value);
     }
   }
+
+  /**
+   * 
+   */
+  determineTreeInit(): void {
+
+    // The user navigated away from the builder inside this application.
+    if (this.appService.builderTreeObj.length > 0) {
+      this.treeDataSource.data = this.appService.builderTreeObj;
+      this.treeNodeData = this.appService.builderTreeObj;
+      this.treeControl.dataNodes = this.appService.builderTreeObj;
+    }
+    // else if (Saved cookie) {
+
+    // }
+    // Normal completely new initialization.
+    else {
+      this.initTreeNodeAndFormGroup();
+    }
+
+    this.treeControl.expandAll();
+  }
   
+  /**
+   * 
+   */
   hasChild = (_: number, node: any) => !!node.children && node.children.length > 0;
 
   /**
@@ -187,10 +223,23 @@ export class BuildComponent implements OnInit, OnDestroy {
    */
   initTreeNodeAndFormGroup(): void {
     this.treeDataSource.data = this.treeNodeData;
+    this.treeControl.dataNodes = this.treeNodeData;
+  }
 
-    this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
-    this.appBuilderForm.addControl('mainMenuFG', this.mainMenuFG);
-    this.appBuilderForm.addControl('subMenuFG', this.subMenuFG);
+  /**
+   * 
+   * @returns 
+   */
+  isActionEnabled(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors => {
+
+      if (control.parent) {
+        if (control.parent.value.action !== '') {
+          return Validators.required(control);
+        }
+      }
+      return null;
+    }
   }
 
   ngOnInit(): void {
@@ -206,7 +255,7 @@ export class BuildComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.initTreeNodeAndFormGroup();
+      this.determineTreeInit();
     });
   }
 
@@ -248,7 +297,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   * Determines what menu choice was selected from a node's kebab menu and calls
+   * the necessary function.
    * @param choice 
    */
   receiveMenuChoice(choice: IM.MenuChoice): void {
@@ -260,7 +310,30 @@ export class BuildComponent implements OnInit, OnDestroy {
         break;
       case 'editConfig':
         this.openConfigDialog(choice.node);
+        break;
+      case 'deleteConfig':
+      this.removeFromTree(choice.node);
     }
+  }
+
+  /**
+   * 
+   * @param node 
+   */
+  private removeFromTree(node: IM.TreeNodeData): void {
+    this.buildManager.removeNodeFromTree(this.treeNodeData[0], node);
+
+    this.treeDataSource.data = null;
+    this.treeDataSource.data = this.treeNodeData;
+    this.treeControl.dataNodes = this.treeNodeData;
+
+    // Save the tree object to the app service for persistence after a user route
+    // change.
+    this.appService.setBuilderTreeObject(this.treeNodeData);
+
+    // if (!this.treeControl.isExpanded(node)) {
+    //   this.treeControl.expand(node);
+    // }
   }
 
   /**

@@ -1,6 +1,5 @@
-import * as IM        from '@OpenWaterFoundation/common/services';
+import * as IM from '@OpenWaterFoundation/common/services';
 
-import { AppService } from '../app.service';
 
 /**
  * A helper singleton class for creating, managing and maintaining multiple opened Material Dialogs (WindowManagerItem object)
@@ -13,14 +12,6 @@ export class BuildManager {
   
   /** The instance of this WindowManager object. */
   private static instance: BuildManager;
-  /**
-   * Number to be appended to each Main Menu
-   */
-  mainMenuCounter = 1;
-  /**
-   * 
-   */
-  subMenuCounter = 1;
 
 
   /**
@@ -41,30 +32,55 @@ export class BuildManager {
   /**
    * 
    * @param treeNodeData 
-   * @param parentNode 
+   * @param node 
    */
-  addNodeToTree(treeNodeData: IM.TreeNodeData, parentNode: IM.TreeNodeData): void {
+  addNodeToTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData): void {
 
-    if (parentNode.level === 'Application') {
+    if (node.level === 'Application') {
       treeNodeData.children.push({
         level: 'Main Menu',
-        name: 'New menu ' + this.mainMenuCounter,
+        name: 'New Main Menu',
         index: treeNodeData.children.length
       });
-      ++this.mainMenuCounter;
-    } else if (parentNode.level === 'Main Menu') {
+    } else if (node.level === 'Main Menu') {
 
-      if (!treeNodeData.children[parentNode.index].children) {
-        treeNodeData.children[parentNode.index].children = [];
+      if (!treeNodeData.children[node.index].children) {
+        treeNodeData.children[node.index].children = [];
       }
 
-      treeNodeData.children[parentNode.index].children.push({
+      treeNodeData.children[node.index].children.push({
         level: 'SubMenu',
-        name: 'New SubMenu ' + this.subMenuCounter,
-        index: treeNodeData.children[parentNode.index].children.length,
-        parentIndex: parentNode.index
+        name: 'New SubMenu',
+        index: treeNodeData.children[node.index].children.length,
+        parentIndex: node.index
       });
-      ++this.subMenuCounter;
+    }
+  }
+
+  private removeAllChildren(allChildren: IM.TreeNodeData[]): void {
+    allChildren.splice(0, allChildren.length);
+  }
+
+  /**
+   * 
+   * @param treeNodeData 
+   * @param node 
+   */
+  removeNodeFromTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData) {
+
+    if (node.level === 'Main Menu') {
+      // Check if this Main Menu has any children and delete them first.
+      if (treeNodeData.children[node.index].children) {
+        if (treeNodeData.children[node.index].children.length > 0) {
+          this.removeAllChildren(treeNodeData.children[node.index].children);
+        }
+      }
+      treeNodeData.children.splice(treeNodeData.children.indexOf(treeNodeData.children[node.index]), 1);
+    } else if (node.level === 'SubMenu') {
+
+      var allSubMenus = treeNodeData.children[node.parentIndex].children;
+
+      allSubMenus.splice(allSubMenus.indexOf(allSubMenus[node.index]), 1);
     }
   }
 

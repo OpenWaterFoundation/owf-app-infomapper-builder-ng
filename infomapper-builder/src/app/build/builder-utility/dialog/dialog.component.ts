@@ -20,8 +20,6 @@ export class DialogComponent implements OnInit {
   appBuilderForm: FormGroup;
   /** All used FontAwesome icons in the DialogComponent. */
   faXmark = faXmark;
-
-  formInvalid: boolean;
   /** The string to be dynamically displayed on this component's top header. */
   headerText = '';
   /** The currently edited Tree Node. */
@@ -62,35 +60,27 @@ export class DialogComponent implements OnInit {
   }
 
   /**
+   * 
+   * @returns 
+   */
+  isSaveDisabled(): boolean {
+
+    var formGroup: string;
+
+    if (this.node.level === 'Application') {
+      formGroup = 'appConfigFG';
+    } else if (this.node.level === 'Main Menu') {
+      formGroup = 'mainMenuFG';
+    } else {
+      formGroup = 'subMenuFG';
+    }
+    return this.appBuilderForm.get(formGroup).invalid;
+  }
+
+  /**
    * When the Save button is clicked, close the dialog with the form result.
    */
   saveData(node: IM.TreeNodeData): void {
-
-
-    if (this.node.level === 'Application') {
-
-      if (this.appBuilderForm.get('appConfigFG').invalid) {
-        console.log(this.appBuilderForm.get('appConfigFG').value);
-        this.formInvalid = true;
-        return
-      }
-    } else if (this.node.level === 'Main Menu') {
-
-      if (this.appBuilderForm.get('mainMenuFG').invalid) {
-        console.log(this.appBuilderForm.get('mainMenuFG').value);
-        this.formInvalid = true;
-        return
-      }
-    } else if (this.node.level === 'SubMenu') {
-
-      if (this.appBuilderForm.get('subMenuFG').invalid) {
-        console.log(this.appBuilderForm.get('subMenuFG').value);
-        this.formInvalid = true;
-        return
-      }
-    }
-
-    this.formInvalid = false;
     this.dialogRef.close(node);
   }
 

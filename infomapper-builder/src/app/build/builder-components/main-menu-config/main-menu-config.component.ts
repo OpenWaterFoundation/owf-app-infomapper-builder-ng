@@ -2,11 +2,12 @@ import { Component,
           EventEmitter,
           Input,
           OnInit,
-          Output }    from '@angular/core';
-import { FormGroup }  from '@angular/forms';
+          Output }     from '@angular/core';
+import { AbstractControl,
+          FormGroup }  from '@angular/forms';
 
-import { AppService } from 'src/app/app.service';
-import * as IM        from '@OpenWaterFoundation/common/services';
+import { AppService }  from 'src/app/app.service';
+import * as IM         from '@OpenWaterFoundation/common/services';
 
 
 @Component({
@@ -18,6 +19,10 @@ export class MainMenuConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** The custom & built-in error messages to be displayed under a form with an error. */
+  formErrorMessages = {
+    required: 'Required'
+  }
   /** The currently edited Tree Node. */
   @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
@@ -25,8 +30,34 @@ export class MainMenuConfigComponent implements OnInit {
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
+  /**
+   * 
+   * @param appService 
+   */
   constructor(private appService: AppService) { }
 
+
+  /**
+   * 
+   * @param control The FormControl that will be checked for errors.
+   * @returns An array with each 
+   */
+  formErrors(control: AbstractControl | string): string[] {
+
+    if (control instanceof AbstractControl) {
+      return control.errors ? Object.keys(control.errors) : [];
+    } else {
+
+      switch(control) {
+        case 'contentPage':
+        case 'dashboard':
+        case 'displayMap':
+        case 'externalLink':
+          return ['required'];
+      }
+    }
+    
+  }
 
   ngOnInit(): void {
     this.updateTitleInput.emit('');
@@ -39,7 +70,8 @@ export class MainMenuConfigComponent implements OnInit {
   }
 
   /**
-   * 
+   * This Main Menu node has been saved before, so used the builderJSON business
+   * object to populate the fields with its data.
    */
   private populateFromBuilderJSON(): void {
 
@@ -78,7 +110,8 @@ export class MainMenuConfigComponent implements OnInit {
   }
 
   /**
-   * 
+   * All defaults are set because this Main Menu could have been used previously
+   * by another node.
    */
   private setDefaults(): void {
 

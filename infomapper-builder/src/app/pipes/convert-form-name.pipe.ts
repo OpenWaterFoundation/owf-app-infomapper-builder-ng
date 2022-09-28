@@ -40,8 +40,7 @@ export class ConvertFormNamePipe implements PipeTransform {
       case 'dashboard':
         return 'Path to a dashboard file to display as a Dashboard Page.';
       case 'displayMap':
-        return 'Path to a <a href="https://software.openwaterfoundation.org/geoprocessor/latest/doc-user/appendix-geomapproject/geomapproject/"' +
-        '>GeoMapProject JSON file</a> to display as a Map Page.';
+        return 'Path to a GeoMapProject JSON file to display as a Map Page.';
       case 'externalLink':
         return 'URL of page to link to. A new web browser tab will be opened.';
     }

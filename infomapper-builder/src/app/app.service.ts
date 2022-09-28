@@ -29,6 +29,10 @@ export class AppService {
   appPath = 'assets/app/';
   /** The object used to create the final app configuration file. (?) */
   private builderJSON: IM.AppConfig = { title: '', homePage: '', version: '' };
+  /** The persisted tree object used between application URL changes. This is so
+   * the tree isn't created from scratch upon new Build Component construction if
+   * it doesn't have to be. */
+  private builderTree: IM.TreeNodeData[] = [];
   /** The hard-coded string of the path to the default icon path that will be used
    * for the website if none is given. */
   readonly defaultFaviconPath = 'favicon.ico';
@@ -55,6 +59,13 @@ export class AppService {
    */
   get appConfigObj(): IM.AppConfig {
     return this.appConfig;
+  }
+
+  /**
+   * 
+   */
+  get builderTreeObj(): IM.TreeNodeData[] {
+    return this.builderTree;
   }
 
   /**
@@ -399,6 +410,14 @@ export class AppService {
       Object.assign(this.builderJSON.mainMenu[node.parentIndex].menus[node.index], resultForm);
       this.nodeSaved['SubMenu ' + node.parentIndex + ',' + node.index] = true;
     }
+  }
+
+  /**
+   * 
+   * @param treeNodeData 
+   */
+  setBuilderTreeObject(treeNodeData: IM.TreeNodeData[]): void {
+    Object.assign(this.builderTree, treeNodeData);
   }
 
   /**

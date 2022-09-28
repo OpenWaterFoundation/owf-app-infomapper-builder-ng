@@ -15,11 +15,11 @@
           <input matInput formControlName="title" placeholder="Poudre Basin Information"
           (keyup)="titleInput()">
 
-          <!-- <mat-error>
-            <ng-container *ngIf="appBuilderForm.get('startDate').hasErrors()">
-              {{ appBuilderForm.get('startDate').errors }}
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('appConfigFG.title'))">
+              {{ formErrorMessages[error] }} <br>
             </ng-container>
-          </mat-error> -->
+          </mat-error>
         </mat-form-field>
 
         <mat-card class="form-description">
@@ -47,6 +47,12 @@
         </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="version" placeholder="1.0.0">
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('appConfigFG.version'))">
+              {{ formErrorMessages[error] }} <br>
+            </ng-container>
+          </mat-error>
         </mat-form-field>
 
         <mat-card class="form-description">

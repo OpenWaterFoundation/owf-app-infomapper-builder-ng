@@ -1,11 +1,11 @@
 import { Component,
           EventEmitter,
           OnInit,
-          Output }    from '@angular/core';
+          Output }             from '@angular/core';
 
-import { faBars }     from '@fortawesome/free-solid-svg-icons';
+import { faBars }              from '@fortawesome/free-solid-svg-icons';
 
-import { AppService } from '../../app.service';
+import { AppService }          from '../../app.service';
 
 @Component({
   selector: 'app-nav-bar',

@@ -8,10 +8,12 @@ import { FlexLayoutModule }        from '@angular/flex-layout';
 import { FormsModule,
           ReactiveFormsModule }    from '@angular/forms';
 
+import { DragDropModule }          from '@angular/cdk/drag-drop';
+
 import { MatButtonModule }         from '@angular/material/button';
 import { MatCardModule }           from '@angular/material/card';
 import { MatDialogModule }         from '@angular/material/dialog';
-import { DragDropModule }          from '@angular/cdk/drag-drop';
+import { MatDividerModule }        from '@angular/material/divider';
 import { MatFormFieldModule }      from '@angular/material/form-field';
 import { MatIconModule }           from '@angular/material/icon';
 import { MatInputModule }          from '@angular/material/input';
@@ -39,18 +41,20 @@ import { AppConfigComponent }      from './build/builder-components/app-config/a
 import { BuildComponent }          from './build/build.component';
 import { DialogComponent }         from './build/builder-utility/dialog/dialog.component';
 import { MainMenuConfigComponent } from './build/builder-components/main-menu-config/main-menu-config.component';
+import { SubMenuConfigComponent }  from './build/builder-components/sub-menu-config/sub-menu-config.component';
 import { NavBarComponent }         from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { NodeMenuComponent }       from './build/builder-utility/node-menu/node-menu.component';
 import { SideNavComponent }        from './navigation/side-nav/side-nav.component';
 import { ContentPageComponent }    from './content-page/content-page.component';
 import { AppService }              from './app.service';
+
 import { CheckElementPipe }        from './pipes/check-element.pipe';
+import { ConvertFormNamePipe }     from './pipes/convert-form-name.pipe';
+import { DisplayNamePipe }         from './pipes/display-name.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
-import { ConvertFormNamePipe } from './pipes/convert-form-name.pipe';
-import { SubMenuConfigComponent } from './build/builder-components/sub-menu-config/sub-menu-config.component';
 
 
 const classMap: any = {
@@ -102,7 +106,8 @@ function appInit(appService: AppService): () => Observable<any> {
     DialogComponent,
     NodeMenuComponent,
     ConvertFormNamePipe,
-    SubMenuConfigComponent
+    SubMenuConfigComponent,
+    DisplayNamePipe
   ],
   imports: [
     AngularFullpageModule,
@@ -129,10 +134,12 @@ function appInit(appService: AppService): () => Observable<any> {
       ]
     }),
     
+    DragDropModule,
+
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
-    DragDropModule,
+    MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
