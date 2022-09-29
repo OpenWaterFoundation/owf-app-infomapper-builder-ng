@@ -26,6 +26,16 @@ is css.
 
 `ng new infomapper-builder --routing=true --skip-git=true --style=scss`
 
+## Using the AWS SDK ##
+
+Amazon has created the third version of its [AWS JavaScript SDK](https://github.com/aws/aws-sdk-js-v3),
+which can be imported using the npm scope `@aws-sdk/some-package`. This version
+is more modular in that only the packages being used can be imported from the
+`@aws-sdk` scope. More information can be found in the
+[SDK welcome page](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/welcome.html)
+and the
+[official documentation](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/index.html).
+
 ## Troubleshooting ##
 
 This section details an errors or other hang ups in project creation, and should

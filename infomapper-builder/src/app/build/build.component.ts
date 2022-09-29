@@ -21,7 +21,7 @@ import { faChevronDown,
 
 import { first,
           Subject,
-          takeUntil }              from 'rxjs'; 
+          takeUntil }              from 'rxjs';
 
 import { CommonLoggerService }     from '@OpenWaterFoundation/common/services';
 import * as IM                     from '@OpenWaterFoundation/common/services';
@@ -296,6 +296,10 @@ export class BuildComponent implements OnInit, OnDestroy {
     console.log(this.appService.fullBuilderJSON);
   }
 
+  publishToAWS(): void {
+
+  }
+
   /**
    * Determines what menu choice was selected from a node's kebab menu and calls
    * the necessary function.
@@ -330,6 +334,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     // Save the tree object to the app service for persistence after a user route
     // change.
     this.appService.setBuilderTreeObject(this.treeNodeData);
+    this.appService.removeBuilderObject(node);
 
     // if (!this.treeControl.isExpanded(node)) {
     //   this.treeControl.expand(node);

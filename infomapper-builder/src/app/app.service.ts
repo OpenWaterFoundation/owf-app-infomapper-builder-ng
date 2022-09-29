@@ -346,6 +346,31 @@ export class AppService {
   }
 
   /**
+   * Uses one or both indexes in the tree node to delete its object from the
+   * builderJSON object that is used for publishing.
+   * @param node The tree node being deleted, used as reference to remove it from
+   * the builderJSON business object.
+   */
+  removeBuilderObject(node: IM.TreeNodeData): void {
+
+    if (node.level === 'Main Menu') {
+      if (this.builderJSON.mainMenu) {
+        this.builderJSON.mainMenu.splice(node.index, 1);
+      }
+      if (this.builderJSON.mainMenu.length === 0) {
+        delete this.builderJSON.mainMenu;
+      }
+    } else if (node.level === 'SubMenu') {
+      if (this.builderJSON.mainMenu[node.parentIndex].menus) {
+        this.builderJSON.mainMenu[node.parentIndex].menus.splice(node.index, 1);
+      }
+      if (this.builderJSON.mainMenu[node.parentIndex].menus.length === 0) {
+        delete this.builderJSON.mainMenu[node.parentIndex].menus;
+      }
+    }
+  }
+
+  /**
    * Sanitizes the markdown syntax by checking if image links are present, and replacing
    * them with the full path to the image relative to the markdown file being displayed.
    * This eases usability so that just the name and extension of the file can be used

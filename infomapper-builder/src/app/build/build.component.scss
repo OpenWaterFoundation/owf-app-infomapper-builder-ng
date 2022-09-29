@@ -140,6 +140,14 @@ non-leaf nodes under the same parent. */
   align-items: center;
 }
 
+/* The top level div to display the node's name, add node button, etc. that does
+not contain any children. */
+.tree-node-header-app-no-children {
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
+}
+
 /* The tree node's name. */
 .tree-node-name {
   font-size: large;

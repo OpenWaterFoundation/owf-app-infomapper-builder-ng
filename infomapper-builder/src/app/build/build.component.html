@@ -12,6 +12,11 @@
         <button mat-button (click)="printFinalBuilderObject()">
           TEST: Print to console
         </button>
+
+        <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
+
         <button mat-menu-item
         data-cy="NEEDS-TO-BE-UPDATED">
           Publish to GitHub
@@ -20,7 +25,7 @@
         data-cy="">
           Publish to preview
         </button>
-        <button mat-menu-item data-cy="">
+        <button mat-menu-item (click)="publishToAWS()" data-cy="">
           Publish to AWS
         </button>
       </mat-menu>
@@ -50,7 +55,7 @@
       class="build-tree">
         <!-- Tree node template for leaf nodes with no children. -->
         <mat-tree-node *matTreeNodeDef="let node">
-          <div class="tree-node-header">
+          <div [ngClass]="{'tree-node-header': node.level !== 'Application', 'tree-node-header-app-no-children': node.level === 'Application'}">
             <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
             <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
           </div>
