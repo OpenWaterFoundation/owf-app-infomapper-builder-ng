@@ -22,6 +22,12 @@ class="cdk-drag">
       <app-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)">
       </app-config>
     </ng-container>
+
+    <ng-container *ngIf="node.level === 'Datastore'">
+      <datastore-config [appBuilderForm]="appBuilderForm"
+      (updateTitleInput)="updateHeaderText($event)">
+      </datastore-config>
+    </ng-container>
     
     <ng-container *ngIf="node.level === 'Main Menu'">
       <main-menu-config [appBuilderForm]="appBuilderForm" [node]="node"

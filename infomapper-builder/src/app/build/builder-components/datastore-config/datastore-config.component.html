@@ -1,0 +1,96 @@
+<!-- <p class="help-string">
+  All fields marked with an asterisk ( <span class="required-asterisk">*</span> ) are required.
+</p>
+            
+<form [formGroup]="appBuilderForm">
+
+  <div formGroupName="datastoreFG">
+    <div class="config-form-fields-container">
+
+      <div class="form-container">
+        <div class="form-title">
+          Name<span class="required-asterisk">*</span>
+        </div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="id" placeholder="about-the-project">
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.id'))">
+              {{ formErrorMessages[error] }} <br>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          Unique name to be used internally and displayed on the menu.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">
+          Type<span class="required-asterisk">*</span>
+        </div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="name" placeholder="About the Project"
+          (keyup)="titleInput()">
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.name'))">
+              {{ formErrorMessages[error] }} <br>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          TODO: Fill me out.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">
+          Root URL<span class="required-asterisk">*</span>
+        </div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="id" placeholder="about-the-project">
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.description'))">
+              {{ formErrorMessages[error] }} <br>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          TODO: Fill me out.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">Aliases</div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="id" placeholder="about-the-project">
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          Whether or not the Main Menu is enabled. Disabled menus will be greyed
+          out and won't be selectable.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">API Key</div>
+
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="id" placeholder="about-the-project">
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          Whether or not the Main Menu is visible. Non-visible menus will not be
+          created and shown in the navbar.
+        </mat-card>
+      </div>
+
+    </div>
+  </div>
+  
+</form> -->

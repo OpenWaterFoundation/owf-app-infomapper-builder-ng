@@ -34,15 +34,28 @@ export class BuildManager {
    * @param treeNodeData 
    * @param node 
    */
-  addNodeToTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData): void {
+  addNodeToTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData, nestedObj?: string): void {
 
     if (node.level === 'Application') {
-      treeNodeData.children.push({
-        level: 'Main Menu',
-        name: 'New Main Menu',
-        index: treeNodeData.children.length
-      });
-    } else if (node.level === 'Main Menu') {
+      // If no nested object is needed, create a Main Menu.
+      if (!nestedObj) {
+        treeNodeData.children.push({
+          level: 'Main Menu',
+          name: 'New Main Menu',
+          index: treeNodeData.children.length
+        });
+      }
+      // A nested object in the Application level of the tree is needed.
+      else {
+        treeNodeData.children.unshift({
+          level: 'Datastore',
+          name: 'New Datastore',
+          index: treeNodeData.children.length
+        });
+      }
+    }
+    // 
+    else if (node.level === 'Main Menu') {
 
       if (!treeNodeData.children[node.index].children) {
         treeNodeData.children[node.index].children = [];
@@ -57,6 +70,10 @@ export class BuildManager {
     }
   }
 
+  /**
+   * 
+   * @param allChildren 
+   */
   private removeAllChildren(allChildren: IM.TreeNodeData[]): void {
     allChildren.splice(0, allChildren.length);
   }

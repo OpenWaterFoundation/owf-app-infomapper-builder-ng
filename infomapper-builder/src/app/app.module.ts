@@ -55,6 +55,7 @@ import { DisplayNamePipe }         from './pipes/display-name.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
+import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
 
 
 const classMap: any = {
@@ -107,7 +108,8 @@ function appInit(appService: AppService): () => Observable<any> {
     NodeMenuComponent,
     ConvertFormNamePipe,
     SubMenuConfigComponent,
-    DisplayNamePipe
+    DisplayNamePipe,
+    DatastoreConfigComponent
   ],
   imports: [
     AngularFullpageModule,

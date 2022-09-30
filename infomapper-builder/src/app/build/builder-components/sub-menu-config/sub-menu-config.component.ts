@@ -49,14 +49,15 @@ export class SubMenuConfigComponent implements OnInit {
   /**
    * 
    * @param control The FormControl that will be checked for errors.
-   * @returns An array with each 
+   * @returns An array with all errors for the control, or an empty array of no errors.
    */
   formErrors(control: AbstractControl): string[] {
     return control.errors ? Object.keys(control.errors) : [];
   }
 
   /**
-   * 
+   * This SubMenu has previously been saved. Use the data from the App Service's
+   * buildJSON object to fill in this SubMenu's form/input fields.
    */
   private populateFromBuilderJSON(): void {
 

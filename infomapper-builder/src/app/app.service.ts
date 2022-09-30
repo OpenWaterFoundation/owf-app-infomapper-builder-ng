@@ -347,26 +347,49 @@ export class AppService {
 
   /**
    * Uses one or both indexes in the tree node to delete its object from the
-   * builderJSON object that is used for publishing.
+   * builderJSON (publishing) and nodeSaved (determining which nodes have been
+   * saved) objects.
    * @param node The tree node being deleted, used as reference to remove it from
    * the builderJSON business object.
    */
   removeBuilderObject(node: IM.TreeNodeData): void {
 
+    // No node has been saved, so there's nothing to remove from either the buildJSON
+    // or nodeSaved objects.
+    if (!this.builderJSON.mainMenu) {
+      return;
+    }
+
     if (node.level === 'Main Menu') {
+      // Remove this node from the nodeSaved object.
+      delete this.nodeSaved['Main Menu ' + node.index];
+
+      // Remove children from nodeSaved object if it has any.
+      if (this.builderJSON.mainMenu[node.index].menus) {
+        for (let i = 0; i <= this.builderJSON.mainMenu[node.index].menus.length; ++i) {
+          if (this.builderJSON.mainMenu[node.index].menus[i]) {
+            delete this.nodeSaved['SubMenu ' + node.index + ',' + i];
+          }
+        }
+      }
       if (this.builderJSON.mainMenu) {
         this.builderJSON.mainMenu.splice(node.index, 1);
       }
       if (this.builderJSON.mainMenu.length === 0) {
         delete this.builderJSON.mainMenu;
       }
+
     } else if (node.level === 'SubMenu') {
+      // Remove this node from the nodeSaved object.
+      delete this.nodeSaved['SubMenu ' + node.parentIndex + ',' + node.index];
+
       if (this.builderJSON.mainMenu[node.parentIndex].menus) {
         this.builderJSON.mainMenu[node.parentIndex].menus.splice(node.index, 1);
       }
       if (this.builderJSON.mainMenu[node.parentIndex].menus.length === 0) {
         delete this.builderJSON.mainMenu[node.parentIndex].menus;
       }
+      
     }
   }
 

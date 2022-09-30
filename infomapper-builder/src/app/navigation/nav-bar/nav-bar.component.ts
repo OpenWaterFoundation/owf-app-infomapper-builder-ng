@@ -5,6 +5,7 @@ import { Component,
 
 import { faBars }              from '@fortawesome/free-solid-svg-icons';
 
+import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 import { AppService }          from '../../app.service';
 
 @Component({
@@ -27,7 +28,9 @@ export class NavBarComponent implements OnInit {
    * The NavBarComponent constructor.
    * @param appService The IM Builder top level service.
    */
-  constructor(private appService: AppService) { }
+  constructor(private appService: AppService, private logger: CommonLoggerService) {
+
+  }
 
 
   /**
@@ -36,6 +39,8 @@ export class NavBarComponent implements OnInit {
   get appConfig(): any { return this.appService.appConfigObj; }
 
   ngOnInit(): void {
+    this.logger.print('info', 'Navbar initialization.');
+
     this.title = this.appService.appConfigObj.title;
   }
 

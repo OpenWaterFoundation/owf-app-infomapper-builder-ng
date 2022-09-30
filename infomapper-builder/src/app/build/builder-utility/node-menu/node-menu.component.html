@@ -14,7 +14,8 @@ data-cy="NEEDS-TO-BE-UPDATED">
       Add Main Menu
     </button>
 
-    <button mat-menu-item data-cy="">
+    <button mat-menu-item (click)="sendMenuChoice(node, 'addDatastore')"
+    data-cy="">
       Add Datastore
     </button>
   </ng-container>

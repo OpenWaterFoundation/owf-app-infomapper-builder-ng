@@ -55,6 +55,14 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** The current screen size. Used for dialogs to determine if they
    * should be shown for desktop or mobile screens. */
   currentScreenSize: string;
+  /** FormGroup used by the DatastoreComponent. */
+  datastoreFG = new FormGroup({
+    name: new FormControl('', Validators.required),
+    type: new FormControl('', Validators.required),
+    rootURL: new FormControl('', Validators.required),
+    aliases: new FormControl(''),
+    apiKey: new FormControl('')
+  });
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
   /** All used FontAwesome icons in the AppConfigComponent. */
@@ -132,6 +140,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     });
     // Add controls at component creation so it's always performed.
     this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
+    this.appBuilderForm.addControl('datastoreFG', this.datastoreFG);
     this.appBuilderForm.addControl('mainMenuFG', this.mainMenuFG);
     this.appBuilderForm.addControl('subMenuFG', this.subMenuFG);
   }
@@ -140,9 +149,14 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
    * Adds a
    */
-  addToTree(node: IM.TreeNodeData): void {
-    this.buildManager.addNodeToTree(this.treeNodeData[0], node);
-    
+  addToTree(node: IM.TreeNodeData, nestedObj?: string): void {
+
+    if (!nestedObj) {
+      this.buildManager.addNodeToTree(this.treeNodeData[0], node);
+    } else {
+      this.buildManager.addNodeToTree(this.treeNodeData[0], node, nestedObj);
+    }
+
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
     this.treeDataSource.data = null;
@@ -308,6 +322,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   receiveMenuChoice(choice: IM.MenuChoice): void {
 
     switch(choice.choiceType) {
+      case 'addDatastore':
+        this.addToTree(choice.node, 'addDatastore');
+        break;
       case 'addMainMenu':
       case 'addSubMenu':
         this.addToTree(choice.node);
