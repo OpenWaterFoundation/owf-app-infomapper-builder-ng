@@ -139,6 +139,25 @@ export class AppService {
    * 
    * @param node 
    */
+  private confirmAllDatastoresExist(node: IM.TreeNodeData): void {
+    if (!this.builderJSON.datastores) {
+      this.builderJSON.datastores = [];
+    }
+    for (let index = 0; index <= node.index; ++index) {
+      if (!this.builderJSON.datastores[index]) {
+        this.builderJSON.datastores.push({
+          name: '',
+          type: '',
+          rootUrl: ''
+        });
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param node 
+   */
   private confirmAllMainMenusExist(node: IM.TreeNodeData): void {
     if (!this.builderJSON.mainMenu) {
       this.builderJSON.mainMenu = [{}];
@@ -354,13 +373,31 @@ export class AppService {
    */
   removeBuilderObject(node: IM.TreeNodeData): void {
 
-    // No node has been saved, so there's nothing to remove from either the buildJSON
-    // or nodeSaved objects.
-    if (!this.builderJSON.mainMenu) {
-      return;
-    }
+    if (node.level === 'Datastore') {
+      // No Datastore node has been saved, so there's nothing to remove from either
+      // the builderJSON or nodeSaved objects.
+      if (!this.builderJSON.datastores) {
+        return;
+      }
+      // Remove this node from the nodeSaved object.
+      delete this.nodeSaved['Datastore ' + node.index];
 
-    if (node.level === 'Main Menu') {
+      // Remove the Datastore from the builderJSON business object, and its property
+      // if there are none left.
+      if (this.builderJSON.datastores) {
+        this.builderJSON.datastores.splice(node.index, 1);
+      }
+      if (this.builderJSON.datastores.length === 0) {
+        delete this.builderJSON.datastores;
+      }
+    }
+    else if (node.level === 'Main Menu') {
+      // No Main Menu node has been saved, so there's nothing to remove from either
+      // the builderJSON or nodeSaved objects.
+      if (!this.builderJSON.mainMenu) {
+        return;
+      }
+
       // Remove this node from the nodeSaved object.
       delete this.nodeSaved['Main Menu ' + node.index];
 
@@ -372,6 +409,8 @@ export class AppService {
           }
         }
       }
+      // Remove the Main Menu from the builderJSON business object, and its property
+      // if there are none left.
       if (this.builderJSON.mainMenu) {
         this.builderJSON.mainMenu.splice(node.index, 1);
       }
@@ -379,10 +418,12 @@ export class AppService {
         delete this.builderJSON.mainMenu;
       }
 
-    } else if (node.level === 'SubMenu') {
+    }
+    else if (node.level === 'SubMenu') {
       // Remove this node from the nodeSaved object.
       delete this.nodeSaved['SubMenu ' + node.parentIndex + ',' + node.index];
-
+      // Remove the SubMenu from the builderJSON business object, and its property
+      // if there are none left.
       if (this.builderJSON.mainMenu[node.parentIndex].menus) {
         this.builderJSON.mainMenu[node.parentIndex].menus.splice(node.index, 1);
       }
@@ -449,6 +490,10 @@ export class AppService {
     if (node.level === 'Application') {
       Object.assign(this.builderJSON, resultForm);
       this.nodeSaved['Application'] = true;
+    } else if (node.level === 'Datastore') {
+      this.confirmAllDatastoresExist(node);
+      Object.assign(this.builderJSON.datastores[node.index], resultForm);
+      this.nodeSaved['Datastore ' + node.index] = true;
     } else if (node.level === 'Main Menu') {
       this.confirmAllMainMenusExist(node);
       Object.assign(this.builderJSON.mainMenu[node.index], resultForm);

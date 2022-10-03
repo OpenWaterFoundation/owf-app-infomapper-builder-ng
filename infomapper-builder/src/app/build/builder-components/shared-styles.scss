@@ -14,6 +14,16 @@
   flex-direction: column;
 }
 
+/* Better display for each <li> tag in each dialog's description box. */
+.description-list {
+  margin: 5px 0;
+}
+
+/* Override for the padding of <ul> tags in each dialog's description box. */
+.description-ul {
+  padding-left: 25px;
+}
+
 /*  */
 .form-container {
   display: flex;

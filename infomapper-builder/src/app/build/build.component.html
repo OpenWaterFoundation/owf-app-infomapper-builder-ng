@@ -56,8 +56,16 @@
         <!-- Tree node template for leaf nodes with no children. -->
         <mat-tree-node *matTreeNodeDef="let node">
           <div [ngClass]="{'tree-node-header': node.level !== 'Application', 'tree-node-header-app-no-children': node.level === 'Application'}">
-            <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
-            <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+
+            <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
+              <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
+              <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+            </ng-container>
+
+            <ng-container *ngIf="node.level === 'Datastores' || node.level === 'Main Menus'">
+              <span class="node-name"><b>{{ node.name }}</b></span>
+            </ng-container>
+
           </div>
         </mat-tree-node>
   
@@ -71,8 +79,14 @@
                 </button>
   
                 <div>
-                  <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
-                  <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+                  <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
+                    <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
+                    <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+                  </ng-container>
+
+                  <ng-container *ngIf="node.level === 'Datastores' || node.level === 'Main Menus'">
+                    <span class="node-name"><b>{{ node.name }}</b></span>
+                  </ng-container>
                 </div>
               </div>
             </div>

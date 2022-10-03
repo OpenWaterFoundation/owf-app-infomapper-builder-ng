@@ -1,4 +1,4 @@
-<!-- <p class="help-string">
+<p class="help-string">
   All fields marked with an asterisk ( <span class="required-asterisk">*</span> ) are required.
 </p>
             
@@ -12,17 +12,38 @@
           Name<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
+          <input matInput formControlName="name" placeholder="StateModGitHub">
 
           <mat-error>
-            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.id'))">
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.name'))">
               {{ formErrorMessages[error] }} <br>
             </ng-container>
           </mat-error>
         </mat-form-field>
 
         <mat-card class="form-description">
-          Unique name to be used internally and displayed on the menu.
+          Unique name of the datastore. Cannot be one of the following built-in
+          names or their aliases:
+          <ul class="description-ul">
+            <li class="description-list">
+              <span class="code-block">Delimited</span>
+              <ul class="description-ul">
+                <li class="description-list"><span class="code-block">CSV</span></li>
+              </ul>
+            </li>
+            <li class="description-list">
+              <span class="code-block">Datevalue</span>
+              <ul class="description-ul">
+                <li class="description-list"><span class="code-block">DV</span></li>
+              </ul>
+            </li>
+            <li class="description-list">
+              <span class="code-block">StateMod</span>
+              <ul class="description-ul">
+                <li class="description-list"><span class="code-block">STM</span></li>
+              </ul>
+            </li>
+          </ul>
         </mat-card>
       </div>
 
@@ -31,18 +52,24 @@
           Type<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="name" placeholder="About the Project"
+          <input matInput formControlName="type" placeholder="owf.datastore.statemod"
           (keyup)="titleInput()">
 
           <mat-error>
-            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.name'))">
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.type'))">
               {{ formErrorMessages[error] }} <br>
             </ng-container>
           </mat-error>
         </mat-form-field>
 
         <mat-card class="form-description">
-          TODO: Fill me out.
+          The type of Datastore being used. The supported datastores for InfoMapper
+          applications are:
+          <ul class="description-ul">
+            <li class="description-list"><span class="code-block">owf.datastore.delimited</span></li>
+            <li class="description-list"><span class="code-block">owf.datastore.datevalue</span></li>
+            <li class="description-list"><span class="code-block">owf.datastore.statemod</span></li>
+          </ul>
         </mat-card>
       </div>
 
@@ -51,10 +78,28 @@
           Root URL<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
+          <input matInput formControlName="rootUrl" placeholder="https://raw.githubusercontent/path">
 
           <mat-error>
-            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.description'))">
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.rootUrl'))">
+              {{ formErrorMessages[error] }} <br>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          The root URL for this datastore. A file path from a TSID will be appended
+          to this URL if the Datastore is provided in the TSID.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">Aliases</div>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="aliases" placeholder="TODO">
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.aliases'))">
               {{ formErrorMessages[error] }} <br>
             </ng-container>
           </mat-error>
@@ -66,31 +111,25 @@
       </div>
 
       <div class="form-container">
-        <div class="form-title">Aliases</div>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
-        </mat-form-field>
-
-        <mat-card class="form-description">
-          Whether or not the Main Menu is enabled. Disabled menus will be greyed
-          out and won't be selectable.
-        </mat-card>
-      </div>
-
-      <div class="form-container">
         <div class="form-title">API Key</div>
 
         <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
+          <input matInput formControlName="apiKey" placeholder="1zc8/3kd83y6rhd4iod93u4kf0zzc">
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.apiKey'))">
+              {{ formErrorMessages[error] }} <br>
+            </ng-container>
+          </mat-error>
         </mat-form-field>
 
         <mat-card class="form-description">
-          Whether or not the Main Menu is visible. Non-visible menus will not be
-          created and shown in the navbar.
+          The API key of this Datastore if it is required or necessary for a easier
+          consuming experience of its data.
         </mat-card>
       </div>
 
     </div>
   </div>
   
-</form> -->
+</form>

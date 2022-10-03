@@ -69,6 +69,8 @@ export class DialogComponent implements OnInit {
 
     if (this.node.level === 'Application') {
       formGroup = 'appConfigFG';
+    } else if (this.node.level === 'Datastore') {
+      formGroup = 'datastoreFG';
     } else if (this.node.level === 'Main Menu') {
       formGroup = 'mainMenuFG';
     } else {

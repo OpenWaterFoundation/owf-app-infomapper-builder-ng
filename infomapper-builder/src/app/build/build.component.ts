@@ -59,7 +59,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   datastoreFG = new FormGroup({
     name: new FormControl('', Validators.required),
     type: new FormControl('', Validators.required),
-    rootURL: new FormControl('', Validators.required),
+    rootUrl: new FormControl('', Validators.required),
     aliases: new FormControl(''),
     apiKey: new FormControl('')
   });
@@ -105,7 +105,20 @@ export class BuildComponent implements OnInit, OnDestroy {
       level: 'Application',
       name: 'New application',
       index: 0,
-      children: []
+      children: [
+        {
+          level: 'Datastores',
+          name: 'Datastores',
+          index: 0,
+          children: []
+        },
+        {
+          level: 'Main Menus',
+          name: 'Main Menus',
+          index: 1,
+          children: []
+        }
+      ]
     }
   ];
   /** Boolean set to false if the URL id for this Build component does not exist
@@ -149,13 +162,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
    * Adds a
    */
-  addToTree(node: IM.TreeNodeData, nestedObj?: string): void {
+  addToTree(choice: IM.MenuChoice): void {
 
-    if (!nestedObj) {
-      this.buildManager.addNodeToTree(this.treeNodeData[0], node);
-    } else {
-      this.buildManager.addNodeToTree(this.treeNodeData[0], node, nestedObj);
-    }
+    this.buildManager.addNodeToTree(this.treeNodeData[0], choice);
 
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
@@ -167,8 +176,8 @@ export class BuildComponent implements OnInit, OnDestroy {
     // change.
     this.appService.setBuilderTreeObject(this.treeNodeData);
 
-    if (!this.treeControl.isExpanded(node)) {
-      this.treeControl.expand(node);
+    if (!this.treeControl.isExpanded(choice.node)) {
+      this.treeControl.expand(choice.node);
     }
   }
 
@@ -193,15 +202,6 @@ export class BuildComponent implements OnInit, OnDestroy {
       minWidth: isMobile ? "100vw" : "875px",
       maxHeight: isMobile ? "100vh" : "850px",
       maxWidth: isMobile ? "100vw" : "875px"
-    }
-  }
-
-  /**
-   * 
-   */
-  createInfoMapper(): void {
-    for (const field in this.appBuilderForm.controls) {
-      console.log('Input value for control ' + field + ': ', this.appBuilderForm.get(field).value);
     }
   }
 
@@ -323,11 +323,9 @@ export class BuildComponent implements OnInit, OnDestroy {
 
     switch(choice.choiceType) {
       case 'addDatastore':
-        this.addToTree(choice.node, 'addDatastore');
-        break;
       case 'addMainMenu':
       case 'addSubMenu':
-        this.addToTree(choice.node);
+        this.addToTree(choice);
         break;
       case 'editConfig':
         this.openConfigDialog(choice.node);
@@ -352,10 +350,6 @@ export class BuildComponent implements OnInit, OnDestroy {
     // change.
     this.appService.setBuilderTreeObject(this.treeNodeData);
     this.appService.removeBuilderObject(node);
-
-    // if (!this.treeControl.isExpanded(node)) {
-    //   this.treeControl.expand(node);
-    // }
   }
 
   /**
@@ -366,6 +360,8 @@ export class BuildComponent implements OnInit, OnDestroy {
 
     if (node.level === 'Application') {
       this.appService.setBuilderObject(this.appBuilderForm.getRawValue()['appConfigFG'], node);
+    } else if (node.level === 'Datastore') {
+      this.appService.setBuilderObject(this.appBuilderForm.get('datastoreFG').value, node);
     } else if (node.level === 'Main Menu') {
       this.appService.setBuilderObject(this.appBuilderForm.get('mainMenuFG').value, node);
     } else if (node.level === 'SubMenu') {
@@ -379,15 +375,21 @@ export class BuildComponent implements OnInit, OnDestroy {
    */
   private updateTreeNodeLevelAndNameText(node: IM.TreeNodeData): void {
 
+    var topDatastoreNode = this.treeNodeData[0].children[0];
+    var topMainMenuNode = this.treeNodeData[0].children[1];
+
     if (node.level === 'Application') {
       this.treeNodeData[0].level = node.level;
       this.treeNodeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
+    } else if (node.level === 'Datastore') {
+      topDatastoreNode.children[node.index].level = node.level;
+      topDatastoreNode.children[node.index].name = this.appBuilderForm.get('datastoreFG').value['name'];
     } else if (node.level === 'Main Menu') {
-      this.treeNodeData[0].children[node.index].level = node.level;
-      this.treeNodeData[0].children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
+      topMainMenuNode.children[node.index].level = node.level;
+      topMainMenuNode.children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
     } else if (node.level === 'SubMenu') {
-      this.treeNodeData[0].children[node.parentIndex].children[node.index].level = node.level;
-      this.treeNodeData[0].children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
+      topMainMenuNode.children[node.parentIndex].children[node.index].level = node.level;
+      topMainMenuNode.children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
   }
 

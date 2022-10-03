@@ -32,71 +32,76 @@ export class BuildManager {
   /**
    * 
    * @param treeNodeData 
-   * @param node 
+   * @param menuChoice 
    */
-  addNodeToTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData, nestedObj?: string): void {
+  addNodeToTree(treeNodeData: IM.TreeNodeData, menuChoice: IM.MenuChoice): void {
 
-    if (node.level === 'Application') {
-      // If no nested object is needed, create a Main Menu.
-      if (!nestedObj) {
-        treeNodeData.children.push({
-          level: 'Main Menu',
-          name: 'New Main Menu',
-          index: treeNodeData.children.length
-        });
-      }
-      // A nested object in the Application level of the tree is needed.
-      else {
-        treeNodeData.children.unshift({
+    var topMainMenuNode = treeNodeData.children[1];
+
+    if (menuChoice.node.level === 'Application') {
+
+      if (menuChoice.choiceType === 'addDatastore') {
+        treeNodeData.children[0].children.push({
           level: 'Datastore',
           name: 'New Datastore',
-          index: treeNodeData.children.length
+          index: treeNodeData.children[0].children.length
+        });
+      }
+      else if (menuChoice.choiceType === 'addMainMenu') {
+        topMainMenuNode.children.push({
+          level: 'Main Menu',
+          name: 'New Main Menu',
+          index: topMainMenuNode.children.length
         });
       }
     }
     // 
-    else if (node.level === 'Main Menu') {
+    else if (menuChoice.node.level === 'Main Menu') {
 
-      if (!treeNodeData.children[node.index].children) {
-        treeNodeData.children[node.index].children = [];
+      if (!topMainMenuNode.children[menuChoice.node.index].children) {
+        topMainMenuNode.children[menuChoice.node.index].children = [];
       }
-
-      treeNodeData.children[node.index].children.push({
+      topMainMenuNode.children[menuChoice.node.index].children.push({
         level: 'SubMenu',
         name: 'New SubMenu',
-        index: treeNodeData.children[node.index].children.length,
-        parentIndex: node.index
+        index: topMainMenuNode.children[menuChoice.node.index].children.length,
+        parentIndex: menuChoice.node.index
       });
     }
   }
 
   /**
-   * 
-   * @param allChildren 
+   * Removes all children object elements in the provided array.
+   * @param allChildren Array of all children nodes to remove.
    */
   private removeAllChildren(allChildren: IM.TreeNodeData[]): void {
     allChildren.splice(0, allChildren.length);
   }
 
   /**
-   * 
-   * @param treeNodeData 
-   * @param node 
+   * Removes the provided TreeNodeData - and any children nodes if present  - from 
+   * the treeNodeData structure.
+   * @param treeNodeData The top level Application TreeNodeData object will all
+   * its children nodes.
+   * @param node The node to remove, including all its children nodes if present.
    */
   removeNodeFromTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData) {
 
-    if (node.level === 'Main Menu') {
+    var topDatastoreNode = treeNodeData.children[0];
+    var topMainMenuNode = treeNodeData.children[1];
+
+    if (node.level === 'Datastore') {
+      topDatastoreNode.children.splice(topDatastoreNode.children.indexOf(topDatastoreNode.children[node.index]), 1);
+    } else if (node.level === 'Main Menu') {
       // Check if this Main Menu has any children and delete them first.
-      if (treeNodeData.children[node.index].children) {
-        if (treeNodeData.children[node.index].children.length > 0) {
-          this.removeAllChildren(treeNodeData.children[node.index].children);
+      if (topMainMenuNode.children[node.index].children) {
+        if (topMainMenuNode.children[node.index].children.length > 0) {
+          this.removeAllChildren(topMainMenuNode.children[node.index].children);
         }
       }
-      treeNodeData.children.splice(treeNodeData.children.indexOf(treeNodeData.children[node.index]), 1);
+      topMainMenuNode.children.splice(topMainMenuNode.children.indexOf(topMainMenuNode.children[node.index]), 1);
     } else if (node.level === 'SubMenu') {
-
-      var allSubMenus = treeNodeData.children[node.parentIndex].children;
-
+      var allSubMenus = topMainMenuNode.children[node.parentIndex].children;
       allSubMenus.splice(allSubMenus.indexOf(allSubMenus[node.index]), 1);
     }
   }
