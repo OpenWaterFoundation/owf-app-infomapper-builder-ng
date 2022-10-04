@@ -166,6 +166,10 @@ export class BuildComponent implements OnInit, OnDestroy {
 
     this.buildManager.addNodeToTree(this.treeNodeData[0], choice);
 
+    // Set the save state of the application to false, since the newly created
+    // node has not been saved yet.
+    this.appService.toggleSavedState = false;
+
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
     this.treeDataSource.data = null;
@@ -297,7 +301,7 @@ export class BuildComponent implements OnInit, OnDestroy {
       if (!node) {
         return;
       }
-      this.updateTreeNodeLevelAndNameText(node);
+      this.updateTreeNodeNameText(node);
       this.saveFormToFinalBuilderObject(node);
     });
 
@@ -367,28 +371,26 @@ export class BuildComponent implements OnInit, OnDestroy {
     } else if (node.level === 'SubMenu') {
       this.appService.setBuilderObject(this.appBuilderForm.get('subMenuFG').value, node);
     }
+
+    this.appService.toggleSavedState = true;
   }
 
   /**
    * 
    * @param node 
    */
-  private updateTreeNodeLevelAndNameText(node: IM.TreeNodeData): void {
+  private updateTreeNodeNameText(node: IM.TreeNodeData): void {
 
     var topDatastoreNode = this.treeNodeData[0].children[0];
     var topMainMenuNode = this.treeNodeData[0].children[1];
 
     if (node.level === 'Application') {
-      this.treeNodeData[0].level = node.level;
       this.treeNodeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
     } else if (node.level === 'Datastore') {
-      topDatastoreNode.children[node.index].level = node.level;
       topDatastoreNode.children[node.index].name = this.appBuilderForm.get('datastoreFG').value['name'];
     } else if (node.level === 'Main Menu') {
-      topMainMenuNode.children[node.index].level = node.level;
       topMainMenuNode.children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
     } else if (node.level === 'SubMenu') {
-      topMainMenuNode.children[node.parentIndex].children[node.index].level = node.level;
       topMainMenuNode.children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
   }

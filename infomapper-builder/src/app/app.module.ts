@@ -51,7 +51,7 @@ import { AppService }              from './app.service';
 
 import { CheckElementPipe }        from './pipes/check-element.pipe';
 import { ConvertFormNamePipe }     from './pipes/convert-form-name.pipe';
-import { DisplayNamePipe }         from './pipes/display-name.pipe';
+import { CheckSaveStatePipe }      from './pipes/check-save-state.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
@@ -108,7 +108,7 @@ function appInit(appService: AppService): () => Observable<any> {
     NodeMenuComponent,
     ConvertFormNamePipe,
     SubMenuConfigComponent,
-    DisplayNamePipe,
+    CheckSaveStatePipe,
     DatastoreConfigComponent
   ],
   imports: [

@@ -3,10 +3,13 @@ import { Component,
           Input,
           OnInit,
           Output }                 from '@angular/core';
+import { Observable }              from 'rxjs';
 
 import { faEllipsisVertical }      from '@fortawesome/free-solid-svg-icons';
 
+import { AppService }              from 'src/app/app.service';
 import * as IM                     from '@OpenWaterFoundation/common/services';
+
 
 @Component({
   selector: 'node-menu',
@@ -21,11 +24,14 @@ export class NodeMenuComponent implements OnInit {
   @Output('menuChoice') menuChoice = new EventEmitter<IM.MenuChoice>();
   /** The current tree node, passed in as input from the Build Component. */
   @Input('node') node: IM.TreeNodeData;
+  
+
+  constructor(private appService: AppService) { }
 
 
-
-  constructor() { }
-
+  get validState(): Observable<boolean> {
+    return this.appService.validSaveState$;
+  }
 
   ngOnInit(): void {
   }

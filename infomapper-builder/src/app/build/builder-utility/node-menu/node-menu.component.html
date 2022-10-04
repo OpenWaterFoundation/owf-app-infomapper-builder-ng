@@ -10,19 +10,19 @@ data-cy="NEEDS-TO-BE-UPDATED">
 
   <ng-container *ngIf="node.level === 'Application'">
     <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
-    data-cy="">
+    [disabled]="node | checkSaveState : (validState | async)" data-cy="">
       Add Main Menu
     </button>
 
     <button mat-menu-item (click)="sendMenuChoice(node, 'addDatastore')"
-    data-cy="">
+    [disabled]="node | checkSaveState : (validState | async)" data-cy="">
       Add Datastore
     </button>
   </ng-container>
 
   <ng-container *ngIf="node.level === 'Main Menu'">
     <button mat-menu-item (click)="sendMenuChoice(node, 'addSubMenu')"
-    data-cy="">
+    [disabled]="node | checkSaveState : (validState | async)" data-cy="">
       Add SubMenu
     </button>
   </ng-container>

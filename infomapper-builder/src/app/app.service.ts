@@ -1,7 +1,8 @@
 import { Injectable }        from '@angular/core';
 import { HttpClient }        from '@angular/common/http';
 import { FormGroup }         from '@angular/forms';
-import { catchError,
+import { BehaviorSubject,
+          catchError,
           first,
           Observable,
           of,
@@ -44,6 +45,14 @@ export class AppService {
   readonly mainWebsiteTitle = 'InfoMapper Builder';
   /** If each node in the tree has been saved yet (true) or not (false). */
   nodeSaved = {};
+  /**
+   * 
+   */
+  private validSaveState = new BehaviorSubject<boolean>(false);
+  /**
+   * 
+   */
+  validSaveState$: Observable<boolean> = this.validSaveState.asObservable();
 
   
   /**
@@ -74,6 +83,13 @@ export class AppService {
    */
   get fullBuilderJSON(): IM.AppConfig {
     return this.builderJSON;
+  }
+
+  /**
+   * 
+   */
+  set toggleSavedState(saved: boolean) {
+    this.validSaveState.next(saved);
   }
 
   /**
