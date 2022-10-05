@@ -2,12 +2,13 @@ import { Component,
           EventEmitter,
           Input,
           OnInit,
-          Output }     from '@angular/core';
+          Output }      from '@angular/core';
 import { AbstractControl,
-          FormGroup }  from '@angular/forms';
+          FormGroup }   from '@angular/forms';
 
-import { AppService }  from 'src/app/app.service';
-import * as IM         from '@OpenWaterFoundation/common/services';
+import { AppService }   from 'src/app/app.service';
+import * as IM          from '@OpenWaterFoundation/common/services';
+import { BuildManager } from '../../build-manager';
 
 
 @Component({
@@ -19,6 +20,9 @@ export class MainMenuConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -62,7 +66,7 @@ export class MainMenuConfigComponent implements OnInit {
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.appService.hasNodeBeenSaved('Main Menu ' + this.node.index)) {
+    if (this.buildManager.hasNodeBeenSaved('Main Menu ' + this.node.index)) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
@@ -75,7 +79,7 @@ export class MainMenuConfigComponent implements OnInit {
    */
   private populateFromBuilderJSON(): void {
 
-    var builderJSON = this.appService.fullBuilderJSON;
+    var builderJSON = this.buildManager.fullBuilderJSON;
 
     this.updateTitleInput.emit(builderJSON.mainMenu[this.node.index].name);
 
@@ -84,6 +88,9 @@ export class MainMenuConfigComponent implements OnInit {
 
     this.appBuilderForm.get('mainMenuFG.name')
     .setValue(builderJSON.mainMenu[this.node.index].name);
+
+    this.appBuilderForm.get('mainMenuFG.description')
+    .setValue(builderJSON.mainMenu[this.node.index].description);
 
     this.appBuilderForm.get('mainMenuFG.action')
     .setValue(builderJSON.mainMenu[this.node.index].action);

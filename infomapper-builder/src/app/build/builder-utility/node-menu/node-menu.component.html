@@ -9,22 +9,29 @@ data-cy="NEEDS-TO-BE-UPDATED">
   </button>
 
   <ng-container *ngIf="node.level === 'Application'">
-    <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
-    [disabled]="node | checkSaveState : (validState | async)" data-cy="">
-      Add Main Menu
-    </button>
-
-    <button mat-menu-item (click)="sendMenuChoice(node, 'addDatastore')"
-    [disabled]="node | checkSaveState : (validState | async)" data-cy="">
-      Add Datastore
-    </button>
+    <div matTooltip="Save configuration before moving on"
+    [matTooltipDisabled]="(validAppSaveState | async)" matTooltipPosition="right">
+      <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
+      [disabled]="!(validAppSaveState | async)" data-cy="">
+        Add Main Menu
+      </button>
+    
+      <button mat-menu-item (click)="sendMenuChoice(node, 'addDatastore')"
+      [disabled]="!(validAppSaveState | async)" data-cy="">
+        Add Datastore
+      </button>
+    </div>
+    
   </ng-container>
 
   <ng-container *ngIf="node.level === 'Main Menu'">
-    <button mat-menu-item (click)="sendMenuChoice(node, 'addSubMenu')"
-    [disabled]="node | checkSaveState : (validState | async)" data-cy="">
-      Add SubMenu
-    </button>
+    <div matTooltip="Save configuration before moving on"
+    [matTooltipDisabled]="(validAppSaveState | async)" matTooltipPosition="right">
+      <button mat-menu-item (click)="sendMenuChoice(node, 'addSubMenu')"
+      [disabled]="!(validAppSaveState | async)" data-cy="">
+        Add SubMenu
+      </button>
+    </div>
   </ng-container>
   
   <ng-container *ngIf="node.level !== 'Application'">

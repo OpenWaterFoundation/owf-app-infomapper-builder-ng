@@ -9,6 +9,7 @@ import { AbstractControl,
 import { AppService }     from 'src/app/app.service';
 
 import * as IM            from '@OpenWaterFoundation/common/services';
+import { BuildManager }   from '../../build-manager';
 
 
 @Component({
@@ -20,6 +21,9 @@ export class DatastoreConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -37,7 +41,7 @@ export class DatastoreConfigComponent implements OnInit {
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.appService.hasNodeBeenSaved('Datastore ' + this.node.index)) {
+    if (this.buildManager.hasNodeBeenSaved('Datastore ' + this.node.index)) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
@@ -60,7 +64,7 @@ export class DatastoreConfigComponent implements OnInit {
    */
    private populateFromBuilderJSON(): void {
 
-    var builderJSON = this.appService.fullBuilderJSON;
+    var builderJSON = this.buildManager.fullBuilderJSON;
 
     this.updateTitleInput.emit(builderJSON.datastores[this.node.index].name);
 

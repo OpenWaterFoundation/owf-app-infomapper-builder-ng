@@ -2,6 +2,8 @@ import { Pipe,
           PipeTransform } from '@angular/core';
 
 import * as IM            from '@OpenWaterFoundation/common/services';
+import { Observable }     from 'rxjs/internal/Observable';
+import { BuildManager }   from '../build/build-manager';
 
 
 @Pipe({
@@ -9,23 +11,11 @@ import * as IM            from '@OpenWaterFoundation/common/services';
 })
 export class CheckSaveStatePipe implements PipeTransform {
 
-  transform(node: IM.TreeNodeData, savedState: boolean): boolean {
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
 
-    // switch(node.level) {
-    //   case 'Application':
-        
-    // }
-
-    console.log('Save state:', savedState);
-    console.log('Node:', node);
-
-    // if (!savedState) {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
-    
-    // return true;
-    return false;
+  transform(node: IM.TreeNodeData): Observable<boolean> {
+    return this.buildManager.isNodeInSavedState(node);
   }
 }

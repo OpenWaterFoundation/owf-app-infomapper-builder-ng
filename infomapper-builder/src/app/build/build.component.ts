@@ -1,7 +1,8 @@
 import { Component,
           OnDestroy,
           OnInit }                 from '@angular/core';
-import { AbstractControl, FormControl,
+import { AbstractControl,
+          FormControl,
           FormGroup,
           ValidationErrors,
           ValidatorFn,
@@ -17,9 +18,11 @@ import { BreakpointObserver,
 import { NestedTreeControl }       from '@angular/cdk/tree';
 
 import { faChevronDown,
-          faChevronRight }         from '@fortawesome/free-solid-svg-icons';
+          faChevronRight,
+          faTriangleExclamation }  from '@fortawesome/free-solid-svg-icons';
 
 import { first,
+          Observable,
           Subject,
           takeUntil }              from 'rxjs';
 
@@ -68,6 +71,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** All used FontAwesome icons in the AppConfigComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
+  faTriangleExclamation = faTriangleExclamation;
   /** FormGroup used by the MenuComponent. */
   mainMenuFG = new FormGroup({
     id: new FormControl('', Validators.required),
@@ -165,20 +169,14 @@ export class BuildComponent implements OnInit, OnDestroy {
   addToTree(choice: IM.MenuChoice): void {
 
     this.buildManager.addNodeToTree(this.treeNodeData[0], choice);
-
-    // Set the save state of the application to false, since the newly created
-    // node has not been saved yet.
-    this.appService.toggleSavedState = false;
-
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
     this.treeDataSource.data = null;
     this.treeDataSource.data = this.treeNodeData;
     this.treeControl.dataNodes = this.treeNodeData;
-
     // Save the tree object to the app service for persistence after a user route
     // change.
-    this.appService.setBuilderTreeObject(this.treeNodeData);
+    this.buildManager.updateBuilderTree(this.treeNodeData);
 
     if (!this.treeControl.isExpanded(choice.node)) {
       this.treeControl.expand(choice.node);
@@ -210,15 +208,17 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   * Decides if a tree had been previously made, through user app navigation or
+   * by using a cookie if the user navigated completely away from the app. Default
+   * is to create a brand new tree.
    */
   determineTreeInit(): void {
 
     // The user navigated away from the builder inside this application.
-    if (this.appService.builderTreeObj.length > 0) {
-      this.treeDataSource.data = this.appService.builderTreeObj;
-      this.treeNodeData = this.appService.builderTreeObj;
-      this.treeControl.dataNodes = this.appService.builderTreeObj;
+    if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
+      this.treeDataSource.data = this.buildManager.builtTree;
+      this.treeNodeData = this.buildManager.builtTree;
+      this.treeControl.dataNodes = this.buildManager.builtTree;
     }
     // else if (Saved cookie) {
 
@@ -302,7 +302,7 @@ export class BuildComponent implements OnInit, OnDestroy {
         return;
       }
       this.updateTreeNodeNameText(node);
-      this.saveFormToFinalBuilderObject(node);
+      this.saveFormToFinalBuilderJSON(node);
     });
 
   }
@@ -310,8 +310,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
    * 
    */
-  printFinalBuilderObject(): void {
-    console.log(this.appService.fullBuilderJSON);
+  printFinalBuilderJSON(): void {
+    console.log(this.buildManager.fullBuilderJSON);
   }
 
   publishToAWS(): void {
@@ -349,30 +349,27 @@ export class BuildComponent implements OnInit, OnDestroy {
     this.treeDataSource.data = null;
     this.treeDataSource.data = this.treeNodeData;
     this.treeControl.dataNodes = this.treeNodeData;
-
     // Save the tree object to the app service for persistence after a user route
     // change.
-    this.appService.setBuilderTreeObject(this.treeNodeData);
-    this.appService.removeBuilderObject(node);
+    this.buildManager.updateBuilderTree(this.treeNodeData);
+    this.buildManager.removeFromBuilderJSON(node);
   }
 
   /**
    * 
    * @param node 
    */
-  private saveFormToFinalBuilderObject(node: IM.TreeNodeData): void {
+  private saveFormToFinalBuilderJSON(node: IM.TreeNodeData): void {
 
     if (node.level === 'Application') {
-      this.appService.setBuilderObject(this.appBuilderForm.getRawValue()['appConfigFG'], node);
+      this.buildManager.saveToBuilderJSON(this.appBuilderForm.getRawValue()['appConfigFG'], node);
     } else if (node.level === 'Datastore') {
-      this.appService.setBuilderObject(this.appBuilderForm.get('datastoreFG').value, node);
+      this.buildManager.saveToBuilderJSON(this.appBuilderForm.get('datastoreFG').value, node);
     } else if (node.level === 'Main Menu') {
-      this.appService.setBuilderObject(this.appBuilderForm.get('mainMenuFG').value, node);
+      this.buildManager.saveToBuilderJSON(this.appBuilderForm.get('mainMenuFG').value, node);
     } else if (node.level === 'SubMenu') {
-      this.appService.setBuilderObject(this.appBuilderForm.get('subMenuFG').value, node);
+      this.buildManager.saveToBuilderJSON(this.appBuilderForm.get('subMenuFG').value, node);
     }
-
-    this.appService.toggleSavedState = true;
   }
 
   /**
@@ -386,6 +383,9 @@ export class BuildComponent implements OnInit, OnDestroy {
 
     if (node.level === 'Application') {
       this.treeNodeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
+      // Since the Application is in the tree by default, the code that updates the
+      // Builder Tree won't be run. Update it when the Application level is saved.
+      this.buildManager.updateBuilderTree(this.treeNodeData);
     } else if (node.level === 'Datastore') {
       topDatastoreNode.children[node.index].name = this.appBuilderForm.get('datastoreFG').value['name'];
     } else if (node.level === 'Main Menu') {
@@ -393,6 +393,13 @@ export class BuildComponent implements OnInit, OnDestroy {
     } else if (node.level === 'SubMenu') {
       topMainMenuNode.children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
+  }
+
+  /**
+   * 
+   */
+  validNodeSaveState(node: IM.TreeNodeData): Observable<boolean> {
+    return this.buildManager.isNodeInSavedState(node);
   }
 
 }

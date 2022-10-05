@@ -9,7 +9,7 @@
       </button>
 
       <mat-menu #nodeMenu="matMenu">
-        <button mat-button (click)="printFinalBuilderObject()">
+        <button mat-button (click)="printFinalBuilderJSON()">
           TEST: Print to console
         </button>
 
@@ -36,7 +36,7 @@
       <div fxLayout fxLayoutGap="1px" class="build-nav-container">
   
         <mat-nav-list>
-          <button mat-flat-button (click)="printFinalBuilderObject()">
+          <button mat-flat-button (click)="printFinalBuilderJSON()">
             TEST: Print to console
           </button>
           <button mat-flat-button>Publish to GitHub</button>
@@ -60,6 +60,12 @@
             <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
               <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
               <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+
+              <ng-container *ngIf="!(validNodeSaveState(node) | async)">
+                <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
+                matTooltip="Configuration not saved" matTooltipPosition="right">
+                </fa-icon>
+              </ng-container>
             </ng-container>
 
             <ng-container *ngIf="node.level === 'Datastores' || node.level === 'Main Menus'">
@@ -82,6 +88,12 @@
                   <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
                     <span class="node-name"><b>{{ node.level }}:</b> {{ node.name }}</span>
                     <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+
+                    <ng-container *ngIf="!(validNodeSaveState(node) | async)">
+                      <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
+                      matTooltip="Configuration not saved" matTooltipPosition="right">
+                      </fa-icon>
+                    </ng-container>
                   </ng-container>
 
                   <ng-container *ngIf="node.level === 'Datastores' || node.level === 'Main Menus'">

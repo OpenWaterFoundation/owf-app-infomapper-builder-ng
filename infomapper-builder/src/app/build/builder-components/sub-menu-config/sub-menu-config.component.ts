@@ -2,12 +2,12 @@ import { Component,
           EventEmitter,
           Input,
           OnInit,
-          Output }    from '@angular/core';
+          Output }      from '@angular/core';
 import { AbstractControl,
-          FormGroup } from '@angular/forms';
+          FormGroup }   from '@angular/forms';
 
-import * as IM        from '@OpenWaterFoundation/common/services';
-import { AppService } from 'src/app/app.service';
+import * as IM          from '@OpenWaterFoundation/common/services';
+import { BuildManager } from '../../build-manager';
 
 @Component({
   selector: 'sub-menu-config',
@@ -18,6 +18,9 @@ export class SubMenuConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -33,13 +36,13 @@ export class SubMenuConfigComponent implements OnInit {
    * 
    * @param appService 
    */
-  constructor(private appService: AppService) { }
+  constructor() { }
 
 
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.appService.hasNodeBeenSaved('SubMenu ' + this.node.parentIndex + ',' + this.node.index)) {
+    if (this.buildManager.hasNodeBeenSaved('SubMenu ' + this.node.parentIndex + ',' + this.node.index)) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
@@ -61,7 +64,7 @@ export class SubMenuConfigComponent implements OnInit {
    */
   private populateFromBuilderJSON(): void {
 
-    var builderJSON = this.appService.fullBuilderJSON;
+    var builderJSON = this.buildManager.fullBuilderJSON;
 
     this.updateTitleInput.emit(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].name);
 

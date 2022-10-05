@@ -28,12 +28,6 @@ export class AppService {
    * under assets/app. If not, this string will be changed to 'assets/app-default'
    * and the default InfoMapper set up will be used instead. */
   appPath = 'assets/app/';
-  /** The object used to create the final app configuration file. (?) */
-  private builderJSON: IM.AppConfig = { title: '', homePage: '', version: '' };
-  /** The persisted tree object used between application URL changes. This is so
-   * the tree isn't created from scratch upon new Build Component construction if
-   * it doesn't have to be. */
-  private builderTree: IM.TreeNodeData[] = [];
   /** The hard-coded string of the path to the default icon path that will be used
    * for the website if none is given. */
   readonly defaultFaviconPath = 'favicon.ico';
@@ -43,8 +37,6 @@ export class AppService {
   FAVICON_SET = false;
   /** The initial website title to be displayed in the browser tab. */
   readonly mainWebsiteTitle = 'InfoMapper Builder';
-  /** If each node in the tree has been saved yet (true) or not (false). */
-  nodeSaved = {};
   /**
    * 
    */
@@ -68,21 +60,6 @@ export class AppService {
    */
   get appConfigObj(): IM.AppConfig {
     return this.appConfig;
-  }
-
-  /**
-   * 
-   */
-  get builderTreeObj(): IM.TreeNodeData[] {
-    return this.builderTree;
-  }
-
-  /**
-   * Getter for the entire AppConfig object, used to write to a JSON file as the
-   * `app-config.json`.
-   */
-  get fullBuilderJSON(): IM.AppConfig {
-    return this.builderJSON;
   }
 
   /**
@@ -149,67 +126,6 @@ export class AppService {
       return this.getAppPath() + this.getHomePage();
     }
     
-  }
-
-  /**
-   * 
-   * @param node 
-   */
-  private confirmAllDatastoresExist(node: IM.TreeNodeData): void {
-    if (!this.builderJSON.datastores) {
-      this.builderJSON.datastores = [];
-    }
-    for (let index = 0; index <= node.index; ++index) {
-      if (!this.builderJSON.datastores[index]) {
-        this.builderJSON.datastores.push({
-          name: '',
-          type: '',
-          rootUrl: ''
-        });
-      }
-    }
-  }
-
-  /**
-   * 
-   * @param node 
-   */
-  private confirmAllMainMenusExist(node: IM.TreeNodeData): void {
-    if (!this.builderJSON.mainMenu) {
-      this.builderJSON.mainMenu = [{}];
-    }
-    for (let index = 0; index <= node.index; ++index) {
-      if (!this.builderJSON.mainMenu[index]) {
-        this.builderJSON.mainMenu.push({});
-      }
-    }
-  }
-
-  /**
-   * 
-   * @param node 
-   */
-  private confirmAllSubMenusExist(node: IM.TreeNodeData): void {
-    
-    // Check if the empty Main Menus exist and create the ones that don't yet.
-    if (!this.builderJSON.mainMenu) {
-      this.builderJSON.mainMenu = [{}];
-    }
-    for (let pIndex = 0; pIndex <= node.parentIndex; ++pIndex) {
-      if (!this.builderJSON.mainMenu[pIndex]) {
-        this.builderJSON.mainMenu.push({});
-      }
-    }
-
-    // Check if the empty SubMenus exist and create the ones that don't yet.
-    if (!this.builderJSON.mainMenu[node.parentIndex].menus) {
-      this.builderJSON.mainMenu[node.parentIndex].menus = [{}];
-    }
-    for (let index = 0; index <= node.index; ++index) {
-      if (!this.builderJSON.mainMenu[node.parentIndex].menus[node.index]) {
-        this.builderJSON.mainMenu[node.parentIndex].menus.push({});
-      }
-    }
   }
 
   /**
@@ -339,14 +255,7 @@ export class AppService {
     };
   }
 
-  /**
-   * Checks if the current node's form has been saved before.
-   * @param nodeLevel The tree node level.
-   * @returns True if the node config has been previously saved.
-   */
-  hasNodeBeenSaved(nodeLevel: string): boolean {
-    return this.nodeSaved[nodeLevel];
-  }
+  
 
   /**
    * Asynchronously loads the application configuration file and sets the necessary
@@ -380,75 +289,7 @@ export class AppService {
     });
   }
 
-  /**
-   * Uses one or both indexes in the tree node to delete its object from the
-   * builderJSON (publishing) and nodeSaved (determining which nodes have been
-   * saved) objects.
-   * @param node The tree node being deleted, used as reference to remove it from
-   * the builderJSON business object.
-   */
-  removeBuilderObject(node: IM.TreeNodeData): void {
-
-    if (node.level === 'Datastore') {
-      // No Datastore node has been saved, so there's nothing to remove from either
-      // the builderJSON or nodeSaved objects.
-      if (!this.builderJSON.datastores) {
-        return;
-      }
-      // Remove this node from the nodeSaved object.
-      delete this.nodeSaved['Datastore ' + node.index];
-
-      // Remove the Datastore from the builderJSON business object, and its property
-      // if there are none left.
-      if (this.builderJSON.datastores) {
-        this.builderJSON.datastores.splice(node.index, 1);
-      }
-      if (this.builderJSON.datastores.length === 0) {
-        delete this.builderJSON.datastores;
-      }
-    }
-    else if (node.level === 'Main Menu') {
-      // No Main Menu node has been saved, so there's nothing to remove from either
-      // the builderJSON or nodeSaved objects.
-      if (!this.builderJSON.mainMenu) {
-        return;
-      }
-
-      // Remove this node from the nodeSaved object.
-      delete this.nodeSaved['Main Menu ' + node.index];
-
-      // Remove children from nodeSaved object if it has any.
-      if (this.builderJSON.mainMenu[node.index].menus) {
-        for (let i = 0; i <= this.builderJSON.mainMenu[node.index].menus.length; ++i) {
-          if (this.builderJSON.mainMenu[node.index].menus[i]) {
-            delete this.nodeSaved['SubMenu ' + node.index + ',' + i];
-          }
-        }
-      }
-      // Remove the Main Menu from the builderJSON business object, and its property
-      // if there are none left.
-      if (this.builderJSON.mainMenu) {
-        this.builderJSON.mainMenu.splice(node.index, 1);
-      }
-      if (this.builderJSON.mainMenu.length === 0) {
-        delete this.builderJSON.mainMenu;
-      }
-
-    }
-    else if (node.level === 'SubMenu') {
-      // Remove this node from the nodeSaved object.
-      delete this.nodeSaved['SubMenu ' + node.parentIndex + ',' + node.index];
-      // Remove the SubMenu from the builderJSON business object, and its property
-      // if there are none left.
-      if (this.builderJSON.mainMenu[node.parentIndex].menus) {
-        this.builderJSON.mainMenu[node.parentIndex].menus.splice(node.index, 1);
-      }
-      if (this.builderJSON.mainMenu[node.parentIndex].menus.length === 0) {
-        delete this.builderJSON.mainMenu[node.parentIndex].menus;
-      }
-      
-    }
-  }
+  
 
   /**
    * Sanitizes the markdown syntax by checking if image links are present, and replacing
@@ -495,39 +336,6 @@ export class AppService {
    * file as an object.
    */
   setAppConfig(appConfig: IM.AppConfig): void { this.appConfig = appConfig; }
-
-  /**
-   * 
-   * @param resultForm 
-   * @param node 
-   */
-  setBuilderObject(resultForm: FormGroup, node: IM.TreeNodeData): void {
-
-    if (node.level === 'Application') {
-      Object.assign(this.builderJSON, resultForm);
-      this.nodeSaved['Application'] = true;
-    } else if (node.level === 'Datastore') {
-      this.confirmAllDatastoresExist(node);
-      Object.assign(this.builderJSON.datastores[node.index], resultForm);
-      this.nodeSaved['Datastore ' + node.index] = true;
-    } else if (node.level === 'Main Menu') {
-      this.confirmAllMainMenusExist(node);
-      Object.assign(this.builderJSON.mainMenu[node.index], resultForm);
-      this.nodeSaved['Main Menu ' + node.index] = true;
-    } else if (node.level === 'SubMenu') {
-      this.confirmAllSubMenusExist(node);
-      Object.assign(this.builderJSON.mainMenu[node.parentIndex].menus[node.index], resultForm);
-      this.nodeSaved['SubMenu ' + node.parentIndex + ',' + node.index] = true;
-    }
-  }
-
-  /**
-   * 
-   * @param treeNodeData 
-   */
-  setBuilderTreeObject(treeNodeData: IM.TreeNodeData[]): void {
-    Object.assign(this.builderTree, treeNodeData);
-  }
 
   /**
    * Sets the app service @var faviconPath to the user-provided path given in the

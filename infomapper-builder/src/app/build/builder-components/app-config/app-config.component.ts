@@ -2,11 +2,12 @@ import { Component,
           EventEmitter,
           Input,
           OnInit, 
-          Output}      from '@angular/core';
+          Output}       from '@angular/core';
 import { AbstractControl,
-          FormGroup }  from '@angular/forms';
+          FormGroup }   from '@angular/forms';
 
-import { AppService }  from 'src/app/app.service';
+import { AppService }   from 'src/app/app.service';
+import { BuildManager } from '../../build-manager';
 
 
 @Component({
@@ -18,6 +19,9 @@ export class AppConfigComponent implements OnInit {
 
   /** The top level form for the InfoMapper Builder app. */
   @Input('appBuilderForm') appBuilderForm: FormGroup;
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -38,7 +42,7 @@ export class AppConfigComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.appService.hasNodeBeenSaved('Application')) {
+    if (this.buildManager.hasNodeBeenSaved('Application')) {
       this.populateFromBuilderJSON();
     } else {
       this.setRequiredDefaults();
@@ -60,7 +64,7 @@ export class AppConfigComponent implements OnInit {
    */
   private populateFromBuilderJSON(): void {
 
-    let fullBuilderJSON = this.appService.fullBuilderJSON;
+    let fullBuilderJSON = this.buildManager.fullBuilderJSON;
 
     this.updateTitleInput.emit(fullBuilderJSON.title);
 
@@ -77,7 +81,7 @@ export class AppConfigComponent implements OnInit {
    */
   private setRequiredDefaults(): void {
 
-    let fullBuilderJSON = this.appService.fullBuilderJSON;
+    let fullBuilderJSON = this.buildManager.fullBuilderJSON;
 
     let titleControl = this.appBuilderForm.get('appConfigFG.title')
     titleControl.setValue(fullBuilderJSON.title);

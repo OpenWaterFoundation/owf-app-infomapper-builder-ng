@@ -7,8 +7,8 @@ import { Observable }              from 'rxjs';
 
 import { faEllipsisVertical }      from '@fortawesome/free-solid-svg-icons';
 
-import { AppService }              from 'src/app/app.service';
 import * as IM                     from '@OpenWaterFoundation/common/services';
+import { BuildManager }            from '../../build-manager';
 
 
 @Component({
@@ -18,6 +18,9 @@ import * as IM                     from '@OpenWaterFoundation/common/services';
 })
 export class NodeMenuComponent implements OnInit {
 
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+   * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
   /** All used FontAwesome icons in the NodeMenuComponent. */
   faEllipsisVertical = faEllipsisVertical;
   /** The selected menu choice to send back to the DialogComponent. */
@@ -26,11 +29,11 @@ export class NodeMenuComponent implements OnInit {
   @Input('node') node: IM.TreeNodeData;
   
 
-  constructor(private appService: AppService) { }
+  constructor() { }
 
 
-  get validState(): Observable<boolean> {
-    return this.appService.validSaveState$;
+  get validAppSaveState(): Observable<boolean> {
+    return this.buildManager.isAppInSavedState();
   }
 
   ngOnInit(): void {
