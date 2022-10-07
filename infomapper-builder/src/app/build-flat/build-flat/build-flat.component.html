@@ -1,0 +1,23 @@
+<div fxLayout="row" fxLayoutAlign="center" class="main-container">
+  <div fxFlex="75%" fxFlex.lt-md="100%" fxFlex.gt-lg="50%" class="build-container">
+
+    <button mat-raised-button (click)="addNodeToTreeData('Datastore')">Click to add Datastore</button>
+    <button mat-raised-button (click)="addNodeToTreeData('Main Menu')">Click to add Main Menu</button>
+
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList (cdkDropListDropped)="drop($event)">
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding cdkDrag [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()">
+        <span class="node-name-no-children"><b>{{ node.level }}:</b> {{ node.name }}</span>
+      </mat-tree-node>
+    
+      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding cdkDrag [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()">
+        <button mat-icon-button matTreeNodeToggle (click)="expansionModel.toggle(node.id)"
+        [attr.aria-label]="'Toggle ' + node.name">
+          <fa-icon [icon]="treeControl.isExpanded(node) ? faChevronDown : faChevronRight"
+          size="lg"></fa-icon>
+        </button>
+        <span class="node-name-with-children"><b>{{ node.level }}:</b> {{ node.name }}</span>
+      </mat-tree-node>
+    </mat-tree>    
+
+  </div>
+</div>

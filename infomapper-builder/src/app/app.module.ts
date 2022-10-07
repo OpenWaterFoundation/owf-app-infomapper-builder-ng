@@ -8,7 +8,13 @@ import { FlexLayoutModule }        from '@angular/flex-layout';
 import { FormsModule,
           ReactiveFormsModule }    from '@angular/forms';
 
+import { CdkStepperModule }        from '@angular/cdk/stepper';
+import { CdkTableModule }          from '@angular/cdk/table';
+import { CdkTreeModule }           from '@angular/cdk/tree';
 import { DragDropModule }          from '@angular/cdk/drag-drop';
+import { PortalModule }            from '@angular/cdk/portal';
+import { ScrollingModule }         from '@angular/cdk/scrolling';
+
 
 import { MatButtonModule }         from '@angular/material/button';
 import { MatCardModule }           from '@angular/material/card';
@@ -56,6 +62,7 @@ import { CheckSaveStatePipe }      from './pipes/check-save-state.pipe';
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';
 import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
+import { BuildFlatComponent } from './build-flat/build-flat/build-flat.component';
 
 
 const classMap: any = {
@@ -109,7 +116,8 @@ function appInit(appService: AppService): () => Observable<any> {
     ConvertFormNamePipe,
     SubMenuConfigComponent,
     CheckSaveStatePipe,
-    DatastoreConfigComponent
+    DatastoreConfigComponent,
+    BuildFlatComponent
   ],
   imports: [
     AngularFullpageModule,
@@ -136,7 +144,12 @@ function appInit(appService: AppService): () => Observable<any> {
       ]
     }),
     
+    CdkStepperModule,
+    CdkTableModule,
+    CdkTreeModule,
     DragDropModule,
+    PortalModule,
+    ScrollingModule,
 
     MatButtonModule,
     MatCardModule,

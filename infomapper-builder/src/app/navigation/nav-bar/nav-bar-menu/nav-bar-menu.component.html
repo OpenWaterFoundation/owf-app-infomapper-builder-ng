@@ -77,6 +77,17 @@
   </li>
 </div>
 
+<!-- Build Flat Test. TODO: Remove or replace. -->
+<div *ngIf="mainMenu.action === 'build-flat'">
+  <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
+    <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
+    class="nav-link" routerLinkActive="mat-selected" [routerLink]="['/build-flat/', mainMenu.id]"
+    [attr.data-cy]="mainMenu.name">
+      {{mainMenu.name}}
+    </a>
+  </li>
+</div>
+
 <!-- MainMenus with no SubMenus. -->
 <!-- Content Page MainMenu. -->
 <div *ngIf="mainMenu.action === 'contentPage'">
