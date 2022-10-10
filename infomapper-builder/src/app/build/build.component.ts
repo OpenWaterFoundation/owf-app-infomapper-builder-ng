@@ -260,6 +260,9 @@ export class BuildComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * 
+   */
   ngOnInit(): void {
 
     // When the parameters in the URL are changed the map will refresh and load

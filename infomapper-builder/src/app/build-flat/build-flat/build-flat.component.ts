@@ -91,6 +91,10 @@ export class NodeDatabase {
     this.dataChange.next(this.treeNodeData);
   }
 
+  /**
+   * 
+   * @param nodeType 
+   */
   updateTreeNodeData(nodeType: string): void {
 
     if (nodeType === 'Datastore') {
@@ -102,7 +106,7 @@ export class NodeDatabase {
       } as IM.TreeNodeData);
     } else if (nodeType === 'Main Menu') {
       this.treeNodeData[0].children[1].children.push({
-        level: 'Main Menu ' + (this.treeNodeData[0].children[1].children.length + 1),
+        level: 'Main Menu',
         name: 'New Main Menu',
         id: '0/1/' + this.treeNodeData[0].children[1].children.length,
         index: 0
@@ -166,19 +170,32 @@ export class NodeDatabase {
   styleUrls: ['./build-flat.component.scss'],
   providers: [NodeDatabase]
 })
-export class BuildFlatComponent {
+export class BuildFlatComponent implements OnInit {
 
+  /** Controller for the flat tree. */
   treeControl: FlatTreeControl<IM.TreeFlatNode>;
+  /** Tree flattener to convert a normal type of node to node with children & level
+   * information. Transforms nested nodes of type T to flattened nodes of type F. */
   treeFlattener: MatTreeFlattener<IM.TreeNodeData, IM.TreeFlatNode>;
-  dataSource: MatTreeFlatDataSource<IM.TreeNodeData, IM.TreeFlatNode>;
-  // expansion model tracks expansion state
+  /** Data source for the flat tree. */
+  treeDataSource: MatTreeFlatDataSource<IM.TreeNodeData, IM.TreeFlatNode>;
+  /** Expansion model tracks expansion state. */
   expansionModel = new SelectionModel<string>(true);
+  /** All used FontAwesome icons in the BuildFlatComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
+  /**
+   * 
+   */
   dragging = false;
+  /**
+   * 
+   */
   expandTimeout: any;
+  /**
+   * 
+   */
   expandDelay = 1000;
-  validateDrop = false;
 
   // /** The main FormGroup for the entire application. */
   // appBuilderForm = new FormGroup({});
@@ -191,9 +208,9 @@ export class BuildFlatComponent {
   //   favicon: new FormControl('favicon.ico'),
   //   googleAnalyticsTrackingId: new FormControl('')
   // });
-  // /** Singleton BuildManager instance to uniquely add different nodes to the
-  // * displayed tree. */
-  // buildManager: BuildManager = BuildManager.getInstance();
+  /** Singleton BuildManager instance to uniquely add different nodes to the
+  * displayed tree. */
+  buildManager: BuildManager = BuildManager.getInstance();
   // /** The current screen size. Used for dialogs to determine if they
   // * should be shown for desktop or mobile screens. */
   // currentScreenSize: string;
@@ -205,8 +222,8 @@ export class BuildFlatComponent {
   //   aliases: new FormControl(''),
   //   apiKey: new FormControl('')
   // });
-  // /** Subject that is completed when this component is destroyed. */
-  // destroyed = new Subject<void>();
+  /** Subject that is completed when this component is destroyed. */
+  destroyed = new Subject<void>();
   // /** All used FontAwesome icons in the AppConfigComponent. */
   // faChevronDown = faChevronDown;
   // faChevronRight = faChevronRight;
@@ -242,19 +259,179 @@ export class BuildFlatComponent {
   // treeControl = new NestedTreeControl<IM.TreeNodeData>(node => node.children);
   // /** The dataSource object that is used to display and update the tree on the DOM. */
   // treeDataSource = new MatTreeNestedDataSource<IM.TreeNodeData>();
-  // /** Boolean set to false if the URL id for this Build component does not exist
-  // * in any `app-config.json` mainMenu or subMenu id. */
-  // validBuildID = true;
+  /** Boolean set to false if the URL id for this Build component does not exist
+  * in any `app-config.json` mainMenu or subMenu id. */
+  validBuildID = true;
 
-  constructor(private database: NodeDatabase) {
-    this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
-      this._isExpandable, this._getChildren);
-    this.treeControl = new FlatTreeControl<IM.TreeFlatNode>(this._getLevel, this._isExpandable);
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+  constructor(private actRoute: ActivatedRoute, private appService: AppService,
+  private database: NodeDatabase) {
+
+    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
+    this.isExpandable, this.getChildren);
+    this.treeControl = new FlatTreeControl<IM.TreeFlatNode>(this.getLevel, this.isExpandable);
+    this.treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     database.dataChange.subscribe((data: any) => this.rebuildTreeForData(data));
   }
 
+  /**
+   * 
+   * @param _ 
+   * @param _nodeData 
+   * @returns 
+   */
+  hasChild = (_: number, _nodeData: IM.TreeFlatNode) => _nodeData.expandable;
+
+  /**
+   * 
+   * @param nodeType 
+   */
+  addNodeToTreeData(nodeType: string): void {
+    this.database.updateTreeNodeData(nodeType);
+  }
+
+  /**
+   * Decides if a tree had been previously made, through user app navigation or
+   * by using a cookie if the user navigated completely away from the app. Default
+   * is to create a brand new tree.
+   */
+  determineTreeInit(): void {
+
+    // The user navigated away from the builder inside this application.
+    if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
+      // this.treeDataSource.data = this.buildManager.builtTree;
+      // this.treeNodeData = this.buildManager.builtTree;
+      // this.treeControl.dataNodes = this.buildManager.builtTree;
+    }
+    // else if (Saved cookie) {
+
+    // }
+    // Normal completely new initialization.
+    else {
+      // this.initTreeNodeAndFormGroup();
+    }
+
+    this.treeControl.expandAll();
+  }
+
+  /**
+   * Experimental - opening tree nodes as you drag over them
+   */
+  dragStart() {
+    this.dragging = true;
+  }
+  dragEnd() {
+    this.dragging = false;
+  }
+  dragHover(node: IM.TreeFlatNode) {
+    if (this.dragging) {
+      clearTimeout(this.expandTimeout);
+      this.expandTimeout = setTimeout(() => {
+        this.treeControl.expand(node);
+      }, this.expandDelay);
+    }
+  }
+  dragHoverEnd() {
+    if (this.dragging) {
+      clearTimeout(this.expandTimeout);
+    }
+  }
+
+  /**
+   * Not used but you might need this to programmatically expand nodes
+   * to reveal a particular node
+   */
+  // private expandNodesById(flatNodes: IM.TreeFlatNode[], ids: string[]) {
+  //   if (!flatNodes || flatNodes.length === 0) return;
+  //   const idSet = new Set(ids);
+  //   return flatNodes.forEach((node) => {
+  //     if (idSet.has(node.id)) {
+  //       this.treeControl.expand(node);
+  //       let parent = this.getParentNode(node);
+  //       while (parent) {
+  //         this.treeControl.expand(parent);
+  //         parent = this.getParentNode(parent);
+  //       }
+  //     }
+  //   });
+  // }
+
+  /**
+   * 
+   * @param node 
+   * @returns 
+   */
+  private getChildren = (node: IM.TreeNodeData): Observable<IM.TreeNodeData[]> => of(node.children);
+
+  /**
+   * 
+   * @param node 
+   * @returns 
+   */
+  private getLevel = (node: IM.TreeFlatNode) => node.flatLevel;
+
+  private getParentNode(node: IM.TreeFlatNode): IM.TreeFlatNode | null {
+    const currentLevel = node.flatLevel;
+    if (currentLevel < 1) {
+      return null;
+    }
+    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+    for (let i = startIndex; i >= 0; i--) {
+      const currentNode = this.treeControl.dataNodes[i];
+      if (currentNode.flatLevel < currentLevel) {
+        return currentNode;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 
+   * @param node 
+   * @returns 
+   */
+  private isExpandable = (node: IM.TreeFlatNode) => node.expandable;
+
+  /**
+   * 
+   */
+  ngOnInit(): void {
+
+    // When the parameters in the URL are changed the map will refresh and load
+    // according to new configuration data.
+    this.actRoute.paramMap.pipe(takeUntil(this.destroyed)).subscribe((paramMap: ParamMap) => {
+
+      var buildID = paramMap.get('builderId');
+      this.validBuildID = this.appService.validURLConfigID(buildID);
+
+      if (this.validBuildID === false) {
+        return;
+      }
+
+      this.determineTreeInit();
+    });
+  }
+
+  /**
+   * 
+   * @param data 
+   */
+  rebuildTreeForData(data: any) {
+    console.log('Rebuilt treeNodeData:', data);
+    this.treeDataSource.data = data;
+    this.expansionModel.selected.forEach((id) => {
+        const node = this.treeControl.dataNodes.find((n) => n.id === id);
+        this.treeControl.expand(node);
+      });
+  }
+
+  /**
+   * 
+   * @param node 
+   * @param level 
+   * @returns 
+   */
   transformer = (node: IM.TreeNodeData, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -266,40 +443,12 @@ export class BuildFlatComponent {
       parentIndex: node.parentIndex
     } as IM.TreeFlatNode;
   }
-  private _getLevel = (node: IM.TreeFlatNode) => node.flatLevel;
-  private _isExpandable = (node: IM.TreeFlatNode) => node.expandable;
-  private _getChildren = (node: IM.TreeNodeData): Observable<IM.TreeNodeData[]> => of(node.children);
-  hasChild = (_: number, _nodeData: IM.TreeFlatNode) => _nodeData.expandable;
-
-  addNodeToTreeData(nodeType: string): void {
-    this.database.updateTreeNodeData(nodeType);
-  }
-
-  // DRAG AND DROP METHODS
-
-  /**
-   * This constructs an array of nodes that matches the DOM
-   */
-  visibleNodes(): IM.TreeNodeData[] {
-    const result = [];
-
-    function addExpandedChildren(node: IM.TreeNodeData, expanded: string[]) {
-      result.push(node);
-      if (expanded.includes(node.id as string)) {
-        node.children.map((child) => addExpandedChildren(child, expanded));
-      }
-    }
-    this.dataSource.data.forEach((node) => {
-      addExpandedChildren(node, this.expansionModel.selected);
-    });
-    return result;
-  }
 
   /**
    * Handle the drop - here we rearrange the data based on the drop event,
    * then rebuild the tree.
    * */
-  drop(event: CdkDragDrop<string[]>) {
+  treeNodeDrop(event: CdkDragDrop<string[]>) {
     // console.log('origin/destination', event.previousIndex, event.currentIndex);
   
     // ignore drops outside of the tree
@@ -311,7 +460,7 @@ export class BuildFlatComponent {
     const visibleNodes = this.visibleNodes();
 
     // deep clone the data source so we can mutate it
-    const changedData = JSON.parse(JSON.stringify(this.dataSource.data));
+    const changedData = JSON.parse(JSON.stringify(this.treeDataSource.data));
 
     // recursive find function to find siblings of node
     function findNodeSiblings(arr: Array<any>, id: string): Array<any> {
@@ -343,12 +492,14 @@ export class BuildFlatComponent {
 
     // ensure validity of drop - must be same level
     const nodeAtDestFlatNode = this.treeControl.dataNodes.find((n) => nodeAtDest.id === n.id);
-    if (this.validateDrop && nodeAtDestFlatNode.level !== node.level) {
+    if (nodeAtDestFlatNode.level !== node.level) {
+      console.log('Node at destination:', nodeAtDestFlatNode);
+      console.log('Node to move:', node);
       alert('Items can only be moved within the same level.');
       return;
     }
 
-    // insert node 
+    // Insert node 
     newSiblings.splice(insertIndex, 0, nodeToInsert);
     
     // rebuild tree with mutated data
@@ -356,73 +507,21 @@ export class BuildFlatComponent {
   }
 
   /**
-   * Experimental - opening tree nodes as you drag over them
+   * This constructs an array of nodes that matches the DOM.
    */
-  dragStart() {
-    this.dragging = true;
-  }
-  dragEnd() {
-    this.dragging = false;
-  }
-  dragHover(node: IM.TreeFlatNode) {
-    if (this.dragging) {
-      clearTimeout(this.expandTimeout);
-      this.expandTimeout = setTimeout(() => {
-        this.treeControl.expand(node);
-      }, this.expandDelay);
-    }
-  }
-  dragHoverEnd() {
-    if (this.dragging) {
-      clearTimeout(this.expandTimeout);
-    }
-  }
+  visibleNodes(): IM.TreeNodeData[] {
+    const result = [];
 
-  /**
-   * 
-   * @param data 
-   */
-  rebuildTreeForData(data: any) {
-    console.log('Rebuilt treeNodeData:', data);
-    this.dataSource.data = data;
-    this.expansionModel.selected.forEach((id) => {
-        const node = this.treeControl.dataNodes.find((n) => n.id === id);
-        this.treeControl.expand(node);
-      });
-  }
-
-  /**
-   * Not used but you might need this to programmatically expand nodes
-   * to reveal a particular node
-   */
-  // private expandNodesById(flatNodes: IM.TreeFlatNode[], ids: string[]) {
-  //   if (!flatNodes || flatNodes.length === 0) return;
-  //   const idSet = new Set(ids);
-  //   return flatNodes.forEach((node) => {
-  //     if (idSet.has(node.id)) {
-  //       this.treeControl.expand(node);
-  //       let parent = this.getParentNode(node);
-  //       while (parent) {
-  //         this.treeControl.expand(parent);
-  //         parent = this.getParentNode(parent);
-  //       }
-  //     }
-  //   });
-  // }
-
-  private getParentNode(node: IM.TreeFlatNode): IM.TreeFlatNode | null {
-    const currentLevel = node.flatLevel;
-    if (currentLevel < 1) {
-      return null;
-    }
-    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
-    for (let i = startIndex; i >= 0; i--) {
-      const currentNode = this.treeControl.dataNodes[i];
-      if (currentNode.flatLevel < currentLevel) {
-        return currentNode;
+    function addExpandedChildren(node: IM.TreeNodeData, expanded: string[]) {
+      result.push(node);
+      if (expanded.includes(node.id as string)) {
+        node.children.map((child) => addExpandedChildren(child, expanded));
       }
     }
-    return null;
+    this.treeDataSource.data.forEach((node) => {
+      addExpandedChildren(node, this.expansionModel.selected);
+    });
+    return result;
   }
 
   // /**
@@ -503,30 +602,6 @@ export class BuildFlatComponent {
   // }
 
   // /**
-  // * Decides if a tree had been previously made, through user app navigation or
-  // * by using a cookie if the user navigated completely away from the app. Default
-  // * is to create a brand new tree.
-  // */
-  // determineTreeInit(): void {
-
-  //   // The user navigated away from the builder inside this application.
-  //   if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
-  //     this.treeDataSource.data = this.buildManager.builtTree;
-  //     this.treeNodeData = this.buildManager.builtTree;
-  //     this.treeControl.dataNodes = this.buildManager.builtTree;
-  //   }
-  //   // else if (Saved cookie) {
-
-  //   // }
-  //   // Normal completely new initialization.
-  //   else {
-  //     this.initTreeNodeAndFormGroup();
-  //   }
-
-  //   this.treeControl.expandAll();
-  // }
-
-  // /**
   // * 
   // */
   // hasChild = (_: number, node: any) => !!node.children && node.children.length > 0;
@@ -553,23 +628,6 @@ export class BuildFlatComponent {
   //     }
   //     return null;
   //   }
-  // }
-
-  // ngOnInit(): void {
-
-  //   // When the parameters in the URL are changed the map will refresh and load
-  //   // according to new configuration data.
-  //   this.actRoute.paramMap.pipe(takeUntil(this.destroyed)).subscribe((paramMap: ParamMap) => {
-
-  //     var buildID = paramMap.get('builderId');
-  //     this.validBuildID = this.appService.validURLConfigID(buildID);
-
-  //     if (this.validBuildID === false) {
-  //       return;
-  //     }
-
-  //     this.determineTreeInit();
-  //   });
   // }
 
   // ngOnDestroy(): void {
