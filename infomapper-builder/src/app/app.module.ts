@@ -57,7 +57,7 @@ import { AppService }              from './app.service';
 
 import { CheckElementPipe }        from './pipes/check-element.pipe';
 import { ConvertFormNamePipe }     from './pipes/convert-form-name.pipe';
-import { CheckTreeNodePipe }      from './pipes/check-tree-node.pipe';
+import { CheckTreeNodePipe }       from './pipes/check-tree-node.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown               from 'showdown';

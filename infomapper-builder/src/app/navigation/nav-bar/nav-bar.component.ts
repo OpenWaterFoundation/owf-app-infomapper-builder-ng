@@ -40,7 +40,6 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.logger.print('info', 'Navbar initialization.');
-
     this.title = this.appService.appConfigObj.title;
   }
 

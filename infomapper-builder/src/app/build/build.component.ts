@@ -168,7 +168,7 @@ export class BuildComponent implements OnInit, OnDestroy {
    */
   addToTree(choice: IM.MenuChoice): void {
 
-    this.buildManager.addNodeToTree(this.treeNodeData[0], choice);
+    // this.buildManager.addNodeToTree(choice);
     // This is required for Angular to see the changes and update the Tree.
     // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
     this.treeDataSource.data = null;

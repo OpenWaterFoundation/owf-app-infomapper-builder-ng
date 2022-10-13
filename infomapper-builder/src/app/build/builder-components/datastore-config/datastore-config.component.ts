@@ -27,7 +27,7 @@ export class DatastoreConfigComponent implements OnInit {
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
-  }
+  };
   /** The currently edited Tree Node. */
   @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
@@ -35,13 +35,13 @@ export class DatastoreConfigComponent implements OnInit {
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
-  constructor(private appService: AppService) { }
+  constructor() { }
 
 
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.buildManager.hasNodeBeenSaved('Datastore ' + this.node.index)) {
+    if (this.buildManager.hasNodeBeenSaved(this.node.index.toString())) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();

@@ -69,3 +69,20 @@ versions ahead of the library will still work, but that is not guaranteed. A saf
 and more robust solution would be to just make sure they are both as caught up as
 possible to the LTS version. Updating both to the same major version removed these
 errors.
+
+### App recompile shows NG0301 error ###
+
+Sometimes an application refresh shows an ambiguous Angular error that just shows
+`Error: NG0301` and nothing else. Google searches tend to think it's a template
+file parsing error, or other errors that is the same NG error, but includes more
+descriptive text. The effected area of the page will either not render, or not correctly
+render the code on the page.
+
+A consistent solution has been to make sure the area in the DOM is template code
+from a specific component. It has been every time this error has occurred. Navigate
+to the `.ts` file of said component and make a trivial change to it. After a save
+and recompile, the component should be rendered correctly (or as the created).
+
+This seems to be an issue where web pack, or something else, 'forgets' about the
+component's existence in the application. Making a change to the component's
+TypeScript file helps it remember again.

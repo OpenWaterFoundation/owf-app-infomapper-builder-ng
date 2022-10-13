@@ -24,7 +24,7 @@ export class SubMenuConfigComponent implements OnInit {
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
-  }
+  };
   /** The currently edited Tree Node. */
   @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
@@ -34,7 +34,6 @@ export class SubMenuConfigComponent implements OnInit {
 
   /**
    * 
-   * @param appService 
    */
   constructor() { }
 
@@ -42,7 +41,7 @@ export class SubMenuConfigComponent implements OnInit {
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.buildManager.hasNodeBeenSaved('SubMenu ' + this.node.parentIndex + ',' + this.node.index)) {
+    if (this.buildManager.hasNodeBeenSaved(this.node.index.toString())) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();

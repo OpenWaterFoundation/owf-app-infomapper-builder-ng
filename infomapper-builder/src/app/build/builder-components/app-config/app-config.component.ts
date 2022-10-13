@@ -35,14 +35,14 @@ export class AppConfigComponent implements OnInit {
    * 
    * @param appService 
    */
-  constructor(private appService: AppService) {
+  constructor() {
 
   }
 
 
   ngOnInit(): void {
 
-    if (this.buildManager.hasNodeBeenSaved('Application')) {
+    if (this.buildManager.hasNodeBeenSaved('0')) {
       this.populateFromBuilderJSON();
     } else {
       this.setRequiredDefaults();
@@ -97,7 +97,6 @@ export class AppConfigComponent implements OnInit {
    */
   titleInput(): void {
     this.updateTitleInput.emit(this.appBuilderForm.get('appConfigFG.title').value);
-
   }
 
 }

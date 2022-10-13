@@ -58,6 +58,9 @@ export class SideNavComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
+  /**
+   * 
+   */
   onSidenavClose(): void {
     this.sidenavClose.emit();
   }

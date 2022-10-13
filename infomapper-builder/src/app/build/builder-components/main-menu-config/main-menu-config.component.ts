@@ -38,7 +38,7 @@ export class MainMenuConfigComponent implements OnInit {
    * 
    * @param appService 
    */
-  constructor(private appService: AppService) { }
+  constructor() { }
 
 
   /**
@@ -66,7 +66,7 @@ export class MainMenuConfigComponent implements OnInit {
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.buildManager.hasNodeBeenSaved('Main Menu ' + this.node.index)) {
+    if (this.buildManager.hasNodeBeenSaved(this.node.index.toString())) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
