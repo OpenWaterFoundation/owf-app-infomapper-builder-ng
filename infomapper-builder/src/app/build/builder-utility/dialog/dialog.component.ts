@@ -23,7 +23,7 @@ export class DialogComponent implements OnInit {
   /** The string to be dynamically displayed on this component's top header. */
   headerText = '';
   /** The currently edited Tree Node. */
-  node: IM.TreeNodeData;
+  node: IM.TreeFlatNode;
 
 
   constructor(@Inject(MAT_DIALOG_DATA) private dialogData: any,
@@ -43,7 +43,7 @@ export class DialogComponent implements OnInit {
   }
   
   /**
-   * A lifecycle hook that is called after Angular has initialized all data-bound
+   * Lifecycle hook that is called after Angular has initialized all data-bound
    * properties of a directive.
    */
   ngOnInit(): void {
@@ -82,7 +82,7 @@ export class DialogComponent implements OnInit {
   /**
    * When the Save button is clicked, close the dialog with the form result.
    */
-  saveData(node: IM.TreeNodeData): void {
+  saveData(node: IM.TreeFlatNode): void {
     this.dialogRef.close(node);
   }
 

@@ -11,14 +11,14 @@ data-cy="NEEDS-TO-BE-UPDATED">
   <ng-container *ngIf="node.level === 'Application'">
     <div matTooltip="Save configuration before moving on"
     [matTooltipDisabled]="(validAppSaveState | async)" matTooltipPosition="right">
-      <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
-      [disabled]="!(validAppSaveState | async)" data-cy="">
-        Add Main Menu
-      </button>
-    
       <button mat-menu-item (click)="sendMenuChoice(node, 'addDatastore')"
       [disabled]="!(validAppSaveState | async)" data-cy="">
         Add Datastore
+      </button>
+
+      <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
+      [disabled]="!(validAppSaveState | async)" data-cy="">
+        Add Main Menu
       </button>
     </div>
     

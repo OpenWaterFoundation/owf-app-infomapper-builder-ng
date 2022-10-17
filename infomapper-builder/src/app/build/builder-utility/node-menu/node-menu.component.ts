@@ -36,6 +36,9 @@ export class NodeMenuComponent implements OnInit {
     return this.buildManager.isAppInSavedState();
   }
 
+  /**
+   * 
+   */
   ngOnInit(): void {
     
   }
@@ -45,7 +48,7 @@ export class NodeMenuComponent implements OnInit {
    * @param node
    * @param menuChoiceType 
    */
-  sendMenuChoice(node: IM.TreeNodeData, menuChoiceType: string): void {
+  sendMenuChoice(node: IM.TreeFlatNode, menuChoiceType: string): void {
     this.menuChoice.emit({
       choiceType: menuChoiceType,
       node: node

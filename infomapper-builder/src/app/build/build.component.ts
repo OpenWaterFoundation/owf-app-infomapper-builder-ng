@@ -108,18 +108,15 @@ export class BuildComponent implements OnInit, OnDestroy {
     {
       level: 'Application',
       name: 'New application',
-      index: 0,
       children: [
         {
           level: 'Datastores',
           name: 'Datastores',
-          index: 0,
           children: []
         },
         {
           level: 'Main Menus',
           name: 'Main Menus',
-          index: 1,
           children: []
         }
       ]
@@ -178,9 +175,9 @@ export class BuildComponent implements OnInit, OnDestroy {
     // change.
     this.buildManager.updateBuilderTree(this.treeNodeData);
 
-    if (!this.treeControl.isExpanded(choice.node)) {
-      this.treeControl.expand(choice.node);
-    }
+    // if (!this.treeControl.isExpanded(choice.node)) {
+    //   this.treeControl.expand(choice.node);
+    // }
   }
 
   /**
@@ -215,18 +212,18 @@ export class BuildComponent implements OnInit, OnDestroy {
   determineTreeInit(): void {
 
     // The user navigated away from the builder inside this application.
-    if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
-      this.treeDataSource.data = this.buildManager.builtTree;
-      this.treeNodeData = this.buildManager.builtTree;
-      this.treeControl.dataNodes = this.buildManager.builtTree;
-    }
+    // if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
+    //   this.treeDataSource.data = this.buildManager.builtTree;
+    //   this.treeNodeData = this.buildManager.builtTree;
+    //   this.treeControl.dataNodes = this.buildManager.builtTree;
+    // }
     // else if (Saved cookie) {
 
     // }
     // Normal completely new initialization.
-    else {
-      this.initTreeNodeAndFormGroup();
-    }
+    // else {
+    //   this.initTreeNodeAndFormGroup();
+    // }
 
     this.treeControl.expandAll();
   }
@@ -335,10 +332,10 @@ export class BuildComponent implements OnInit, OnDestroy {
         this.addToTree(choice);
         break;
       case 'editConfig':
-        this.openConfigDialog(choice.node);
+        // this.openConfigDialog(choice.node);
         break;
       case 'deleteConfig':
-      this.removeFromTree(choice.node);
+      // this.removeFromTree(choice.node);
     }
   }
 
@@ -347,7 +344,7 @@ export class BuildComponent implements OnInit, OnDestroy {
    * @param node 
    */
   private removeFromTree(node: IM.TreeNodeData): void {
-    this.buildManager.removeNodeFromTree(this.treeNodeData[0], node);
+    this.buildManager.removeNodeFromTree(node);
 
     this.treeDataSource.data = null;
     this.treeDataSource.data = this.treeNodeData;
@@ -383,6 +380,8 @@ export class BuildComponent implements OnInit, OnDestroy {
 
     var topDatastoreNode = this.treeNodeData[0].children[0];
     var topMainMenuNode = this.treeNodeData[0].children[1];
+    var nodeIndex = this.buildManager.getNodeIndex(node);
+    var parentIndex = this.buildManager.getNodeParentIndex(node);
 
     if (node.level === 'Application') {
       this.treeNodeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
@@ -390,19 +389,11 @@ export class BuildComponent implements OnInit, OnDestroy {
       // Builder Tree won't be run. Update it when the Application level is saved.
       this.buildManager.updateBuilderTree(this.treeNodeData);
     } else if (node.level === 'Datastore') {
-      topDatastoreNode.children[node.index].name = this.appBuilderForm.get('datastoreFG').value['name'];
+      topDatastoreNode.children[nodeIndex].name = this.appBuilderForm.get('datastoreFG').value['name'];
     } else if (node.level === 'Main Menu') {
-      topMainMenuNode.children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
+      topMainMenuNode.children[nodeIndex].name = this.appBuilderForm.get('mainMenuFG').value['name'];
     } else if (node.level === 'SubMenu') {
-      topMainMenuNode.children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
+      topMainMenuNode.children[parentIndex].children[nodeIndex].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
   }
-
-  /**
-   * 
-   */
-  validNodeSaveState(node: IM.TreeNodeData): Observable<boolean> {
-    return this.buildManager.isNodeInSavedState(node);
-  }
-
 }

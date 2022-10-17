@@ -1,68 +1,71 @@
 import { APP_INITIALIZER,
-          NgModule }               from '@angular/core';
-import { BrowserModule }           from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+          NgModule }                from '@angular/core';
+import { BrowserModule }            from '@angular/platform-browser';
+import { BrowserAnimationsModule }  from '@angular/platform-browser/animations';
 import { HttpClient,
-          HttpClientModule }       from '@angular/common/http';
-import { FlexLayoutModule }        from '@angular/flex-layout';
+          HttpClientModule }        from '@angular/common/http';
+import { FlexLayoutModule }         from '@angular/flex-layout';
 import { FormsModule,
-          ReactiveFormsModule }    from '@angular/forms';
+          ReactiveFormsModule }     from '@angular/forms';
 
-import { CdkStepperModule }        from '@angular/cdk/stepper';
-import { CdkTableModule }          from '@angular/cdk/table';
-import { CdkTreeModule }           from '@angular/cdk/tree';
-import { DragDropModule }          from '@angular/cdk/drag-drop';
-import { PortalModule }            from '@angular/cdk/portal';
-import { ScrollingModule }         from '@angular/cdk/scrolling';
+import { CdkStepperModule }         from '@angular/cdk/stepper';
+import { CdkTableModule }           from '@angular/cdk/table';
+import { CdkTreeModule }            from '@angular/cdk/tree';
+import { DragDropModule }           from '@angular/cdk/drag-drop';
+import { PortalModule }             from '@angular/cdk/portal';
+import { ScrollingModule }          from '@angular/cdk/scrolling';
 
 
-import { MatButtonModule }         from '@angular/material/button';
-import { MatCardModule }           from '@angular/material/card';
-import { MatDialogModule }         from '@angular/material/dialog';
-import { MatDividerModule }        from '@angular/material/divider';
-import { MatFormFieldModule }      from '@angular/material/form-field';
-import { MatIconModule }           from '@angular/material/icon';
-import { MatInputModule }          from '@angular/material/input';
-import { MatListModule }           from '@angular/material/list';
-import { MatMenuModule }           from '@angular/material/menu';
-import { MatSelectModule }         from '@angular/material/select';
-import { MatSidenavModule }        from '@angular/material/sidenav';
-import { MatToolbarModule }        from '@angular/material/toolbar';
-import { MatTooltipModule }        from '@angular/material/tooltip';
-import { MatTreeModule }           from '@angular/material/tree';
+import { MatButtonModule }          from '@angular/material/button';
+import { MatCardModule }            from '@angular/material/card';
+import { MatDialogModule }          from '@angular/material/dialog';
+import { MatDividerModule }         from '@angular/material/divider';
+import { MatFormFieldModule }       from '@angular/material/form-field';
+import { MatIconModule }            from '@angular/material/icon';
+import { MatInputModule }           from '@angular/material/input';
+import { MatListModule }            from '@angular/material/list';
+import { MatMenuModule }            from '@angular/material/menu';
+import { MatSelectModule }          from '@angular/material/select';
+import { MatSidenavModule }         from '@angular/material/sidenav';
+import { MatSnackBarModule }        from '@angular/material/snack-bar';
+import { MatToolbarModule }         from '@angular/material/toolbar';
+import { MatTooltipModule }         from '@angular/material/tooltip';
+import { MatTreeModule }            from '@angular/material/tree';
 
-import { FontAwesomeModule }       from '@fortawesome/angular-fontawesome';
-import { AngularFullpageModule }   from '@fullpage/angular-fullpage';
+import { FontAwesomeModule }        from '@fortawesome/angular-fontawesome';
+import { AngularFullpageModule }    from '@fullpage/angular-fullpage';
 
-import { Observable }              from 'rxjs/internal/Observable';
+import { Observable }               from 'rxjs/internal/Observable';
 
-import { ShowdownModule }          from 'ngx-showdown';
+import { ShowdownModule }           from 'ngx-showdown';
 import { LoggerModule,
-          NgxLoggerLevel }         from 'ngx-logger';
+          NgxLoggerLevel }          from 'ngx-logger';
 
-import { AppRoutingModule }        from './app-routing.module';
+import { AppRoutingModule }         from './app-routing.module';
 
-import { AppComponent }            from './app.component';
-import { AppConfigComponent }      from './build/builder-components/app-config/app-config.component';
-import { BuildComponent }          from './build/build.component';
-import { DialogComponent }         from './build/builder-utility/dialog/dialog.component';
-import { MainMenuConfigComponent } from './build/builder-components/main-menu-config/main-menu-config.component';
-import { SubMenuConfigComponent }  from './build/builder-components/sub-menu-config/sub-menu-config.component';
-import { NavBarComponent }         from './navigation/nav-bar/nav-bar.component';
-import { NavBarMenuComponent }     from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
-import { NodeMenuComponent }       from './build/builder-utility/node-menu/node-menu.component';
-import { SideNavComponent }        from './navigation/side-nav/side-nav.component';
-import { ContentPageComponent }    from './content-page/content-page.component';
-import { AppService }              from './app.service';
+import { AppComponent }             from './app.component';
+import { AppConfigComponent }       from './build/builder-components/app-config/app-config.component';
+import { BuildComponent }           from './build/build.component';
+import { BuildFlatComponent }       from './build-flat/build-flat/build-flat.component';
+import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
+import { DialogComponent }          from './build/builder-utility/dialog/dialog.component';
+import { MainMenuConfigComponent }  from './build/builder-components/main-menu-config/main-menu-config.component';
+import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
+import { NavBarComponent }          from './navigation/nav-bar/nav-bar.component';
+import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
+import { NodeMenuComponent }        from './build/builder-utility/node-menu/node-menu.component';
+import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
+import { ContentPageComponent }     from './content-page/content-page.component';
+import { AppService }               from './app.service';
 
-import { CheckElementPipe }        from './pipes/check-element.pipe';
-import { ConvertFormNamePipe }     from './pipes/convert-form-name.pipe';
-import { CheckTreeNodePipe }       from './pipes/check-tree-node.pipe';
+import { CheckElementPipe }         from './pipes/check-element.pipe';
+import { ConvertFormNamePipe }      from './pipes/convert-form-name.pipe';
+import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
 
 // Showdown, to convert markdown to HTML.
-import * as Showdown               from 'showdown';
-import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
-import { BuildFlatComponent } from './build-flat/build-flat/build-flat.component';
+import * as Showdown                from 'showdown';
+
+
 
 
 const classMap: any = {
@@ -162,6 +165,7 @@ function appInit(appService: AppService): () => Observable<any> {
     MatMenuModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSnackBarModule,
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,

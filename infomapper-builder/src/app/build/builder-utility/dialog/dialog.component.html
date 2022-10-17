@@ -19,7 +19,8 @@ class="cdk-drag">
   <div class="dialog-content">
     
     <ng-container *ngIf="node.level === 'Application'">
-      <app-config [appBuilderForm]="appBuilderForm" (updateTitleInput)="updateHeaderText($event)">
+      <app-config [appBuilderForm]="appBuilderForm" [node]="node"
+      (updateTitleInput)="updateHeaderText($event)">
       </app-config>
     </ng-container>
 

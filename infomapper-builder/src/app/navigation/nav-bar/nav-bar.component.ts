@@ -38,6 +38,10 @@ export class NavBarComponent implements OnInit {
    */
   get appConfig(): any { return this.appService.appConfigObj; }
 
+  /**
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
+   */
   ngOnInit(): void {
     this.logger.print('info', 'Navbar initialization.');
     this.title = this.appService.appConfigObj.title;

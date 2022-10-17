@@ -1,6 +1,6 @@
 import { Component,
           Input,
-          OnInit } from '@angular/core';
+          OnInit }      from '@angular/core';
 
 import { faBookOpen,
           faFileLines,
@@ -24,9 +24,15 @@ export class NavBarMenuComponent implements OnInit {
   @Input() mainMenu: IM.MainMenu;
   
 
+  /**
+   * 
+   */
   constructor() { }
 
 
+  /**
+   * 
+   */
   ngOnInit(): void {
     this.cleanProperties();
   }

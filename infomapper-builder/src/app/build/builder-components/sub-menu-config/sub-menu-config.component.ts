@@ -38,10 +38,13 @@ export class SubMenuConfigComponent implements OnInit {
   constructor() { }
 
 
+  /**
+   * 
+   */
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.buildManager.hasNodeBeenSaved(this.node.index.toString())) {
+    if (this.node.saved) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
@@ -64,43 +67,45 @@ export class SubMenuConfigComponent implements OnInit {
   private populateFromBuilderJSON(): void {
 
     var builderJSON = this.buildManager.fullBuilderJSON;
+    var nodeIndex = this.buildManager.getNodeIndex(this.node);
+    var parentIndex = this.buildManager.getNodeParentIndex(this.node);
 
-    this.updateTitleInput.emit(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].name);
+    this.updateTitleInput.emit(builderJSON.mainMenu[parentIndex].menus[nodeIndex].name);
 
     this.appBuilderForm.get('subMenuFG.name')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].name);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].name);
 
     this.appBuilderForm.get('subMenuFG.description')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].description);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].description);
 
     this.appBuilderForm.get('subMenuFG.action')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].action);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].action);
 
-    if (builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].action === 'contentPage') {
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'contentPage') {
       this.appBuilderForm.get('subMenuFG.markdownFile')
-      .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].markdownFile);
-    } else if (builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].action === 'dashboard') {
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].markdownFile);
+    } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'dashboard') {
       this.appBuilderForm.get('subMenuFG.dashboardFile')
-      .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].dashboardFile);
-    } else if (builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].action === 'displayMap') {
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].dashboardFile);
+    } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'displayMap') {
       this.appBuilderForm.get('subMenuFG.mapProject')
-      .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].mapProject);
-    } else if (builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].action === 'externalLink') {
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].mapProject);
+    } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'externalLink') {
       this.appBuilderForm.get('subMenuFG.url')
-      .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].url);
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].url);
     }
 
     this.appBuilderForm.get('subMenuFG.enabled')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].enabled);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled);
 
     this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].doubleSeparatorBefore);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore);
 
     this.appBuilderForm.get('subMenuFG.separatorBefore')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].separatorBefore);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore);
 
     this.appBuilderForm.get('subMenuFG.visible')
-    .setValue(builderJSON.mainMenu[this.node.parentIndex].menus[this.node.index].visible);
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible);
   }
 
   /**

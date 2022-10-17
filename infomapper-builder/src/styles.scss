@@ -65,6 +65,11 @@ hand corner of the Dialog do not appear to the user. */
   transform: none !important;
 }
 
+/*  */
+.snackbar-error {
+  color: #ff3636;
+}
+
 /* IDs */
 
 /* Container around the right justified list of navigation circles for a Fullpage
@@ -88,7 +93,7 @@ story. */
 
 /* MISCELLANEOUS */
 
-//input outline color
+// input outline color
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
   color: #9db66b !important;
   // opacity: 1!important;

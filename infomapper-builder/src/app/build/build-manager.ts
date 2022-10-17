@@ -3,6 +3,7 @@ import { BehaviorSubject,
           Observable } from 'rxjs';
 
 import * as IM         from '@OpenWaterFoundation/common/services';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 
@@ -27,11 +28,6 @@ export class BuildManager {
   dataChange = new BehaviorSubject<IM.TreeNodeData[]>([]);
   /** The instance of this WindowManager object. */
   private static instance: BuildManager;
-  /** Each node that has been saved will be added with the following key/value pair:
-   *   * key - Unique Node ID. For example
-   *   * value - The boolean `true`.
-   */
-  private nodeSaved = {};
   /**
    * 
    */
@@ -44,20 +40,18 @@ export class BuildManager {
       level: 'Application',
       name: 'New application',
       id: '0',
-      index: 0,
+      saved: false,
       children: [
         {
           level: 'Datastores',
           name: 'Datastores',
           id: '0/0',
-          index: 0,
           children: []
         },
         {
           level: 'Main Menus',
           name: 'Main Menus',
           id: '0/1',
-          index: 1,
           children: []
         }
       ]
@@ -81,14 +75,6 @@ export class BuildManager {
     this.initialize();
   }
 
-
-  /**
-   * 
-   */
-  get allSavedNodes(): any {
-    return this.nodeSaved;
-  }
-
   /**
    * 
    */
@@ -106,6 +92,42 @@ export class BuildManager {
 
   get treeData(): IM.TreeNodeData[] {
     return this.dataChange.value;
+  }
+
+  /**
+   * 
+   * @param choice 
+   */
+  addNodeToTree(choice: IM.MenuChoice, expansionModel: SelectionModel<string>): void {
+
+    if (choice.choiceType === 'addDatastore') {
+      // Toggle the first added Datastore on the expanded selection model.
+      if (this.treeNodeData[0].children[0].children.length === 0) {
+        expansionModel.select('0/0');
+      }
+      this.treeNodeData[0].children[0].children.push({
+        level: 'Datastore',
+        name: 'New Datastore',
+        id: '0/0/' + this.treeNodeData[0].children[0].children.length,
+        saved: false,
+      } as IM.TreeNodeData);
+    } else if (choice.choiceType === 'addMainMenu') {
+      // Toggle the first added Main Menu on the expanded selection model.
+      if (this.treeNodeData[0].children[1].children.length === 0) {
+        expansionModel.select('0/1');
+      }
+      this.treeNodeData[0].children[1].children.push({
+        level: 'Main Menu',
+        name: 'New Main Menu',
+        id: '0/1/' + this.treeNodeData[0].children[1].children.length,
+        saved: false,
+      } as IM.TreeNodeData);
+    }
+    // Increment the total number of nodes in the tree. Used for determining if
+    // all nodes have been saved.
+    ++this.totalNodesInTree;
+
+    this.dataChange.next(this.treeNodeData);
   }
 
   /**
@@ -136,11 +158,13 @@ export class BuildManager {
    */
   private confirmSubMenuExists(node: IM.TreeNodeData): void {
 
+    var parentIndex = this.getNodeParentIndex(node);
+
     // Check if the empty SubMenus exist and create the ones that don't yet.
-    if (!this.builderJSON.mainMenu[node.parentIndex].menus) {
-      this.builderJSON.mainMenu[node.parentIndex].menus = [{}];
+    if (!this.builderJSON.mainMenu[parentIndex].menus) {
+      this.builderJSON.mainMenu[parentIndex].menus = [{}];
     } else {
-      this.builderJSON.mainMenu[node.parentIndex].menus.push({});
+      this.builderJSON.mainMenu[parentIndex].menus.push({});
     }
   }
 
@@ -152,48 +176,6 @@ export class BuildManager {
     return BuildManager.instance;
   }
 
-  // /**
-  //  * 
-  //  * @param menuChoice 
-  //  */
-  // addNodeToTree(menuChoice: IM.MenuChoice): void {
-
-  //   ++this.totalNodesInTree;
-
-  //   var topMainMenuNode = this.treeNodeData[0].children[1];
-
-  //   if (menuChoice.node.level === 'Application') {
-
-  //     if (menuChoice.choiceType === 'addDatastore') {
-  //       this.treeNodeData[0].children[0].children.push({
-  //         level: 'Datastore',
-  //         name: 'New Datastore',
-  //         index: this.treeNodeData[0].children[0].children.length
-  //       });
-  //     }
-  //     else if (menuChoice.choiceType === 'addMainMenu') {
-  //       topMainMenuNode.children.push({
-  //         level: 'Main Menu',
-  //         name: 'New Main Menu',
-  //         index: topMainMenuNode.children.length
-  //       });
-  //     }
-  //   }
-  //   // 
-  //   else if (menuChoice.node.level === 'Main Menu') {
-
-  //     if (!topMainMenuNode.children[menuChoice.node.index].children) {
-  //       topMainMenuNode.children[menuChoice.node.index].children = [];
-  //     }
-  //     topMainMenuNode.children[menuChoice.node.index].children.push({
-  //       level: 'SubMenu',
-  //       name: 'New SubMenu',
-  //       index: topMainMenuNode.children[menuChoice.node.index].children.length,
-  //       parentIndex: menuChoice.node.index
-  //     });
-  //   }
-  // }
-
   /**
    * 
    */
@@ -202,12 +184,17 @@ export class BuildManager {
   }
 
   /**
-   * Checks if the current node's form has been saved before.
-   * @param nodeLevel The tree node level.
-   * @returns True if the node config has been previously saved.
+   * 
    */
-  hasNodeBeenSaved(nodeLevel: string): boolean {
-    return this.nodeSaved[nodeLevel];
+  getNodeIndex(node: IM.TreeFlatNode | IM.TreeNodeData): number {
+    return +node.id.charAt(node.id.length - 1);
+  }
+
+  /**
+   * 
+   */
+  getNodeParentIndex(node: IM.TreeFlatNode | IM.TreeNodeData): number {
+    return +node.id.charAt(node.id.length - 3);
   }
 
   /**
@@ -223,47 +210,13 @@ export class BuildManager {
    */
   isAppInSavedState(): Observable<boolean> {
 
-    if (this.totalNodesInTree === Object.keys(this.nodeSaved).length) {
-      this.validAppSaveState.next(true);
-    } else {
-      this.validAppSaveState.next(false);
-    }
-    return this.validAppSaveState.asObservable();
-  }
-
-  /**
-   * 
-   * @param node 
-   * @returns 
-   */
-  isNodeInSavedState(node: IM.TreeNodeData): Observable<boolean> {
-
-    console.log('Node:', node);
-    console.log('Saved nodes:', this.nodeSaved);
-    
-    switch(node.level) {
-      case 'Application':
-        if (this.nodeSaved[node.id]) {
-          this.validNodeSaveState.next(true);
-          return this.validNodeSaveState.asObservable();
-        }
-        break;
-      case 'Datastore':
-      case 'Main Menu':
-        if (this.nodeSaved[node.id]) {
-          this.validNodeSaveState.next(true);
-          return this.validNodeSaveState.asObservable();
-        }
-        break;
-      case 'SubMenu':
-        if (this.nodeSaved[node.id]) {
-          this.validNodeSaveState.next(true);
-          return this.validNodeSaveState.asObservable();
-        }
-        break;
-    }
-    this.validNodeSaveState.next(false);
-    return this.validNodeSaveState.asObservable();
+    // if (this.totalNodesInTree === Object.keys(this.nodeSaved).length) {
+    //   this.validAppSaveState.next(true);
+    // } else {
+    //   this.validAppSaveState.next(false);
+    // }
+    // return this.validAppSaveState.asObservable();
+    return;
   }
 
   /**
@@ -281,7 +234,10 @@ export class BuildManager {
    * @param node The tree node being deleted, used as reference to remove it from
    * the builderJSON business object.
    */
-  removeFromBuilderJSON(node: IM.TreeNodeData): void {
+  removeFromBuilderJSON(node: IM.TreeFlatNode): void {
+
+    var nodeIndex = this.getNodeIndex(node);
+    var parentIndex = this.getNodeParentIndex(node);
 
     if (node.level === 'Datastore') {
       // No Datastore node has been saved, so there's nothing to remove from either
@@ -289,13 +245,13 @@ export class BuildManager {
       if (!this.builderJSON.datastores) {
         return;
       }
-      // Remove this node from the nodeSaved object.
-      delete this.nodeSaved[node.id];
+      // Set this node's save state to false.
+      node.saved = false;
 
       // Remove the Datastore from the builderJSON business object, and its property
       // if there are none left.
       if (this.builderJSON.datastores) {
-        this.builderJSON.datastores.splice(node.index, 1);
+        this.builderJSON.datastores.splice(nodeIndex, 1);
 
         if (this.builderJSON.datastores.length === 0) {
           delete this.builderJSON.datastores;
@@ -308,13 +264,13 @@ export class BuildManager {
       if (!this.builderJSON.mainMenu) {
         return;
       }
-      // Remove this node from the nodeSaved object.
-      delete this.nodeSaved[node.id];
+      // Set this node's save state to false.
+      node.saved = false;
 
       // Remove the Main Menu from the builderJSON business object, and its property
       // if there are none left.
       if (this.builderJSON.mainMenu) {
-        this.builderJSON.mainMenu.splice(node.index, 1);
+        this.builderJSON.mainMenu.splice(nodeIndex, 1);
 
         if (this.builderJSON.mainMenu.length === 0) {
           delete this.builderJSON.mainMenu;
@@ -322,47 +278,54 @@ export class BuildManager {
       }
     }
     else if (node.level === 'SubMenu') {
-      // Remove this node from the nodeSaved object.
-      delete this.nodeSaved[node.id];
+      // Set this node's save state to false.
+      node.saved = false;
       // Remove the SubMenu from the builderJSON business object, and its property
       // if there are none left.
-      if (this.builderJSON.mainMenu[node.parentIndex].menus) {
-        this.builderJSON.mainMenu[node.parentIndex].menus.splice(node.index, 1);
+      if (this.builderJSON.mainMenu[parentIndex].menus) {
+        this.builderJSON.mainMenu[parentIndex].menus.splice(nodeIndex, 1);
 
-        if (this.builderJSON.mainMenu[node.parentIndex].menus.length === 0) {
-          delete this.builderJSON.mainMenu[node.parentIndex].menus;
+        if (this.builderJSON.mainMenu[parentIndex].menus.length === 0) {
+          delete this.builderJSON.mainMenu[parentIndex].menus;
         }
       }
     }
   }
 
   /**
-   * Removes the provided TreeNodeData - and any children nodes if present  - from 
-   * the treeNodeData structure.
-   * @param treeNodeData The top level Application TreeNodeData object will all
-   * its children nodes.
+   * Removes the provided TreeNodeData, and any children nodes if present, from 
+   * the treeNodeData structure. Also reassigns each remaining node with an updated
+   * id/index if applicable.
    * @param node The node to remove, including all its children nodes if present.
    */
-  removeNodeFromTree(treeNodeData: IM.TreeNodeData, node: IM.TreeNodeData) {
+  removeNodeFromTree(node: IM.TreeFlatNode) {
 
     --this.totalNodesInTree;
 
-    var topDatastoreNode = treeNodeData.children[0];
-    var topMainMenuNode = treeNodeData.children[1];
+    var topDatastoreNode = this.treeNodeData[0].children[0];
+    var topMainMenuNode = this.treeNodeData[0].children[1];
+    var nodeIndex = this.getNodeIndex(node);
+    var parentIndex = this.getNodeParentIndex(node);
 
     if (node.level === 'Datastore') {
-      topDatastoreNode.children.splice(topDatastoreNode.children.indexOf(topDatastoreNode.children[node.index]), 1);
+      topDatastoreNode.children.splice(topDatastoreNode.children.indexOf(topDatastoreNode.children[nodeIndex]), 1);
+
+      this.updateAllNodeIds(topDatastoreNode.children);
     } else if (node.level === 'Main Menu') {
       // Check if this Main Menu has any children and delete them first.
-      if (topMainMenuNode.children[node.index].children) {
-        if (topMainMenuNode.children[node.index].children.length > 0) {
-          this.removeAllChildren(topMainMenuNode.children[node.index].children);
+      if (topMainMenuNode.children[nodeIndex].children) {
+        if (topMainMenuNode.children[nodeIndex].children.length > 0) {
+          this.removeAllChildren(topMainMenuNode.children[nodeIndex].children);
         }
       }
-      topMainMenuNode.children.splice(topMainMenuNode.children.indexOf(topMainMenuNode.children[node.index]), 1);
+      topMainMenuNode.children.splice(topMainMenuNode.children.indexOf(topMainMenuNode.children[nodeIndex]), 1);
+
+      this.updateAllNodeIds(topMainMenuNode.children)
     } else if (node.level === 'SubMenu') {
-      var allSubMenus = topMainMenuNode.children[node.parentIndex].children;
-      allSubMenus.splice(allSubMenus.indexOf(allSubMenus[node.index]), 1);
+      var allSubMenus = topMainMenuNode.children[parentIndex].children;
+      allSubMenus.splice(allSubMenus.indexOf(allSubMenus[nodeIndex]), 1);
+
+      this.updateAllNodeIds(allSubMenus);
     }
   }
 
@@ -373,22 +336,23 @@ export class BuildManager {
    */
   saveToBuilderJSON(resultForm: FormGroup, node: IM.TreeNodeData): void {
 
+    var nodeIndex = this.getNodeIndex(node);
+    var parentIndex = this.getNodeParentIndex(node);
+
     if (node.level === 'Application') {
       Object.assign(this.builderJSON, resultForm);
-      this.nodeSaved[node.id] = true;
     } else if (node.level === 'Datastore') {
       this.confirmDatastoreExists();
-      Object.assign(this.builderJSON.datastores[node.index], resultForm);
-      this.nodeSaved[node.id] = true;
+      Object.assign(this.builderJSON.datastores[nodeIndex], resultForm);
     } else if (node.level === 'Main Menu') {
       this.confirmMainMenuExists();
-      Object.assign(this.builderJSON.mainMenu[node.index], resultForm);
-      this.nodeSaved[node.id] = true;
+      Object.assign(this.builderJSON.mainMenu[nodeIndex], resultForm);
     } else if (node.level === 'SubMenu') {
       this.confirmSubMenuExists(node);
-      Object.assign(this.builderJSON.mainMenu[node.parentIndex].menus[node.index], resultForm);
-      this.nodeSaved[node.id] = true;
+      Object.assign(this.builderJSON.mainMenu[parentIndex].menus[nodeIndex], resultForm);
     }
+    node.saved = true;
+    console.log('Node after save:', node);
   }
 
    /**
@@ -401,53 +365,31 @@ export class BuildManager {
 
   /**
    * 
-   * @param choice 
    */
-  updateTreeNodeData(choice: IM.MenuChoice): void {
+  updateBuilderJSON(destNodeIndex: number, nodeToInsertIndex: number, nodeToInsert: IM.TreeNodeData): void {
 
-    if (choice.choiceType === 'addDatastore') {
-      this.treeNodeData[0].children[0].children.push({
-        level: 'Datastore',
-        name: 'New Datastore',
-        id: '0/0/' + this.treeNodeData[0].children[0].children.length,
-        index: 0
-      } as IM.TreeNodeData);
-    } else if (choice.choiceType === 'addMainMenu') {
-      this.treeNodeData[0].children[1].children.push({
-        level: 'Main Menu',
-        name: 'New Main Menu',
-        id: '0/1/' + this.treeNodeData[0].children[1].children.length,
-        index: 0
-      } as IM.TreeNodeData);
+    switch(nodeToInsert.level) {
+      case 'Datastore':
+        var removedDatastore = this.builderJSON.datastores.splice(nodeToInsertIndex, 1)[0];
+        this.builderJSON.datastores.splice(destNodeIndex, 0, removedDatastore);
+        break;
+      case 'Main Menu':
+        var removedMainMenu = this.builderJSON.mainMenu.splice(nodeToInsertIndex, 1)[0];
+        this.builderJSON.mainMenu.splice(destNodeIndex, 0, removedMainMenu);
+        break;
+      case 'SubMenu':
+        // var removedSubMenu = this.builderJSON.ma
     }
-    // Increment the total number of nodes in the tree. Used for determining if
-    // all nodes have been saved.
-    ++this.totalNodesInTree;
-
-    this.dataChange.next(this.treeNodeData);
+    console.log('BuilderJSON:', this.builderJSON);
   }
 
   /**
-  * 
-  * @param node 
-  */
-  updateTreeNodeNameText(node: IM.TreeNodeData, appBuilderForm: FormGroup): void {
-    console.log('Updating tree node name text.');
-    console.log('treeNodeData:', this.treeNodeData[0]);
-    var topDatastoreNode = this.treeNodeData[0].children[0];
-    var topMainMenuNode = this.treeNodeData[0].children[1];
-
-    if (node.level === 'Application') {
-      this.treeNodeData[0].name = appBuilderForm.get('appConfigFG').value['title'];
-      // Since the Application is in the tree by default, the code that updates the
-      // Builder Tree won't be run. Update it when the Application level is saved.
-      this.updateBuilderTree(this.treeNodeData);
-    } else if (node.level === 'Datastore') {
-      topDatastoreNode.children[node.index].name = appBuilderForm.get('datastoreFG').value['name'];
-    } else if (node.level === 'Main Menu') {
-      topMainMenuNode.children[node.index].name = appBuilderForm.get('mainMenuFG').value['name'];
-    } else if (node.level === 'SubMenu') {
-      topMainMenuNode.children[node.parentIndex].children[node.index].name = appBuilderForm.get('subMenuFG').value['name'];
-    }
+   * TODO: Maybe arrayOfNodes is TreeNodeData
+   * @param arrayOfNodes 
+   */
+  updateAllNodeIds(arrayOfNodes: IM.TreeNodeData[]): void {
+    arrayOfNodes.map((treeDataNode: IM.TreeNodeData, i: number) => {
+      treeDataNode.id = treeDataNode.id.slice(0, -1) + i;
+    });
   }
 }

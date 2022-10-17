@@ -26,7 +26,7 @@ export class MainMenuConfigComponent implements OnInit {
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
-  }
+  };
   /** The currently edited Tree Node. */
   @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
@@ -63,10 +63,13 @@ export class MainMenuConfigComponent implements OnInit {
     
   }
 
+  /**
+   * 
+   */
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.buildManager.hasNodeBeenSaved(this.node.index.toString())) {
+    if (this.node.saved) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
@@ -80,40 +83,43 @@ export class MainMenuConfigComponent implements OnInit {
   private populateFromBuilderJSON(): void {
 
     var builderJSON = this.buildManager.fullBuilderJSON;
+    var nodeIndex = +this.buildManager.getNodeIndex(this.node);
 
-    this.updateTitleInput.emit(builderJSON.mainMenu[this.node.index].name);
+    console.log('populateFromBuilderJSON node:', this.node);
+    console.log('nodeIndex:', nodeIndex);
+    this.updateTitleInput.emit(builderJSON.mainMenu[nodeIndex].name);
 
     this.appBuilderForm.get('mainMenuFG.id')
-    .setValue(builderJSON.mainMenu[this.node.index].id);
+    .setValue(builderJSON.mainMenu[nodeIndex].id);
 
     this.appBuilderForm.get('mainMenuFG.name')
-    .setValue(builderJSON.mainMenu[this.node.index].name);
+    .setValue(builderJSON.mainMenu[nodeIndex].name);
 
     this.appBuilderForm.get('mainMenuFG.description')
-    .setValue(builderJSON.mainMenu[this.node.index].description);
+    .setValue(builderJSON.mainMenu[nodeIndex].description);
 
     this.appBuilderForm.get('mainMenuFG.action')
-    .setValue(builderJSON.mainMenu[this.node.index].action);
+    .setValue(builderJSON.mainMenu[nodeIndex].action);
 
-    if (builderJSON.mainMenu[this.node.index].action === 'contentPage') {
+    if (builderJSON.mainMenu[nodeIndex].action === 'contentPage') {
       this.appBuilderForm.get('mainMenuFG.markdownFile')
-      .setValue(builderJSON.mainMenu[this.node.index].markdownFile);
-    } else if (builderJSON.mainMenu[this.node.index].action === 'dashboard') {
+      .setValue(builderJSON.mainMenu[nodeIndex].markdownFile);
+    } else if (builderJSON.mainMenu[nodeIndex].action === 'dashboard') {
       this.appBuilderForm.get('mainMenuFG.dashboardFile')
-      .setValue(builderJSON.mainMenu[this.node.index].dashboardFile);
-    } else if (builderJSON.mainMenu[this.node.index].action === 'displayMap') {
+      .setValue(builderJSON.mainMenu[nodeIndex].dashboardFile);
+    } else if (builderJSON.mainMenu[nodeIndex].action === 'displayMap') {
       this.appBuilderForm.get('mainMenuFG.mapProject')
-      .setValue(builderJSON.mainMenu[this.node.index].mapProject);
-    } else if (builderJSON.mainMenu[this.node.index].action === 'externalLink') {
+      .setValue(builderJSON.mainMenu[nodeIndex].mapProject);
+    } else if (builderJSON.mainMenu[nodeIndex].action === 'externalLink') {
       this.appBuilderForm.get('mainMenuFG.url')
-      .setValue(builderJSON.mainMenu[this.node.index].url);
+      .setValue(builderJSON.mainMenu[nodeIndex].url);
     }
 
     this.appBuilderForm.get('mainMenuFG.enabled')
-    .setValue(builderJSON.mainMenu[this.node.index].enabled);
+    .setValue(builderJSON.mainMenu[nodeIndex].enabled);
 
     this.appBuilderForm.get('mainMenuFG.visible')
-    .setValue(builderJSON.mainMenu[this.node.index].visible);
+    .setValue(builderJSON.mainMenu[nodeIndex].visible);
   }
 
   /**

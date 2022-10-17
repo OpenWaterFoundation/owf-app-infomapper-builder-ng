@@ -54,9 +54,7 @@
       <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" cdkDropList
       (cdkDropListDropped)="treeNodeDrop($event)">
         <!-- Tree node template for leaf nodes with no children. -->
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding cdkDrag [cdkDragData]="node"
-        (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()"
-        (cdkDragReleased)="dragEnd()" [cdkDragDisabled]="node | checkTreeNode">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding cdkDrag [cdkDragData]="node" [cdkDragDisabled]="node | checkTreeNode">
   
           <div class="tree-node-content-container">
             <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
@@ -65,7 +63,7 @@
   
                 <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
   
-                <ng-container *ngIf="!(validNodeSaveState(node) | async)">
+                <ng-container *ngIf="!node.saved">
                   <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
                   matTooltip="Configuration not saved" matTooltipPosition="right">
                   </fa-icon>
@@ -94,8 +92,7 @@
       
         <!-- Tree node template for expandable nodes (has children). -->
         <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding cdkDrag
-        [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()"
-        (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()"
+        [cdkDragData]="node"
         [cdkDragDisabled]="node | checkTreeNode">
   
           <div class="tree-node-content-container">
@@ -112,7 +109,7 @@
   
                 <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
     
-                <ng-container *ngIf="!(validNodeSaveState(node) | async)">
+                <ng-container *ngIf="!node.saved">
                   <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
                   matTooltip="Configuration not saved" matTooltipPosition="right">
                   </fa-icon>

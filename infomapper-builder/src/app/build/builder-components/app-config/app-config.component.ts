@@ -6,7 +6,7 @@ import { Component,
 import { AbstractControl,
           FormGroup }   from '@angular/forms';
 
-import { AppService }   from 'src/app/app.service';
+import * as IM          from '@OpenWaterFoundation/common/services';
 import { BuildManager } from '../../build-manager';
 
 
@@ -26,6 +26,8 @@ export class AppConfigComponent implements OnInit {
   formErrorMessages = {
     required: 'Required'
   }
+  /** The application Tree Node. */
+  @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the Map component (parent) that an update has happened,
    * and sends the basin name. */
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
@@ -33,16 +35,18 @@ export class AppConfigComponent implements OnInit {
 
   /**
    * 
-   * @param appService 
    */
   constructor() {
 
   }
 
 
+  /**
+   * 
+   */
   ngOnInit(): void {
-
-    if (this.buildManager.hasNodeBeenSaved('0')) {
+    // FIXME: Update this check for the app node. this.buildManager.hasNodeBeenSaved('0')
+    if (this.node.saved) {
       this.populateFromBuilderJSON();
     } else {
       this.setRequiredDefaults();

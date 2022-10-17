@@ -1,5 +1,4 @@
 import { Component,
-          Injectable,
           OnDestroy,
           OnInit }                from '@angular/core';
 import { AbstractControl,
@@ -7,36 +6,38 @@ import { AbstractControl,
           FormGroup,
           ValidationErrors,
           ValidatorFn,
-          Validators }            from '@angular/forms';
+          Validators }                  from '@angular/forms';
 import { ActivatedRoute,
-          ParamMap }              from '@angular/router';
+          ParamMap }                    from '@angular/router';
 import { MatDialog,
           MatDialogConfig,
-          MatDialogRef }          from '@angular/material/dialog';
+          MatDialogRef }                from '@angular/material/dialog';
+import { MatSnackBar,
+          MatSnackBarHorizontalPosition,
+          MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MatTreeFlatDataSource,
-          MatTreeFlattener }      from '@angular/material/tree';
+          MatTreeFlattener }            from '@angular/material/tree';
 import { BreakpointObserver,
-          Breakpoints }           from '@angular/cdk/layout';
-import { SelectionModel }         from '@angular/cdk/collections';
-import { CdkDragDrop }            from '@angular/cdk/drag-drop';
-import { FlatTreeControl }        from '@angular/cdk/tree';
+          Breakpoints }                 from '@angular/cdk/layout';
+import { SelectionModel }               from '@angular/cdk/collections';
+import { CdkDragDrop }                  from '@angular/cdk/drag-drop';
+import { FlatTreeControl }              from '@angular/cdk/tree';
 
 import { faChevronDown,
           faChevronRight,
-          faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+          faTriangleExclamation }       from '@fortawesome/free-solid-svg-icons';
 
-import { BehaviorSubject,
-          first,
+import { first,
           Observable,
           of,
           Subject,
-          takeUntil }             from 'rxjs';
+          takeUntil }                   from 'rxjs';
 
-import * as IM                    from '@OpenWaterFoundation/common/services';
+import * as IM                          from '@OpenWaterFoundation/common/services';
 
-import { AppService }             from '../../app.service';
-import { DialogComponent }        from '../../build/builder-utility/dialog/dialog.component';
-import { BuildManager }           from '../../build/build-manager';
+import { AppService }                   from '../../app.service';
+import { DialogComponent }              from '../../build/builder-utility/dialog/dialog.component';
+import { BuildManager }                 from '../../build/build-manager';
 
 
 @Component({
@@ -46,30 +47,7 @@ import { BuildManager }           from '../../build/build-manager';
   providers: []
 })
 export class BuildFlatComponent implements OnInit, OnDestroy {
-
-  /** Controller for the flat tree. */
-  treeControl: FlatTreeControl<IM.TreeFlatNode>;
-  /** Tree flattener to convert a normal type of node to node with children & level
-   * information. Transforms nested nodes of type T to flattened nodes of type F. */
-  treeFlattener: MatTreeFlattener<IM.TreeNodeData, IM.TreeFlatNode>;
-  /** Data source for the flat tree. */
-  treeDataSource: MatTreeFlatDataSource<IM.TreeNodeData, IM.TreeFlatNode>;
-  /** Expansion model tracks expansion state. */
-  expansionModel = new SelectionModel<string>(true);
-  /**
-   * 
-   */
-  dragging = false;
-  /**
-   * 
-   */
-  expandTimeout: any;
-  /**
-   * 
-   */
-  expandDelay = 1000;
-  /////////////////////////////////////////////////////////
-
+ 
   /** The main FormGroup for the entire application. */
   appBuilderForm = new FormGroup({});
   /** FormGroup used by the AppConfigComponent. */
@@ -97,6 +75,8 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
   });
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
+  /** Expansion model tracks expansion state. */
+  expansionModel = new SelectionModel<string>(true);
   /** All used FontAwesome icons in the AppConfigComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
@@ -114,6 +94,18 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
     mapProject: new FormControl(''),
     url: new FormControl('')
   });
+  /***
+   * 
+   */
+  snackBarDuration = 4000;
+  /**
+   * 
+   */
+  snackBarHPosition: MatSnackBarHorizontalPosition = 'end';
+  /**
+   * 
+   */
+  snackbarVPosition: MatSnackBarVerticalPosition = 'top';
   /** FormGroup used by the SubMenuComponent. */
   subMenuFG = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -128,17 +120,29 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
     mapProject: new FormControl(''),    // <-- Conditional required
     url: new FormControl('')            // <-- Conditional required
   });
-  // /** Structure for nested Trees. */
-  // treeControl = new NestedTreeControl<IM.TreeNodeData>(node => node.children);
-  // /** The dataSource object that is used to display and update the tree on the DOM. */
-  // treeDataSource = new MatTreeNestedDataSource<IM.TreeNodeData>();
+  /** Controller for the flat tree. */
+  treeControl: FlatTreeControl<IM.TreeFlatNode>;
+  /** Data source for the flat tree. */
+  treeDataSource: MatTreeFlatDataSource<IM.TreeNodeData, IM.TreeFlatNode>;
+  /** Tree flattener to convert a normal type of node to node with children & level
+   * information. Transforms nested nodes of type T to flattened nodes of type F. */
+  treeFlattener: MatTreeFlattener<IM.TreeNodeData, IM.TreeFlatNode>;
   /** Boolean set to false if the URL id for this Build component does not exist
-  * in any `app-config.json` mainMenu or subMenu id. */
+   * in any `app-config.json` mainMenu or subMenu id. */
   validBuildID = true;
 
 
+  /**
+   * 
+   * @param actRoute 
+   * @param appService 
+   * @param breakpointObserver 
+   * @param dialog 
+   * @param snackBar 
+   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
-  private breakpointObserver: BreakpointObserver, private dialog: MatDialog) {
+  private breakpointObserver: BreakpointObserver, private dialog: MatDialog,
+  private snackBar: MatSnackBar) {
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
     this.isExpandable, this.getChildren);
@@ -211,9 +215,8 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
       flatLevel: level,
       name: node.name,
       id: node.id,
-      level: node.level,
-      index: node.index,
-      parentIndex: node.parentIndex
+      saved: node.saved,
+      level: node.level
     } as IM.TreeFlatNode;
   }
 
@@ -222,7 +225,7 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
   */
   addToTree(choice: IM.MenuChoice): void {
 
-    this.buildManager.updateTreeNodeData(choice);
+    this.buildManager.addNodeToTree(choice, this.expansionModel);
     this.rebuildTreeForData(this.buildManager.treeData);
 
     // this.treeControl.dataNodes = this.treeNodeData;
@@ -233,6 +236,8 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
     // if (!this.treeControl.isExpanded(choice.node)) {
     //   this.treeControl.expand(choice.node);
     // }
+    // TODO: Maybe remove this?
+    this.treeControl.expandAll();
   }
 
   /**
@@ -267,43 +272,20 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
   determineTreeInit(): void {
 
     // The user navigated away from the builder inside this application.
-    if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
+    // if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
       // this.treeDataSource.data = this.buildManager.builtTree;
       // this.treeNodeData = this.buildManager.builtTree;
       // this.treeControl.dataNodes = this.buildManager.builtTree;
-    }
+    // }
     // else if (Saved cookie) {
 
     // }
     // Normal completely new initialization.
-    else {
+    // else {
       // this.initTreeNodeAndFormGroup();
-    }
-
+    // }
     this.treeControl.expandAll();
-  }
-
-  /**
-   * Experimental - opening tree nodes as you drag over them
-   */
-  dragStart() {
-    this.dragging = true;
-  }
-  dragEnd() {
-    this.dragging = false;
-  }
-  dragHover(node: IM.TreeFlatNode) {
-    if (this.dragging) {
-      clearTimeout(this.expandTimeout);
-      this.expandTimeout = setTimeout(() => {
-        this.treeControl.expand(node);
-      }, this.expandDelay);
-    }
-  }
-  dragHoverEnd() {
-    if (this.dragging) {
-      clearTimeout(this.expandTimeout);
-    }
+    this.expansionModel.select('0');
   }
 
   /**
@@ -400,7 +382,7 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
   /**
   * 
   */
-  public openConfigDialog(node: IM.TreeNodeData): void {
+  openConfigDialog(node: IM.TreeFlatNode): void {
 
     var dialogConfigData = {
       appBuilderForm: this.appBuilderForm,
@@ -417,9 +399,23 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
         return;
       }
       this.updateTreeNodeNameText(node);
-      this.saveFormToFinalBuilderJSON(node);
+      this.saveFormToBuilderJSON(node);
+
+      this.treeControl.expandAll();
     });
 
+  }
+
+  /**
+   * Displays the self-closing error message so users know what went wrong.
+   */
+  openErrorSnackBar() {
+    this.snackBar.open('Items can only be moved within the same level.', null, {
+      duration: this.snackBarDuration,
+      panelClass: 'snackbar-error',
+      horizontalPosition: this.snackBarHPosition,
+      verticalPosition: this.snackbarVPosition
+    })
   }
 
   /**
@@ -444,7 +440,6 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
       const node = this.treeControl.dataNodes.find((n) => n.id === id);
       this.treeControl.expand(node);
     });
-    // this.treeControl.expandAll();
   }
 
   /**
@@ -472,24 +467,24 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
   * 
   * @param node 
   */
-  private removeFromTree(node: IM.TreeNodeData): void {
-    console.log('Removing node from tree.');
-    // this.buildManager.removeNodeFromTree(this.treeNodeData[0], node);
+  private removeFromTree(node: IM.TreeFlatNode): void {
+    console.log('Node to remove:', node);
+    // Remove object from the treeNodeData, rebuild, & update.
+    this.buildManager.removeNodeFromTree(node);
+    this.rebuildTreeForData(this.buildManager.treeData);
 
-    // this.treeDataSource.data = null;
-    // this.treeDataSource.data = this.treeNodeData;
-    // this.treeControl.dataNodes = this.treeNodeData;
-    // // Save the tree object to the app service for persistence after a user route
-    // // change.
-    // this.buildManager.updateBuilderTree(this.treeNodeData);
-    // this.buildManager.removeFromBuilderJSON(node);
+    // Save the tree object to the app service for persistence after a user route
+    // change.
+    this.buildManager.updateBuilderTree(this.buildManager.treeData);
+    // Remove from the buildJSON business object.
+    this.buildManager.removeFromBuilderJSON(node);
   }
 
   /**
   * 
   * @param node 
   */
-  private saveFormToFinalBuilderJSON(node: IM.TreeNodeData): void {
+  private saveFormToBuilderJSON(node: IM.TreeNodeData): void {
 
     if (node.level === 'Application') {
       this.buildManager.saveToBuilderJSON(this.appBuilderForm.getRawValue()['appConfigFG'], node);
@@ -518,7 +513,7 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
     const visibleNodes = this.visibleNodes();
 
     // deep clone the data source so we can mutate it
-    const changedData = JSON.parse(JSON.stringify(this.treeDataSource.data));
+    const changedData: IM.TreeNodeData[] = JSON.parse(JSON.stringify(this.treeDataSource.data));
 
     // recursive find function to find siblings of node
     function findNodeSiblings(arr: Array<any>, id: string): Array<any> {
@@ -536,32 +531,35 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
     }
 
     // determine where to insert the node
-    const nodeAtDest = visibleNodes[event.currentIndex];
-    const newSiblings = findNodeSiblings(changedData, nodeAtDest.id as string);
+    var nodeAtDest: IM.TreeNodeData = visibleNodes[event.currentIndex];
+    var newSiblings: IM.TreeNodeData[] = findNodeSiblings(changedData, nodeAtDest.id);
+    console.log('newSiblings:', JSON.stringify(newSiblings, null, 4));
     if (!newSiblings) return;
     const insertIndex = newSiblings.findIndex(s => s.id === nodeAtDest.id);
 
-    // remove the node from its old place
-    const node = event.item.data;
-    const siblings = findNodeSiblings(changedData, node.id);
+    // Remove the node from its old position.
+    const node: IM.TreeFlatNode = event.item.data;
+    var siblings = findNodeSiblings(changedData, node.id);
     const siblingIndex = siblings.findIndex(n => n.id === node.id);
-    const nodeToInsert: IM.TreeNodeData = siblings.splice(siblingIndex, 1)[0];
+    var nodeToInsert: IM.TreeNodeData = siblings.splice(siblingIndex, 1)[0];
     if (nodeAtDest.id === nodeToInsert.id) return;
 
     // ensure validity of drop - must be same level
     const nodeAtDestFlatNode = this.treeControl.dataNodes.find((n) => nodeAtDest.id === n.id);
     if (nodeAtDestFlatNode.level !== node.level) {
-      console.log('Node at destination:', nodeAtDestFlatNode);
-      console.log('Node to move:', node);
-      alert('Items can only be moved within the same level.');
+      this.openErrorSnackBar();
       return;
     }
 
-    // Insert node 
+    // Insert node and update all the new indexes for the elements.
     newSiblings.splice(insertIndex, 0, nodeToInsert);
+    this.buildManager.updateAllNodeIds(newSiblings);
+    console.log('newSiblings:', JSON.stringify(newSiblings, null, 4));
     
-    // rebuild tree with mutated data
+    // Rebuild the tree with mutated data.
     this.rebuildTreeForData(changedData);
+    // Update the business object.
+    this.buildManager.updateBuilderJSON(insertIndex, siblingIndex, nodeToInsert);
   }
 
   /**
@@ -572,6 +570,7 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
 
     var topDatastoreNode = this.buildManager.treeData[0].children[0];
     var topMainMenuNode = this.buildManager.treeData[0].children[1];
+    var nodeIndex = +node.id.charAt(node.id.length - 1);
 
     if (node.level === 'Application') {
       this.buildManager.treeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
@@ -579,21 +578,15 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
       // Builder Tree won't be run. Update it when the Application level is saved.
       this.buildManager.updateBuilderTree(this.buildManager.treeData);
     } else if (node.level === 'Datastore') {
-      topDatastoreNode.children[node.index].name = this.appBuilderForm.get('datastoreFG').value['name'];
+      topDatastoreNode.children[nodeIndex].name = this.appBuilderForm.get('datastoreFG').value['name'];
     } else if (node.level === 'Main Menu') {
-      topMainMenuNode.children[node.index].name = this.appBuilderForm.get('mainMenuFG').value['name'];
+      topMainMenuNode.children[nodeIndex].name = this.appBuilderForm.get('mainMenuFG').value['name'];
     } else if (node.level === 'SubMenu') {
-      topMainMenuNode.children[node.parentIndex].children[node.index].name = this.appBuilderForm.get('subMenuFG').value['name'];
+      let parentIndex = +node.id.charAt(node.id.length - 3);
+      topMainMenuNode.children[parentIndex].children[nodeIndex].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
 
     this.rebuildTreeForData(this.buildManager.treeData);
-  }
-
-  /**
-  * 
-  */
-  validNodeSaveState(node: IM.TreeNodeData): Observable<boolean> {
-    return this.buildManager.isNodeInSavedState(node);
   }
 
   /**

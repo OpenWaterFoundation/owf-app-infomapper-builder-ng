@@ -38,10 +38,13 @@ export class DatastoreConfigComponent implements OnInit {
   constructor() { }
 
 
+  /**
+   * Initial Angular life cycle method to run.
+   */
   ngOnInit(): void {
     this.updateTitleInput.emit('');
 
-    if (this.buildManager.hasNodeBeenSaved(this.node.index.toString())) {
+    if (this.node.saved) {
       this.populateFromBuilderJSON();
     } else {
       this.setDefaults();
@@ -65,23 +68,24 @@ export class DatastoreConfigComponent implements OnInit {
    private populateFromBuilderJSON(): void {
 
     var builderJSON = this.buildManager.fullBuilderJSON;
+    var nodeIndex = this.buildManager.getNodeIndex(this.node);
 
-    this.updateTitleInput.emit(builderJSON.datastores[this.node.index].name);
+    this.updateTitleInput.emit(builderJSON.datastores[nodeIndex].name);
 
     this.appBuilderForm.get('datastoreFG.name')
-    .setValue(builderJSON.datastores[this.node.index].name);
+    .setValue(builderJSON.datastores[nodeIndex].name);
 
     this.appBuilderForm.get('datastoreFG.type')
-    .setValue(builderJSON.datastores[this.node.index].type);
+    .setValue(builderJSON.datastores[nodeIndex].type);
 
     this.appBuilderForm.get('datastoreFG.rootUrl')
-    .setValue(builderJSON.datastores[this.node.index].rootUrl);
+    .setValue(builderJSON.datastores[nodeIndex].rootUrl);
 
     // this.appBuilderForm.get('datastoreFG.aliases')
-    // .setValue(builderJSON.datastores[this.node.index].aliases);
+    // .setValue(builderJSON.datastores[nodeIndex].aliases);
 
     this.appBuilderForm.get('datastoreFG.apiKey')
-    .setValue(builderJSON.datastores[this.node.index].apiKey);
+    .setValue(builderJSON.datastores[nodeIndex].apiKey);
   }
 
   /**
