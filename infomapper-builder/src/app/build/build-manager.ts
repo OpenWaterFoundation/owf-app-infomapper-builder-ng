@@ -341,6 +341,7 @@ export class BuildManager {
 
     if (node.level === 'Application') {
       Object.assign(this.builderJSON, resultForm);
+      this.treeNodeData[0].saved = true;
     } else if (node.level === 'Datastore') {
       this.confirmDatastoreExists();
       Object.assign(this.builderJSON.datastores[nodeIndex], resultForm);
@@ -351,8 +352,8 @@ export class BuildManager {
       this.confirmSubMenuExists(node);
       Object.assign(this.builderJSON.mainMenu[parentIndex].menus[nodeIndex], resultForm);
     }
-    node.saved = true;
-    console.log('Node after save:', node);
+
+    this.dataChange.next(this.treeNodeData);
   }
 
    /**

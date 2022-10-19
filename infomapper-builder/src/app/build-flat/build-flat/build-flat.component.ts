@@ -495,6 +495,8 @@ export class BuildFlatComponent implements OnInit, OnDestroy {
     } else if (node.level === 'SubMenu') {
       this.buildManager.saveToBuilderJSON(this.appBuilderForm.get('subMenuFG').value, node);
     }
+
+    this.rebuildTreeForData(this.buildManager.treeData);
   }
 
   /**
