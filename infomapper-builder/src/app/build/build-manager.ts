@@ -1,8 +1,8 @@
-import { FormGroup }   from '@angular/forms';
+import { FormGroup }      from '@angular/forms';
 import { BehaviorSubject,
-          Observable } from 'rxjs';
+          Observable }    from 'rxjs';
 
-import * as IM         from '@OpenWaterFoundation/common/services';
+import * as IM            from '@OpenWaterFoundation/common/services';
 import { SelectionModel } from '@angular/cdk/collections';
 
 
@@ -35,6 +35,10 @@ export class BuildManager {
   /**
    * 
    */
+  private totalSavedNodesInTree = 0;
+  /**
+   * 
+   */
   private treeNodeData: IM.TreeNodeData[] = [
     {
       level: 'Application',
@@ -61,10 +65,6 @@ export class BuildManager {
    * 
    */
   private validAppSaveState = new BehaviorSubject<boolean>(false);
-  /**
-   * 
-   */
-  private validNodeSaveState = new BehaviorSubject<boolean>(false);
 
 
   /**
@@ -74,6 +74,7 @@ export class BuildManager {
   private constructor() {
     this.initialize();
   }
+
 
   /**
    * 
@@ -111,7 +112,8 @@ export class BuildManager {
         id: '0/0/' + this.treeNodeData[0].children[0].children.length,
         saved: false,
       } as IM.TreeNodeData);
-    } else if (choice.choiceType === 'addMainMenu') {
+    }
+    else if (choice.choiceType === 'addMainMenu') {
       // Toggle the first added Main Menu on the expanded selection model.
       if (this.treeNodeData[0].children[1].children.length === 0) {
         expansionModel.select('0/1');
@@ -123,6 +125,25 @@ export class BuildManager {
         saved: false,
       } as IM.TreeNodeData);
     }
+    else if (choice.choiceType === 'addSubMenu') {
+      var nodeIndex = this.getNodeIndex(choice.node);
+
+      if (!this.treeNodeData[0].children[1].children[nodeIndex].children) {
+        this.treeNodeData[0].children[1].children[nodeIndex].children = [];
+      }
+      var mainMenuNodeChildren = this.treeNodeData[0].children[1].children[nodeIndex].children;
+
+      // Toggle the Main Menu when the first SubMenu is added.
+      if (mainMenuNodeChildren.length === 0) {
+        expansionModel.select('0/1/' + nodeIndex);
+      }
+      mainMenuNodeChildren.push({
+        level: 'SubMenu',
+        name: 'New SubMenu',
+        id: choice.node.id + '/' + mainMenuNodeChildren.length,
+        saved: false
+      })
+    }
     // Increment the total number of nodes in the tree. Used for determining if
     // all nodes have been saved.
     ++this.totalNodesInTree;
@@ -131,39 +152,62 @@ export class BuildManager {
   }
 
   /**
-   * 
+   * Performs one of the following 3 actions:
+   *   * Creates the `datastores` property array and assigns an empty object.
+   *   * Returns if the node has already been saved.
+   *   * Pushes a empty object so it can be populated with the filled out FormGroup.
+   * @param node The current tree node.
    */
-   private confirmDatastoreExists(): void {
+   private confirmDatastoreExists(node: IM.TreeFlatNode): void {
     if (!this.builderJSON.datastores) {
       this.builderJSON.datastores = [{}];
-    } else {
+    }
+    else if (node.saved) {
+      return;
+    }
+    else {
       this.builderJSON.datastores.push({});
     }
   }
 
   /**
-   * 
+   * Performs one of the following 3 actions:
+   *   * Creates the `mainMenu` property array and assigns an empty object.
+   *   * Returns if the node has already been saved.
+   *   * Pushes a empty object so it can be populated with the filled out FormGroup.
+   * @param node The current tree node.
    */
-  private confirmMainMenuExists(): void {
+  private confirmMainMenuExists(node: IM.TreeFlatNode): void {
     if (!this.builderJSON.mainMenu) {
       this.builderJSON.mainMenu = [{}];
-    } else {
+    }
+    else if (node.saved) {
+      return;
+    }
+    else {
       this.builderJSON.mainMenu.push({});
     }
   }
 
   /**
-   * 
-   * @param node 
+   * Performs one of the following 3 actions:
+   *   * Creates the `menus` property array in the correct MainMenu array and assigns
+   *     an empty object.
+   *   * Returns if the node has already been saved.
+   *   * Pushes a empty object so it can be populated with the filled out FormGroup.
+   * @param node The current tree node.
    */
-  private confirmSubMenuExists(node: IM.TreeNodeData): void {
+  private confirmSubMenuExists(node: IM.TreeFlatNode): void {
 
     var parentIndex = this.getNodeParentIndex(node);
-
     // Check if the empty SubMenus exist and create the ones that don't yet.
     if (!this.builderJSON.mainMenu[parentIndex].menus) {
       this.builderJSON.mainMenu[parentIndex].menus = [{}];
-    } else {
+    }
+    else if (node.saved) {
+      return;
+    }
+    else {
       this.builderJSON.mainMenu[parentIndex].menus.push({});
     }
   }
@@ -205,18 +249,18 @@ export class BuildManager {
   }
 
   /**
-   * 
-   * @returns 
+   * Checks if the number of total nodes in the flat tree equals the amount of nodes
+   * that have been saved.
+   * @returns True if all nodes have been saved, and false otherwise.
    */
   isAppInSavedState(): Observable<boolean> {
 
-    // if (this.totalNodesInTree === Object.keys(this.nodeSaved).length) {
-    //   this.validAppSaveState.next(true);
-    // } else {
-    //   this.validAppSaveState.next(false);
-    // }
-    // return this.validAppSaveState.asObservable();
-    return;
+    if (this.totalNodesInTree === this.totalSavedNodesInTree) {
+      this.validAppSaveState.next(true);
+    } else {
+      this.validAppSaveState.next(false);
+    }
+    return this.validAppSaveState.asObservable();
   }
 
   /**
@@ -301,6 +345,10 @@ export class BuildManager {
   removeNodeFromTree(node: IM.TreeFlatNode) {
 
     --this.totalNodesInTree;
+    if (node.saved) {
+      --this.totalSavedNodesInTree;
+    }
+    
 
     var topDatastoreNode = this.treeNodeData[0].children[0];
     var topMainMenuNode = this.treeNodeData[0].children[1];
@@ -311,7 +359,8 @@ export class BuildManager {
       topDatastoreNode.children.splice(topDatastoreNode.children.indexOf(topDatastoreNode.children[nodeIndex]), 1);
 
       this.updateAllNodeIds(topDatastoreNode.children);
-    } else if (node.level === 'Main Menu') {
+    }
+    else if (node.level === 'Main Menu') {
       // Check if this Main Menu has any children and delete them first.
       if (topMainMenuNode.children[nodeIndex].children) {
         if (topMainMenuNode.children[nodeIndex].children.length > 0) {
@@ -321,20 +370,25 @@ export class BuildManager {
       topMainMenuNode.children.splice(topMainMenuNode.children.indexOf(topMainMenuNode.children[nodeIndex]), 1);
 
       this.updateAllNodeIds(topMainMenuNode.children)
-    } else if (node.level === 'SubMenu') {
+    }
+    else if (node.level === 'SubMenu') {
       var allSubMenus = topMainMenuNode.children[parentIndex].children;
       allSubMenus.splice(allSubMenus.indexOf(allSubMenus[nodeIndex]), 1);
-
       this.updateAllNodeIds(allSubMenus);
     }
   }
 
   /**
-   * 
-   * @param resultForm 
-   * @param node 
+   * Saves the provided FormGroup to the builderJSON business object, and increments
+   * the amount of saved nodes if the current node isn't already saved.
+   * @param resultForm The filled out FormGroup from the closed dialog component.
+   * @param node The current tree node.
    */
-  saveToBuilderJSON(resultForm: FormGroup, node: IM.TreeNodeData): void {
+  saveToBuilderJSON(resultForm: FormGroup, node: IM.TreeFlatNode): void {
+
+    if (!node.saved) {
+      ++this.totalSavedNodesInTree;
+    }
 
     var nodeIndex = this.getNodeIndex(node);
     var parentIndex = this.getNodeParentIndex(node);
@@ -342,30 +396,38 @@ export class BuildManager {
     if (node.level === 'Application') {
       Object.assign(this.builderJSON, resultForm);
       this.treeNodeData[0].saved = true;
-    } else if (node.level === 'Datastore') {
-      this.confirmDatastoreExists();
+    }
+    else if (node.level === 'Datastore') {
+      this.confirmDatastoreExists(node);
       Object.assign(this.builderJSON.datastores[nodeIndex], resultForm);
-    } else if (node.level === 'Main Menu') {
-      this.confirmMainMenuExists();
+      this.treeNodeData[0].children[0].children[nodeIndex].saved = true;
+    }
+    else if (node.level === 'Main Menu') {
+      this.confirmMainMenuExists(node);
       Object.assign(this.builderJSON.mainMenu[nodeIndex], resultForm);
-    } else if (node.level === 'SubMenu') {
+      this.treeNodeData[0].children[1].children[nodeIndex].saved = true;
+    }
+    else if (node.level === 'SubMenu') {
       this.confirmSubMenuExists(node);
       Object.assign(this.builderJSON.mainMenu[parentIndex].menus[nodeIndex], resultForm);
+      this.treeNodeData[0].children[1].children[parentIndex].children[nodeIndex].saved = true;
     }
 
     this.dataChange.next(this.treeNodeData);
   }
 
    /**
-   * 
-   * @param treeNodeData 
+   * Sets the provided treeNodeData array as the builderTree object. Used for tree
+   * persistence on user app navigation.
+   * @param treeNodeData The array of objects to be set as the new builtTree.
    */
   updateBuilderTree(treeNodeData: IM.TreeNodeData[]): void {
     Object.assign(this.builderTree, treeNodeData);
   }
 
   /**
-   * 
+   * Update the builderJSON object when a node has been dragged and dropped in a
+   * new location.
    */
   updateBuilderJSON(destNodeIndex: number, nodeToInsertIndex: number, nodeToInsert: IM.TreeNodeData): void {
 
@@ -379,9 +441,10 @@ export class BuildManager {
         this.builderJSON.mainMenu.splice(destNodeIndex, 0, removedMainMenu);
         break;
       case 'SubMenu':
-        // var removedSubMenu = this.builderJSON.ma
+        var nodeToInsertParentIndex = this.getNodeParentIndex(nodeToInsert);
+        var removedSubMenu = this.builderJSON.mainMenu[nodeToInsertParentIndex].menus.splice(nodeToInsertIndex, 1)[0];
+        this.builderJSON.mainMenu[nodeToInsertParentIndex].menus.splice(destNodeIndex, 0, removedSubMenu);
     }
-    console.log('BuilderJSON:', this.builderJSON);
   }
 
   /**

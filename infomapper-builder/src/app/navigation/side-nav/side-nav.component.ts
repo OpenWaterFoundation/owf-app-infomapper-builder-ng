@@ -63,7 +63,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   * Notifies the AppComponent template file when this sidenav component is closed.
    */
   onSidenavClose(): void {
     this.sidenavClose.emit();

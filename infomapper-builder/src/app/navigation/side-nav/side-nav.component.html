@@ -96,16 +96,6 @@
         </a>
       </div>
 
-      <!-- TODO: Replace or remove. -->
-      <div *ngIf="mainMenu.action === 'build-flat'">
-        <a mat-list-item
-        [routerLink]="['/build-flat/', mainMenu.id]" (click)="onSidenavClose()"
-        [ngClass]="{ 'menu-disabled': mainMenu | checkElement : 'menuDisabled' }"
-        tabindex="-1">
-          {{mainMenu.name}}
-        </a>
-      </div>
-
       <div *ngIf="mainMenu.action === 'contentPage'">
         <a mat-list-item [disabled]="mainMenu | checkElement : 'menuDisabled'"
         [routerLink]="['/content-page/', mainMenu.id]" (click)="onSidenavClose()"

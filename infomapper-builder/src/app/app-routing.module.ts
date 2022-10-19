@@ -4,8 +4,7 @@ import { RouterModule,
 
 import { StoryComponent }       from '@OpenWaterFoundation/common/ui/story';
 
-// import { BuildComponent }       from './build/build.component';
-import { BuildFlatComponent }   from './build-flat/build-flat/build-flat.component';
+import { BuildComponent }       from './build/build.component';
 import { ContentPageComponent } from './content-page/content-page.component';
 
 
@@ -13,8 +12,7 @@ const routes: Routes = [
   { path: 'home', redirectTo: 'content-page/home' },
   { path: '', redirectTo: 'content-page/home', pathMatch: 'full' },
   { path: 'content-page/:markdownFilename', component: ContentPageComponent },
-  { path: 'build-flat/:builderId', component: BuildFlatComponent },
-  // { path: 'build/:builderId', component: BuildComponent },
+  { path: 'build/:builderId', component: BuildComponent },
   { path: 'story/:id', component: StoryComponent }
 ];
 

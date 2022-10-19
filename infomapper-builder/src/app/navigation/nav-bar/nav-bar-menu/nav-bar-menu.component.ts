@@ -31,7 +31,8 @@ export class NavBarMenuComponent implements OnInit {
 
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     this.cleanProperties();

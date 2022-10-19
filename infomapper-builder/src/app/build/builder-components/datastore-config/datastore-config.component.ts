@@ -39,7 +39,8 @@ export class DatastoreConfigComponent implements OnInit {
 
 
   /**
-   * Initial Angular life cycle method to run.
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     this.updateTitleInput.emit('');

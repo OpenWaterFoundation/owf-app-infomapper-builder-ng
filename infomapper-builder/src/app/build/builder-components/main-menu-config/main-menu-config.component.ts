@@ -64,7 +64,8 @@ export class MainMenuConfigComponent implements OnInit {
   }
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     this.updateTitleInput.emit('');
@@ -85,8 +86,6 @@ export class MainMenuConfigComponent implements OnInit {
     var builderJSON = this.buildManager.fullBuilderJSON;
     var nodeIndex = +this.buildManager.getNodeIndex(this.node);
 
-    console.log('populateFromBuilderJSON node:', this.node);
-    console.log('nodeIndex:', nodeIndex);
     this.updateTitleInput.emit(builderJSON.mainMenu[nodeIndex].name);
 
     this.appBuilderForm.get('mainMenuFG.id')

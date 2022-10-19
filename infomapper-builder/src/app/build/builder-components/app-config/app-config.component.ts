@@ -42,7 +42,8 @@ export class AppConfigComponent implements OnInit {
 
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     // FIXME: Update this check for the app node. this.buildManager.hasNodeBeenSaved('0')

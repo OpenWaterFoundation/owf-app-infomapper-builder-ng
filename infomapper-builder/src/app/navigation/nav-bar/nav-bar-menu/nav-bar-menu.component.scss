@@ -66,12 +66,6 @@ a.dropdown-item-disabled {
   margin-right: 1%;
 }
 
-/* The Content Page subMenu file icon. */
-/* .fa-file-text {
-  margin-left: 1%;
-  margin-right: 2%;
-} */
-
 /*  */
 .li-disabled {
   pointer-events: none;
@@ -79,8 +73,13 @@ a.dropdown-item-disabled {
   user-select: none;
 }
 
-#navbarDropdown.mat-selected {
-  background-color: rgb(219, 219, 219);
+/*  */
+.mainMenu-button {
+  color: #2b2b2b;
+  outline: none;
+  height: 100%;
+  font-size: 16px;
+  margin: 0 2px;
 }
 
 /* Additional class to be added to an element when it is active. */
@@ -101,14 +100,13 @@ a.spacer {
 }
 
 /*  */
-.nav-link {
-  color: #2b2b2b;
-  outline: none;
-  height: 100%;
-  font-size: 16px;
-}
-
-/*  */
 .nav-item-not-enabled {
   color: #b4b3b3;
 } 
+
+/* IDs */
+
+/*  */
+#navbarDropdown.mat-selected {
+  background-color: rgb(219, 219, 219);
+}

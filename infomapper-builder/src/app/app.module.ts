@@ -46,7 +46,6 @@ import { AppRoutingModule }         from './app-routing.module';
 import { AppComponent }             from './app.component';
 import { AppConfigComponent }       from './build/builder-components/app-config/app-config.component';
 import { BuildComponent }           from './build/build.component';
-import { BuildFlatComponent }       from './build-flat/build-flat/build-flat.component';
 import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
 import { DialogComponent }          from './build/builder-utility/dialog/dialog.component';
 import { MainMenuConfigComponent }  from './build/builder-components/main-menu-config/main-menu-config.component';
@@ -119,8 +118,7 @@ function appInit(appService: AppService): () => Observable<any> {
     ConvertFormNamePipe,
     SubMenuConfigComponent,
     CheckTreeNodePipe,
-    DatastoreConfigComponent,
-    BuildFlatComponent
+    DatastoreConfigComponent
   ],
   imports: [
     AngularFullpageModule,

@@ -1,43 +1,50 @@
 import { Component,
           OnDestroy,
-          OnInit }                 from '@angular/core';
+          OnInit }                      from '@angular/core';
 import { AbstractControl,
           FormControl,
           FormGroup,
           ValidationErrors,
           ValidatorFn,
-          Validators }             from '@angular/forms';
+          Validators }                  from '@angular/forms';
 import { ActivatedRoute,
-          ParamMap }               from '@angular/router';
+          ParamMap }                    from '@angular/router';
 import { MatDialog,
           MatDialogConfig,
-          MatDialogRef }           from '@angular/material/dialog';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
+          MatDialogRef }                from '@angular/material/dialog';
+import { MatSnackBar,
+          MatSnackBarHorizontalPosition,
+          MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { MatTreeFlatDataSource,
+          MatTreeFlattener }            from '@angular/material/tree';
 import { BreakpointObserver,
-          Breakpoints }            from '@angular/cdk/layout';
-import { NestedTreeControl }       from '@angular/cdk/tree';
+          Breakpoints }                 from '@angular/cdk/layout';
+import { SelectionModel }               from '@angular/cdk/collections';
+import { CdkDragDrop }                  from '@angular/cdk/drag-drop';
+import { FlatTreeControl }              from '@angular/cdk/tree';
 
 import { faChevronDown,
           faChevronRight,
-          faTriangleExclamation }  from '@fortawesome/free-solid-svg-icons';
+          faTriangleExclamation }       from '@fortawesome/free-solid-svg-icons';
 
 import { first,
           Observable,
+          of,
           Subject,
-          takeUntil }              from 'rxjs';
+          takeUntil }                   from 'rxjs';
 
-import { CommonLoggerService }     from '@OpenWaterFoundation/common/services';
-import * as IM                     from '@OpenWaterFoundation/common/services';
+import * as IM                          from '@OpenWaterFoundation/common/services';
 
-import { AppService }              from '../app.service';
-import { DialogComponent }         from './builder-utility/dialog/dialog.component';
-import { BuildManager }            from './build-manager';
+import { AppService }                   from '../app.service';
+import { DialogComponent }              from '../build/builder-utility/dialog/dialog.component';
+import { BuildManager }                 from '../build/build-manager';
 
 
 @Component({
   selector: 'app-build',
   templateUrl: './build.component.html',
-  styleUrls: ['./build.component.scss']
+  styleUrls: ['./build.component.scss'],
+  providers: []
 })
 export class BuildComponent implements OnInit, OnDestroy {
 
@@ -46,17 +53,17 @@ export class BuildComponent implements OnInit, OnDestroy {
   /** FormGroup used by the AppConfigComponent. */
   appConfigFG = new FormGroup({
     title: new FormControl('', Validators.required),
-    homePage: new FormControl({ value: '/content-page/home.md', disabled: true}),
+    homePage: new FormControl({ value: '/content-page/home.md', disabled: true }),
     version: new FormControl('', Validators.required),
     dataUnitsPath: new FormControl(''),
     favicon: new FormControl('favicon.ico'),
     googleAnalyticsTrackingId: new FormControl('')
   });
   /** Singleton BuildManager instance to uniquely add different nodes to the
-   * displayed tree. */
+  * displayed tree. */
   buildManager: BuildManager = BuildManager.getInstance();
   /** The current screen size. Used for dialogs to determine if they
-   * should be shown for desktop or mobile screens. */
+  * should be shown for desktop or mobile screens. */
   currentScreenSize: string;
   /** FormGroup used by the DatastoreComponent. */
   datastoreFG = new FormGroup({
@@ -68,6 +75,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   });
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
+  /** Expansion model tracks expansion state. */
+  expansionModel = new SelectionModel<string>(true);
   /** All used FontAwesome icons in the AppConfigComponent. */
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
@@ -85,6 +94,18 @@ export class BuildComponent implements OnInit, OnDestroy {
     mapProject: new FormControl(''),
     url: new FormControl('')
   });
+  /***
+  * 
+  */
+  snackBarDuration = 4000;
+  /**
+  * 
+  */
+  snackBarHPosition: MatSnackBarHorizontalPosition = 'end';
+  /**
+  * 
+  */
+  snackbarVPosition: MatSnackBarVerticalPosition = 'top';
   /** FormGroup used by the SubMenuComponent. */
   subMenuFG = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -99,43 +120,36 @@ export class BuildComponent implements OnInit, OnDestroy {
     mapProject: new FormControl(''),    // <-- Conditional required
     url: new FormControl('')            // <-- Conditional required
   });
-  /** Structure for nested Trees. */
-  treeControl = new NestedTreeControl<IM.TreeNodeData>(node => node.children);
-  /** The dataSource object that is used to display and update the tree on the DOM. */
-  treeDataSource = new MatTreeNestedDataSource<IM.TreeNodeData>();
-  /** Initial data for a new tree. */
-  treeNodeData: IM.TreeNodeData[] = [
-    {
-      level: 'Application',
-      name: 'New application',
-      children: [
-        {
-          level: 'Datastores',
-          name: 'Datastores',
-          children: []
-        },
-        {
-          level: 'Main Menus',
-          name: 'Main Menus',
-          children: []
-        }
-      ]
-    }
-  ];
+  /** Controller for the flat tree. */
+  treeControl: FlatTreeControl<IM.TreeFlatNode>;
+  /** Data source for the flat tree. */
+  treeDataSource: MatTreeFlatDataSource<IM.TreeNodeData, IM.TreeFlatNode>;
+  /** Tree flattener to convert a normal type of node to node with children & level
+  * information. Transforms nested nodes of type T to flattened nodes of type F. */
+  treeFlattener: MatTreeFlattener<IM.TreeNodeData, IM.TreeFlatNode>;
   /** Boolean set to false if the URL id for this Build component does not exist
-   * in any `app-config.json` mainMenu or subMenu id. */
+  * in any `app-config.json` mainMenu or subMenu id. */
   validBuildID = true;
 
 
   /**
-   * Constructor for the BuildComponent.
-   * @param logger OWF Common library for logging.
-   * @param actRoute Provides access to information about the current route/URL.
-   * @param appService The InfoMapper Builder's top level service.
-   */
-  constructor(private breakpointObserver: BreakpointObserver, private logger: CommonLoggerService,
-  private actRoute: ActivatedRoute, private appService: AppService,
-  private dialog: MatDialog) {
+  * 
+  * @param actRoute 
+  * @param appService 
+  * @param breakpointObserver 
+  * @param dialog 
+  * @param snackBar 
+  */
+  constructor(private actRoute: ActivatedRoute, private appService: AppService,
+    private breakpointObserver: BreakpointObserver, private dialog: MatDialog,
+    private snackBar: MatSnackBar) {
+
+    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
+      this.isExpandable, this.getChildren);
+    this.treeControl = new FlatTreeControl<IM.TreeFlatNode>(this.getLevel, this.isExpandable);
+    this.treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+    this.buildManager.dataChange.subscribe((data: any) => this.rebuildTreeForData(data));
 
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -144,14 +158,14 @@ export class BuildComponent implements OnInit, OnDestroy {
       Breakpoints.Large,
       Breakpoints.XLarge,
     ])
-    .pipe(takeUntil(this.destroyed))
-    .subscribe((result: any) => {
-      for (const query of Object.keys(result.breakpoints)) {
-        if (result.breakpoints[query]) {
-          this.currentScreenSize = query;
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((result: any) => {
+        for (const query of Object.keys(result.breakpoints)) {
+          if (result.breakpoints[query]) {
+            this.currentScreenSize = query;
+          }
         }
-      }
-    });
+      });
     // Add controls at component creation so it's always performed.
     this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
     this.appBuilderForm.addControl('datastoreFG', this.datastoreFG);
@@ -161,35 +175,79 @@ export class BuildComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Adds a
-   */
-  addToTree(choice: IM.MenuChoice): void {
+  * 
+  * @param node 
+  * @returns 
+  */
+  private getChildren = (node: IM.TreeNodeData): Observable<IM.TreeNodeData[]> => of(node.children);
 
-    // this.buildManager.addNodeToTree(choice);
-    // This is required for Angular to see the changes and update the Tree.
-    // https://stackoverflow.com/questions/50976766/how-to-update-nested-mat-tree-dynamically
-    this.treeDataSource.data = null;
-    this.treeDataSource.data = this.treeNodeData;
-    this.treeControl.dataNodes = this.treeNodeData;
-    // Save the tree object to the app service for persistence after a user route
-    // change.
-    this.buildManager.updateBuilderTree(this.treeNodeData);
+  /**
+  * 
+  * @param node 
+  * @returns 
+  */
+  private isExpandable = (node: IM.TreeFlatNode) => node.expandable;
 
-    // if (!this.treeControl.isExpanded(choice.node)) {
-    //   this.treeControl.expand(choice.node);
-    // }
+  /**
+  * 
+  * @param node 
+  * @returns 
+  */
+  private getLevel = (node: IM.TreeFlatNode) => node.flatLevel;
+
+  /**
+  * 
+  * @param _ 
+  * @param _nodeData 
+  * @returns 
+  */
+  hasChild = (_: number, _nodeData: IM.TreeFlatNode) => _nodeData.expandable;
+
+  /**
+  * 
+  * @param node 
+  * @param level 
+  * @returns 
+  */
+  transformer = (node: IM.TreeNodeData, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      flatLevel: level,
+      name: node.name,
+      id: node.id,
+      saved: node.saved,
+      level: node.level
+    } as IM.TreeFlatNode;
   }
 
   /**
-   * Creates a dialog config object and sets its width & height properties based
-   * on the current screen size.
-   * @returns An object to be used for creating a dialog with its initial, min, and max
-   * height and width conditionally.
-   */
-   private createDialogConfig(dialogConfigData: any): MatDialogConfig {
+  * Adds a new node to the flat tree, rebuilds the tree so it can be rerendered,
+  * updates the tree used for persistence, and expands the current node if needed.
+  */
+  addToTree(choice: IM.MenuChoice): void {
+
+    this.buildManager.addNodeToTree(choice, this.expansionModel);
+    this.rebuildTreeForData(this.buildManager.treeData);
+
+    // Save the tree object to the app service for persistence after a user route
+    // change.
+    this.buildManager.updateBuilderTree(this.buildManager.treeData);
+
+    if (!this.treeControl.isExpanded(choice.node)) {
+      this.treeControl.expand(choice.node);
+    }
+  }
+
+  /**
+  * Creates a dialog config object and sets its width & height properties based
+  * on the current screen size.
+  * @returns An object to be used for creating a dialog with its initial, min, and max
+  * height and width conditionally.
+  */
+  private createDialogConfig(dialogConfigData: any): MatDialogConfig {
 
     var isMobile = (this.currentScreenSize === Breakpoints.XSmall ||
-    this.currentScreenSize === Breakpoints.Small);
+      this.currentScreenSize === Breakpoints.Small);
 
     return {
       data: dialogConfigData,
@@ -205,46 +263,33 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Decides if a tree had been previously made, through user app navigation or
-   * by using a cookie if the user navigated completely away from the app. Default
-   * is to create a brand new tree.
-   */
+  * Decides if a tree had been previously made, through user app navigation or
+  * by using a cookie if the user navigated completely away from the app. Default
+  * is to create a brand new tree.
+  */
   determineTreeInit(): void {
 
     // The user navigated away from the builder inside this application.
     // if (this.buildManager.builtTree.length > 0 && this.buildManager.allSavedNodes['Application']) {
-    //   this.treeDataSource.data = this.buildManager.builtTree;
-    //   this.treeNodeData = this.buildManager.builtTree;
-    //   this.treeControl.dataNodes = this.buildManager.builtTree;
+    // this.treeDataSource.data = this.buildManager.builtTree;
+    // this.treeNodeData = this.buildManager.builtTree;
+    // this.treeControl.dataNodes = this.buildManager.builtTree;
     // }
     // else if (Saved cookie) {
 
     // }
     // Normal completely new initialization.
     // else {
-    //   this.initTreeNodeAndFormGroup();
+    // this.initTreeNodeAndFormGroup();
     // }
-
     this.treeControl.expandAll();
-  }
-  
-  /**
-   * 
-   */
-  hasChild = (_: number, node: any) => !!node.children && node.children.length > 0;
-
-  /**
-   * 
-   */
-  initTreeNodeAndFormGroup(): void {
-    this.treeDataSource.data = this.treeNodeData;
-    this.treeControl.dataNodes = this.treeNodeData;
+    this.expansionModel.select('0');
   }
 
   /**
-   * 
-   * @returns 
-   */
+  * 
+  * @returns 
+  */
   isActionEnabled(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors => {
 
@@ -258,8 +303,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
-   */
+  * 
+  */
   ngOnInit(): void {
 
     // When the parameters in the URL are changed the map will refresh and load
@@ -277,6 +322,9 @@ export class BuildComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+  * 
+  */
   ngOnDestroy(): void {
     this.destroyed.next();
     this.destroyed.complete();
@@ -285,7 +333,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
   * 
   */
-   public openConfigDialog(node: IM.TreeNodeData): void {
+  openConfigDialog(node: IM.TreeFlatNode): void {
 
     var dialogConfigData = {
       appBuilderForm: this.appBuilderForm,
@@ -296,70 +344,105 @@ export class BuildComponent implements OnInit, OnDestroy {
       DialogComponent, this.createDialogConfig(dialogConfigData)
     );
 
-    dialogRef.afterClosed().pipe(first()).subscribe((node: IM.TreeNodeData) => {
+    // To run when the opened dialog is closed.
+    dialogRef.afterClosed().pipe(first()).subscribe((node: IM.TreeFlatNode) => {
       // If the dialog was closed without saving, don't do anything.
       if (!node) {
         return;
       }
       this.updateTreeNodeNameText(node);
-      this.saveFormToFinalBuilderJSON(node);
+      this.saveFormToBuilderJSON(node);
+
+      if (!this.treeControl.isExpanded(node)) {
+        this.treeControl.expand(node);
+      }
     });
 
   }
 
   /**
-   * 
-   */
+  * Displays the self-closing error message so users know what went wrong.
+  */
+  openErrorSnackBar() {
+    this.snackBar.open('Items can only be moved within the same level.', null, {
+      duration: this.snackBarDuration,
+      panelClass: 'snackbar-error',
+      horizontalPosition: this.snackBarHPosition,
+      verticalPosition: this.snackbarVPosition
+    })
+  }
+
+  /**
+  * 
+  */
   printFinalBuilderJSON(): void {
     console.log(this.buildManager.fullBuilderJSON);
   }
 
+  /**
+   * 
+   */
   publishToAWS(): void {
 
   }
 
   /**
-   * Determines what menu choice was selected from a node's kebab menu and calls
-   * the necessary function.
-   * @param choice 
-   */
+  * 
+  * @param data 
+  */
+  rebuildTreeForData(data: any) {
+    // console.log('Rebuilt treeNodeData:', data);
+    this.treeDataSource.data = data;
+    this.expansionModel.selected.forEach((id) => {
+      const node = this.treeControl.dataNodes.find((n) => n.id === id);
+      this.treeControl.expand(node);
+    });
+  }
+
+  /**
+  * Determines what menu choice was selected from a node's kebab menu and calls
+  * the necessary function.
+  * @param choice 
+  */
   receiveMenuChoice(choice: IM.MenuChoice): void {
 
-    switch(choice.choiceType) {
+    switch (choice.choiceType) {
       case 'addDatastore':
       case 'addMainMenu':
       case 'addSubMenu':
         this.addToTree(choice);
         break;
       case 'editConfig':
-        // this.openConfigDialog(choice.node);
+        this.openConfigDialog(choice.node);
         break;
-      case 'deleteConfig':
-      // this.removeFromTree(choice.node);
+      case 'removeNode':
+        this.removeFromTree(choice.node);
     }
   }
 
   /**
-   * 
-   * @param node 
-   */
-  private removeFromTree(node: IM.TreeNodeData): void {
-    this.buildManager.removeNodeFromTree(node);
+  * 
+  * @param node 
+  */
+  private removeFromTree(node: IM.TreeFlatNode): void {
 
-    this.treeDataSource.data = null;
-    this.treeDataSource.data = this.treeNodeData;
-    this.treeControl.dataNodes = this.treeNodeData;
+    // Remove object from the treeNodeData, rebuild, & update.
+    this.buildManager.removeNodeFromTree(node);
+    this.rebuildTreeForData(this.buildManager.treeData);
+
     // Save the tree object to the app service for persistence after a user route
     // change.
-    this.buildManager.updateBuilderTree(this.treeNodeData);
+    this.buildManager.updateBuilderTree(this.buildManager.treeData);
+    // Remove from the buildJSON business object.
     this.buildManager.removeFromBuilderJSON(node);
   }
 
   /**
-   * 
-   * @param node 
-   */
-  private saveFormToFinalBuilderJSON(node: IM.TreeNodeData): void {
+  * Determines which FormGroup to save to the builderJSON business object, and
+  * rebuilds the tree when it's finished.
+  * @param node The current tree node.
+  */
+  private saveFormToBuilderJSON(node: IM.TreeFlatNode): void {
 
     if (node.level === 'Application') {
       this.buildManager.saveToBuilderJSON(this.appBuilderForm.getRawValue()['appConfigFG'], node);
@@ -370,30 +453,115 @@ export class BuildComponent implements OnInit, OnDestroy {
     } else if (node.level === 'SubMenu') {
       this.buildManager.saveToBuilderJSON(this.appBuilderForm.get('subMenuFG').value, node);
     }
+
+    this.rebuildTreeForData(this.buildManager.treeData);
   }
 
   /**
-   * 
-   * @param node 
-   */
-  private updateTreeNodeNameText(node: IM.TreeNodeData): void {
+  * Handle the drop. The data is rearranged based on the drop event, then rebuild
+  * the tree after. The treeData from the buildManager is directly used so it can
+  * be updated and used elsewhere.
+  */
+  treeNodeDrop(event: CdkDragDrop<string[]>) {
 
-    var topDatastoreNode = this.treeNodeData[0].children[0];
-    var topMainMenuNode = this.treeNodeData[0].children[1];
-    var nodeIndex = this.buildManager.getNodeIndex(node);
-    var parentIndex = this.buildManager.getNodeParentIndex(node);
+    // Ignore drops outside of the tree.
+    if (!event.isPointerOverContainer) return;
+
+    // construct a list of visible nodes, this will match the DOM.
+    // the cdkDragDrop event.currentIndex jives with visible nodes.
+    // it calls rememberExpandedTreeNodes to persist expand state.
+    const visibleNodes = this.visibleNodes();
+
+    // Recursive find function to find siblings of node.
+    function findNodeSiblings(arr: Array<any>, id: string): Array<any> {
+      let result, subResult;
+      arr.forEach((item, i) => {
+        if (item.id === id) {
+          result = arr;
+        } else if (item.children) {
+          subResult = findNodeSiblings(item.children, id);
+          if (subResult) result = subResult;
+        }
+      });
+      return result;
+
+    }
+
+    // Determine where to insert the node.
+    var nodeAtDest: IM.TreeNodeData = visibleNodes[event.currentIndex];
+    var newSiblings: IM.TreeNodeData[] = findNodeSiblings(this.buildManager.treeData, nodeAtDest.id);
+    if (!newSiblings) return;
+    const insertIndex = newSiblings.findIndex(s => s.id === nodeAtDest.id);
+
+    // Ensure validity of drop - must be same level. This is checked before removing
+    // the node since the data object directly used as the data source is manipulated.
+    const node: IM.TreeFlatNode = event.item.data;
+    const nodeAtDestFlatNode = this.treeControl.dataNodes.find((n) => nodeAtDest.id === n.id);
+    if (nodeAtDestFlatNode.level !== node.level) {
+      this.openErrorSnackBar();
+      return;
+    }
+
+    // Remove the node from its old position.
+    var siblings = findNodeSiblings(this.buildManager.treeData, node.id);
+    const siblingIndex = siblings.findIndex(n => n.id === node.id);
+    var nodeToInsert: IM.TreeNodeData = siblings.splice(siblingIndex, 1)[0];
+    if (nodeAtDest.id === nodeToInsert.id) return;
+
+    // Insert node and update all the new indexes for the elements.
+    newSiblings.splice(insertIndex, 0, nodeToInsert);
+    this.buildManager.updateAllNodeIds(newSiblings);
+
+    // Rebuild the tree with updated treeData.
+    this.rebuildTreeForData(this.buildManager.treeData);
+    // Update the business object.
+    this.buildManager.updateBuilderJSON(insertIndex, siblingIndex, nodeToInsert);
+  }
+
+  /**
+  * 
+  * @param node 
+  */
+  private updateTreeNodeNameText(node: IM.TreeFlatNode): void {
+
+    var topDatastoreNode = this.buildManager.treeData[0].children[0];
+    var topMainMenuNode = this.buildManager.treeData[0].children[1];
+    var nodeIndex = +node.id.charAt(node.id.length - 1);
 
     if (node.level === 'Application') {
-      this.treeNodeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
+      this.buildManager.treeData[0].name = this.appBuilderForm.get('appConfigFG').value['title'];
       // Since the Application is in the tree by default, the code that updates the
       // Builder Tree won't be run. Update it when the Application level is saved.
-      this.buildManager.updateBuilderTree(this.treeNodeData);
+      this.buildManager.updateBuilderTree(this.buildManager.treeData);
     } else if (node.level === 'Datastore') {
       topDatastoreNode.children[nodeIndex].name = this.appBuilderForm.get('datastoreFG').value['name'];
     } else if (node.level === 'Main Menu') {
       topMainMenuNode.children[nodeIndex].name = this.appBuilderForm.get('mainMenuFG').value['name'];
     } else if (node.level === 'SubMenu') {
+      let parentIndex = +node.id.charAt(node.id.length - 3);
       topMainMenuNode.children[parentIndex].children[nodeIndex].name = this.appBuilderForm.get('subMenuFG').value['name'];
     }
+
+    this.rebuildTreeForData(this.buildManager.treeData);
   }
+
+  /**
+  * This constructs an array of nodes that matches the DOM.
+  */
+  visibleNodes(): IM.TreeNodeData[] {
+    const result = [];
+
+    function addExpandedChildren(node: IM.TreeNodeData, expanded: string[]) {
+      result.push(node);
+      if (expanded.includes(node.id as string)) {
+        node.children.map((child) => addExpandedChildren(child, expanded));
+      }
+    }
+    this.treeDataSource.data.forEach((node) => {
+      addExpandedChildren(node, this.expansionModel.selected);
+    });
+    return result;
+  }
+
 }
+

@@ -48,7 +48,7 @@ export class NavBarComponent implements OnInit {
   }
 
   /**
-   * Emits an event to the SideNav component.
+   * Emits an event to the SideNav component when the sidenav button is toggled.
    */
   onToggleSidenav(): void {
     this.sidenavToggle.emit();

@@ -39,7 +39,8 @@ export class SubMenuConfigComponent implements OnInit {
 
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     this.updateTitleInput.emit('');
@@ -67,6 +68,7 @@ export class SubMenuConfigComponent implements OnInit {
   private populateFromBuilderJSON(): void {
 
     var builderJSON = this.buildManager.fullBuilderJSON;
+
     var nodeIndex = this.buildManager.getNodeIndex(this.node);
     var parentIndex = this.buildManager.getNodeParentIndex(this.node);
 
