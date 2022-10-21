@@ -4,7 +4,8 @@ import { Component,
           OnInit,
           Output }      from '@angular/core';
 import { AbstractControl,
-          FormGroup }   from '@angular/forms';
+          FormGroup, 
+          Validators}   from '@angular/forms';
 
 import { AppService }   from 'src/app/app.service';
 import * as IM          from '@OpenWaterFoundation/common/services';
@@ -60,7 +61,39 @@ export class MainMenuConfigComponent implements OnInit {
           return ['required'];
       }
     }
-    
+  }
+
+  /**
+   * 
+   * @param event 
+   */
+  handleActionControlChoice(event: any): void {
+
+    if (event.value === '') {
+      this.appBuilderForm.get('mainMenuFG.markdownFile').clearValidators();
+      this.appBuilderForm.get('mainMenuFG.markdownFile').updateValueAndValidity();
+      this.appBuilderForm.get('mainMenuFG.dashboardFile').clearValidators();
+      this.appBuilderForm.get('mainMenuFG.dashboardFile').updateValueAndValidity();
+      this.appBuilderForm.get('mainMenuFG.mapProject').clearValidators();
+      this.appBuilderForm.get('mainMenuFG.mapProject').updateValueAndValidity();
+      this.appBuilderForm.get('mainMenuFG.url').clearValidators();
+      this.appBuilderForm.get('mainMenuFG.url').updateValueAndValidity();
+    } else {
+      var controlName: string;
+
+      if (event.value === 'contentPage') {
+        controlName = 'markdownFile';
+      } else if (event.value === 'dashboard') {
+        controlName = 'dashboardFile';
+      } else if (event.value === 'displayMap') {
+        controlName = 'mapProject';
+      } else {
+        controlName = 'url';
+      }
+      this.appBuilderForm.get('mainMenuFG.' + controlName).addValidators(Validators.required);
+      this.appBuilderForm.get('mainMenuFG.' + controlName).updateValueAndValidity();
+      this.appBuilderForm.get('mainMenuFG.' + controlName).markAsTouched();
+    }
   }
 
   /**

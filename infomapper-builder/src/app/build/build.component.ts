@@ -89,22 +89,18 @@ export class BuildComponent implements OnInit, OnDestroy {
     action: new FormControl(''),
     enabled: new FormControl('True'),
     visible: new FormControl('True'),
-    markdownFile: new FormControl('', this.isActionEnabled()),
+    markdownFile: new FormControl(''),
     dashboardFile: new FormControl(''),
     mapProject: new FormControl(''),
     url: new FormControl('')
   });
-  /***
-  * 
-  */
+  /** How many milliseconds the error snackbar will be displayed for. */
   snackBarDuration = 4000;
-  /**
-  * 
-  */
+  /** Sets the horizontal position of the error snackbar to display on the right
+   * side of the screen. */
   snackBarHPosition: MatSnackBarHorizontalPosition = 'end';
-  /**
-  * 
-  */
+  /** Sets the vertical position of the error snackbar to display at the top of
+  * the screen. */
   snackbarVPosition: MatSnackBarVerticalPosition = 'top';
   /** FormGroup used by the SubMenuComponent. */
   subMenuFG = new FormGroup({
@@ -115,10 +111,10 @@ export class BuildComponent implements OnInit, OnDestroy {
     doubleSeparatorBefore: new FormControl('False'),
     separatorBefore: new FormControl('False'),
     visible: new FormControl('True'),
-    markdownFile: new FormControl(''),  // <-- Conditional required
-    dashboardFile: new FormControl(''), // <-- Conditional required
-    mapProject: new FormControl(''),    // <-- Conditional required
-    url: new FormControl('')            // <-- Conditional required
+    markdownFile: new FormControl(''),
+    dashboardFile: new FormControl(''),
+    mapProject: new FormControl(''),
+    url: new FormControl('')
   });
   /** Controller for the flat tree. */
   treeControl: FlatTreeControl<IM.TreeFlatNode>;
@@ -142,7 +138,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
     private breakpointObserver: BreakpointObserver, private dialog: MatDialog,
-    private snackBar: MatSnackBar) {
+    private logger: IM.CommonLoggerService, private snackBar: MatSnackBar) {
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
@@ -288,22 +284,6 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   /**
   * 
-  * @returns 
-  */
-  isActionEnabled(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors => {
-
-      if (control.parent) {
-        if (control.parent.value.action !== '') {
-          return Validators.required(control);
-        }
-      }
-      return null;
-    }
-  }
-
-  /**
-  * 
   */
   ngOnInit(): void {
 
@@ -317,7 +297,7 @@ export class BuildComponent implements OnInit, OnDestroy {
       if (this.validBuildID === false) {
         return;
       }
-
+      this.logger.print('info', 'Build initialization.');
       this.determineTreeInit();
     });
   }

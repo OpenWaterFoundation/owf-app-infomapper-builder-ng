@@ -4,7 +4,8 @@ import { Component,
           OnInit,
           Output }      from '@angular/core';
 import { AbstractControl,
-          FormGroup }   from '@angular/forms';
+          FormGroup, 
+          Validators}   from '@angular/forms';
 
 import * as IM          from '@OpenWaterFoundation/common/services';
 import { BuildManager } from '../../build-manager';
@@ -58,7 +59,51 @@ export class SubMenuConfigComponent implements OnInit {
    * @returns An array with all errors for the control, or an empty array of no errors.
    */
   formErrors(control: AbstractControl): string[] {
-    return control.errors ? Object.keys(control.errors) : [];
+    if (control instanceof AbstractControl) {
+      return control.errors ? Object.keys(control.errors) : [];
+    } else {
+
+      switch(control) {
+        case 'contentPage':
+        case 'dashboard':
+        case 'displayMap':
+        case 'externalLink':
+          return ['required'];
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param event 
+   */
+  handleActionControlChoice(event: any): void {
+
+    if (event.value === '') {
+      this.appBuilderForm.get('subMenuFG.markdownFile').clearValidators();
+      this.appBuilderForm.get('subMenuFG.markdownFile').updateValueAndValidity();
+      this.appBuilderForm.get('subMenuFG.dashboardFile').clearValidators();
+      this.appBuilderForm.get('subMenuFG.dashboardFile').updateValueAndValidity();
+      this.appBuilderForm.get('subMenuFG.mapProject').clearValidators();
+      this.appBuilderForm.get('subMenuFG.mapProject').updateValueAndValidity();
+      this.appBuilderForm.get('subMenuFG.url').clearValidators();
+      this.appBuilderForm.get('subMenuFG.url').updateValueAndValidity();
+    } else {
+      var controlName: string;
+
+      if (event.value === 'contentPage') {
+        controlName = 'markdownFile';
+      } else if (event.value === 'dashboard') {
+        controlName = 'dashboardFile';
+      } else if (event.value === 'displayMap') {
+        controlName = 'mapProject';
+      } else {
+        controlName = 'url';
+      }
+      this.appBuilderForm.get('subMenuFG.' + controlName).addValidators(Validators.required);
+      this.appBuilderForm.get('subMenuFG.' + controlName).updateValueAndValidity();
+      this.appBuilderForm.get('subMenuFG.' + controlName).markAsTouched();
+    }
   }
 
   /**
