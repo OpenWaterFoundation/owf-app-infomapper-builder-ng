@@ -390,6 +390,13 @@ export class BuildManager {
       ++this.totalSavedNodesInTree;
     }
 
+    for (let property of Object.keys(resultForm)) {
+      if (resultForm[property] == '') {
+        delete resultForm[property];
+      }
+    }
+    console.log('Form to be saved:', JSON.stringify(resultForm, null, 4));
+
     var nodeIndex = this.getNodeIndex(node);
     var parentIndex = this.getNodeParentIndex(node);
 

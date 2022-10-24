@@ -32,7 +32,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
 
   /**
-   * 
+   * Constructor for the SideNavComponent.
    * @param appService The InfoMapper app service with globally set variables from
    * configuration files and other useful top level methods.
    * @param logger Logger from the Common package for debugging and testing.

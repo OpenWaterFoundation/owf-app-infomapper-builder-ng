@@ -37,7 +37,6 @@ export class MainMenuConfigComponent implements OnInit {
 
   /**
    * 
-   * @param appService 
    */
   constructor() { }
 
@@ -129,10 +128,14 @@ export class MainMenuConfigComponent implements OnInit {
 
     this.appBuilderForm.get('mainMenuFG.description')
     .setValue(builderJSON.mainMenu[nodeIndex].description);
-
-    this.appBuilderForm.get('mainMenuFG.action')
-    .setValue(builderJSON.mainMenu[nodeIndex].action);
-
+    // Optional parameter might be delete from the business object.
+    if (builderJSON.mainMenu[nodeIndex].action) {
+      this.appBuilderForm.get('mainMenuFG.action')
+      .setValue(builderJSON.mainMenu[nodeIndex].action);
+    } else {
+      this.appBuilderForm.get('mainMenuFG.action')
+      .setValue('');
+    }
     if (builderJSON.mainMenu[nodeIndex].action === 'contentPage') {
       this.appBuilderForm.get('mainMenuFG.markdownFile')
       .setValue(builderJSON.mainMenu[nodeIndex].markdownFile);
@@ -146,12 +149,23 @@ export class MainMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('mainMenuFG.url')
       .setValue(builderJSON.mainMenu[nodeIndex].url);
     }
-
-    this.appBuilderForm.get('mainMenuFG.enabled')
-    .setValue(builderJSON.mainMenu[nodeIndex].enabled);
-
-    this.appBuilderForm.get('mainMenuFG.visible')
-    .setValue(builderJSON.mainMenu[nodeIndex].visible);
+    // Optional
+    if (builderJSON.mainMenu[nodeIndex].enabled) {
+      this.appBuilderForm.get('mainMenuFG.enabled')
+      .setValue(builderJSON.mainMenu[nodeIndex].enabled);
+    } else {
+      this.appBuilderForm.get('mainMenuFG.enabled')
+      .setValue('');
+    }
+    // Optional.
+    if (builderJSON.mainMenu[nodeIndex].visible) {
+      this.appBuilderForm.get('mainMenuFG.visible')
+      .setValue(builderJSON.mainMenu[nodeIndex].visible);
+    } else {
+      this.appBuilderForm.get('mainMenuFG.visible')
+    .setValue('');
+    }
+    
   }
 
   /**
@@ -173,8 +187,8 @@ export class MainMenuConfigComponent implements OnInit {
     descriptionControl.markAsTouched();
 
     this.appBuilderForm.get('mainMenuFG.action').setValue('');
-    this.appBuilderForm.get('mainMenuFG.enabled').setValue('True');
-    this.appBuilderForm.get('mainMenuFG.visible').setValue('True');
+    this.appBuilderForm.get('mainMenuFG.enabled').setValue('');
+    this.appBuilderForm.get('mainMenuFG.visible').setValue('');
   }
 
   /**

@@ -7,22 +7,27 @@ export class ConvertFormNamePipe implements PipeTransform {
 
   /**
    * Converts the provided string from a form to one of the following types:
-   *   * `title`    - Capitalizes the first letter of the first word for displaying
-   *                  purposes.
-   *   * `property` - Gets the property version of the given `formName`.
-   * @param formName The form string to convert.
+   *   * `description` - String describing what the selected action requires.
+   *   * `title`       - Capitalizes the first letter of the first word for displaying
+   *                     purposes.
+   *   * `placeholder` - The string to be shown as the form's placeholder.
+   *   * `property`    - Gets the property version of the given `formName`.
+   * @param formName The form string to use for conversion.
    * @param conversion The type of conversion to perform.
-   * @returns The converted form name.
+   * @returns The desired converted string to be displayed in the dialog.
    */
   transform(formName: string, conversion: string): string {
 
     switch(conversion) {
-      case 'title':
-        return this.getTitleName(formName);
-      case 'property':
-        return this.getPropertyName(formName);
       case 'description':
         return this.getFormNameDescription(formName);
+      case 'title':
+        return this.getTitleName(formName);
+      case 'placeholder':
+        return this.getPlaceholder(formName);
+      case 'property':
+        return this.getPropertyName(formName);
+      
     }
     return '';
   }
@@ -36,13 +41,29 @@ export class ConvertFormNamePipe implements PipeTransform {
 
     switch(formName) {
       case 'contentPage':
-        return 'Path to a Markdown file to display as a Content Page.';
+        return 'Path or URL to a markdown file to display as a Content Page.';
       case 'dashboard':
-        return 'Path to a dashboard file to display as a Dashboard Page.';
+        return 'Path or URL to a dashboard JSON file to display as a Dashboard Page.';
       case 'displayMap':
-        return 'Path to a GeoMapProject JSON file to display as a Map Page.';
+        return 'Path or URL to a GeoMapProject JSON file to display as a Map Page.';
       case 'externalLink':
-        return 'URL of page to link to. A new web browser tab will be opened.';
+        return 'External URL link. A new web browser tab will be opened.';
+    }
+    return '';
+  }
+
+  /**
+   * 
+   * @param formName 
+   * @returns 
+   */
+  private getPlaceholder(formName: string): string {
+
+    switch(formName) {
+      case 'contentPage': return '/content-pages/about-the-project.md';
+      case 'dashboard': return '/dashboards/dashboard.json';
+      case 'displayMap': return 'data-maps/map-config-files/map.json';
+      case 'externalLink': return 'https://opewaterfoundation.org';
     }
     return '';
   }

@@ -25,7 +25,7 @@ export class NavBarMenuComponent implements OnInit {
   
 
   /**
-   * 
+   * Constructor for the NavBarMenuComponent.
    */
   constructor() { }
 

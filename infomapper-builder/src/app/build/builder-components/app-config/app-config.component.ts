@@ -34,7 +34,7 @@ export class AppConfigComponent implements OnInit {
 
 
   /**
-   * 
+   * Constructor for the AppConfigComponent.
    */
   constructor() {
 

@@ -34,7 +34,7 @@ export class SubMenuConfigComponent implements OnInit {
 
 
   /**
-   * 
+   * Constructor for the SubMenuConfigComponent.
    */
   constructor() { }
 
@@ -119,15 +119,22 @@ export class SubMenuConfigComponent implements OnInit {
 
     this.updateTitleInput.emit(builderJSON.mainMenu[parentIndex].menus[nodeIndex].name);
 
+    this.appBuilderForm.get('subMenuFG.id')
+    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].id);
+
     this.appBuilderForm.get('subMenuFG.name')
     .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].name);
 
     this.appBuilderForm.get('subMenuFG.description')
     .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].description);
-
-    this.appBuilderForm.get('subMenuFG.action')
-    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].action);
-
+    // Optional parameters might have been removed from business object by default.
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action) {
+      this.appBuilderForm.get('subMenuFG.action')
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].action);
+    } else {
+      this.appBuilderForm.get('subMenuFG.action')
+      .setValue('');
+    }
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'contentPage') {
       this.appBuilderForm.get('subMenuFG.markdownFile')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].markdownFile);
@@ -141,38 +148,63 @@ export class SubMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('subMenuFG.url')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].url);
     }
-
-    this.appBuilderForm.get('subMenuFG.enabled')
-    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled);
-
-    this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
-    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore);
-
-    this.appBuilderForm.get('subMenuFG.separatorBefore')
-    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore);
-
-    this.appBuilderForm.get('subMenuFG.visible')
-    .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible);
+    // Optional.
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled) {
+      this.appBuilderForm.get('subMenuFG.enabled')
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled);
+    } else {
+      this.appBuilderForm.get('subMenuFG.enabled')
+      .setValue('');
+    }
+    // Optional.
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore) {
+      this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore);
+    } else {
+      this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
+      .setValue('');
+    }
+    // Optional.
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore) {
+      this.appBuilderForm.get('subMenuFG.separatorBefore')
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore);
+    } else {
+      this.appBuilderForm.get('subMenuFG.separatorBefore')
+      .setValue('');
+    }
+    // Optional.
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible) {
+      this.appBuilderForm.get('subMenuFG.visible')
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible);
+    } else {
+      this.appBuilderForm.get('subMenuFG.visible')
+      .setValue('');
+    }
   }
 
   /**
-   * 
+   * Sets all defaults for the SubMenu FormGroup and marks all required fields as
+   * touched so they immediately show an error when the dialog is opened.
    */
   private setDefaults(): void {
 
-    var nameControl = this.appBuilderForm.get('subMenuFG.name')
+    var idControl = this.appBuilderForm.get('subMenuFG.id');
+    idControl.setValue('');
+    idControl.markAsTouched();
+
+    var nameControl = this.appBuilderForm.get('subMenuFG.name');
     nameControl.setValue('');
     nameControl.markAsTouched();
 
-    var descriptionControl = this.appBuilderForm.get('subMenuFG.description')
+    var descriptionControl = this.appBuilderForm.get('subMenuFG.description');
     descriptionControl.setValue('');
     descriptionControl.markAsTouched();
 
     this.appBuilderForm.get('subMenuFG.action').setValue('');
-    this.appBuilderForm.get('subMenuFG.enabled').setValue('True');
-    this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore').setValue('False');
-    this.appBuilderForm.get('subMenuFG.separatorBefore').setValue('False');
-    this.appBuilderForm.get('subMenuFG.visible').setValue('True');
+    this.appBuilderForm.get('subMenuFG.enabled').setValue('');
+    this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore').setValue('');
+    this.appBuilderForm.get('subMenuFG.separatorBefore').setValue('');
+    this.appBuilderForm.get('subMenuFG.visible').setValue('');
   }
 
   /**

@@ -1,6 +1,6 @@
 /* CLASSES */
 
-/*  */
+/* Highlights text to resemble a code block. */
 .code-block {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -24,37 +24,37 @@
   padding-left: 25px;
 }
 
-/*  */
+/* Container of all form sections in the dialog row. */
 .form-container {
   display: flex;
   align-items: center;
 }
 
-/*  */
+/* The description container for each form field in the dialog. */
 .form-description {
   font-size: 13px;
-  margin: 0px 0px 48px 20px;
+  margin: 0px 0px 54px 20px;
   user-select: none;
-  width: 350px;
+  width: 300px;
 }
 
-/*  */
+/* The name of each dialog property in the dialog. */
 .form-title {
   font-size: 18px;
-  margin: 0px 20px 40px 0px;
+  margin: 0px 20px 48px 0px;
   text-align: end;
   user-select: none;
   width: 150px;
 }
 
-/*  */
+/* Sentence shown at the top of each dialog. */
 .help-string {
   font-size: small;
   margin: 0;
   padding: 10px 0px;
 }
 
-/*  */
+/* Styles asterisks shown by each form-title. */
 .required-asterisk {
   font-size: 18px;
   font-weight: 600;
@@ -62,9 +62,9 @@
 
 /* TAGS */
 
-/* Main */
+/* Each form field input/textarea in the dialog. */
 mat-form-field {
-  font-size: 15px;
+  font-size: 14px;
   min-height: 110px;
-  width: 250px;
+  width: 300px;
 }

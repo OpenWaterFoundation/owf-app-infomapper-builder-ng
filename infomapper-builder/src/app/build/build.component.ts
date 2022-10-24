@@ -87,12 +87,12 @@ export class BuildComponent implements OnInit, OnDestroy {
     name: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
     action: new FormControl(''),
-    enabled: new FormControl('True'),
-    visible: new FormControl('True'),
     markdownFile: new FormControl(''),
     dashboardFile: new FormControl(''),
     mapProject: new FormControl(''),
-    url: new FormControl('')
+    url: new FormControl(''),
+    enabled: new FormControl('True'),
+    visible: new FormControl('True'),
   });
   /** How many milliseconds the error snackbar will be displayed for. */
   snackBarDuration = 4000;
@@ -104,17 +104,19 @@ export class BuildComponent implements OnInit, OnDestroy {
   snackbarVPosition: MatSnackBarVerticalPosition = 'top';
   /** FormGroup used by the SubMenuComponent. */
   subMenuFG = new FormGroup({
+    id: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
     action: new FormControl(''),
-    enabled: new FormControl('True'),
-    doubleSeparatorBefore: new FormControl('False'),
-    separatorBefore: new FormControl('False'),
-    visible: new FormControl('True'),
     markdownFile: new FormControl(''),
     dashboardFile: new FormControl(''),
     mapProject: new FormControl(''),
-    url: new FormControl('')
+    url: new FormControl(''),
+    enabled: new FormControl('True'),
+    doubleSeparatorBefore: new FormControl('False'),
+    separatorBefore: new FormControl('False'),
+    tooltip: new FormControl(''),
+    visible: new FormControl('True')
   });
   /** Controller for the flat tree. */
   treeControl: FlatTreeControl<IM.TreeFlatNode>;

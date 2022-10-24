@@ -25,7 +25,7 @@ export class NavBarComponent implements OnInit {
 
   
   /**
-   * The NavBarComponent constructor.
+   * Constructor for the NavBarComponent.
    * @param appService The IM Builder top level service.
    */
   constructor(private appService: AppService, private logger: CommonLoggerService) {

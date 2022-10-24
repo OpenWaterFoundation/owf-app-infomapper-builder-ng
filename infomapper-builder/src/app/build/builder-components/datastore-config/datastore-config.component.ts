@@ -35,6 +35,9 @@ export class DatastoreConfigComponent implements OnInit {
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
+  /**
+   * Constructor for the DatastoreConfigComponent.
+   */
   constructor() { }
 
 
