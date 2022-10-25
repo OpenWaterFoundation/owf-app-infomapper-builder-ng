@@ -75,6 +75,8 @@ export class MainMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('mainMenuFG.dashboardFile').updateValueAndValidity();
       this.appBuilderForm.get('mainMenuFG.mapProject').clearValidators();
       this.appBuilderForm.get('mainMenuFG.mapProject').updateValueAndValidity();
+      this.appBuilderForm.get('mainMenuFG.storyFile').clearValidators();
+      this.appBuilderForm.get('mainMenuFG.storyFile').updateValueAndValidity();
       this.appBuilderForm.get('mainMenuFG.url').clearValidators();
       this.appBuilderForm.get('mainMenuFG.url').updateValueAndValidity();
     } else {
@@ -86,6 +88,8 @@ export class MainMenuConfigComponent implements OnInit {
         controlName = 'dashboardFile';
       } else if (event.value === 'displayMap') {
         controlName = 'mapProject';
+      } else if (event.value === 'story') {
+        controlName = 'storyFile';
       } else {
         controlName = 'url';
       }
@@ -128,26 +132,35 @@ export class MainMenuConfigComponent implements OnInit {
 
     this.appBuilderForm.get('mainMenuFG.description')
     .setValue(builderJSON.mainMenu[nodeIndex].description);
-    // Optional parameter might be delete from the business object.
+    // Optional parameter might be deleted from the business object.
     if (builderJSON.mainMenu[nodeIndex].action) {
       this.appBuilderForm.get('mainMenuFG.action')
       .setValue(builderJSON.mainMenu[nodeIndex].action);
     } else {
-      this.appBuilderForm.get('mainMenuFG.action')
-      .setValue('');
+      this.appBuilderForm.get('mainMenuFG.action').setValue('');
     }
-    if (builderJSON.mainMenu[nodeIndex].action === 'contentPage') {
-      this.appBuilderForm.get('mainMenuFG.markdownFile')
-      .setValue(builderJSON.mainMenu[nodeIndex].markdownFile);
-    } else if (builderJSON.mainMenu[nodeIndex].action === 'dashboard') {
-      this.appBuilderForm.get('mainMenuFG.dashboardFile')
-      .setValue(builderJSON.mainMenu[nodeIndex].dashboardFile);
-    } else if (builderJSON.mainMenu[nodeIndex].action === 'displayMap') {
-      this.appBuilderForm.get('mainMenuFG.mapProject')
-      .setValue(builderJSON.mainMenu[nodeIndex].mapProject);
-    } else if (builderJSON.mainMenu[nodeIndex].action === 'externalLink') {
-      this.appBuilderForm.get('mainMenuFG.url')
-      .setValue(builderJSON.mainMenu[nodeIndex].url);
+    if (builderJSON.mainMenu[nodeIndex].action) {
+      if (builderJSON.mainMenu[nodeIndex].action === 'contentPage') {
+        this.appBuilderForm.get('mainMenuFG.markdownFile')
+        .setValue(builderJSON.mainMenu[nodeIndex].markdownFile);
+      } else if (builderJSON.mainMenu[nodeIndex].action === 'dashboard') {
+        this.appBuilderForm.get('mainMenuFG.dashboardFile')
+        .setValue(builderJSON.mainMenu[nodeIndex].dashboardFile);
+      } else if (builderJSON.mainMenu[nodeIndex].action === 'displayMap') {
+        this.appBuilderForm.get('mainMenuFG.mapProject')
+        .setValue(builderJSON.mainMenu[nodeIndex].mapProject);
+      } else if (builderJSON.mainMenu[nodeIndex].action === 'story') {
+        this.appBuilderForm.get('mainMenuFG.story')
+        .setValue(builderJSON.mainMenu[nodeIndex].storyFile);
+      } else if (builderJSON.mainMenu[nodeIndex].action === 'externalLink') {
+        this.appBuilderForm.get('mainMenuFG.url')
+        .setValue(builderJSON.mainMenu[nodeIndex].url);
+      }
+    } else {
+      this.appBuilderForm.get('mainMenuFG.markdownFile').setValue('');
+      this.appBuilderForm.get('mainMenuFG.dashboardFile').setValue('');
+      this.appBuilderForm.get('mainMenuFG.mapProject').setValue('');
+      this.appBuilderForm.get('mainMenuFG.url').setValue('');
     }
     // Optional
     if (builderJSON.mainMenu[nodeIndex].enabled) {
@@ -187,6 +200,11 @@ export class MainMenuConfigComponent implements OnInit {
     descriptionControl.markAsTouched();
 
     this.appBuilderForm.get('mainMenuFG.action').setValue('');
+    this.appBuilderForm.get('mainMenuFG.markdownFile').setValue('');
+    this.appBuilderForm.get('mainMenuFG.dashboardFile').setValue('');
+    this.appBuilderForm.get('mainMenuFG.mapProject').setValue('');
+    this.appBuilderForm.get('mainMenuFG.storyFile').setValue('');
+    this.appBuilderForm.get('mainMenuFG.url').setValue('');
     this.appBuilderForm.get('mainMenuFG.enabled').setValue('');
     this.appBuilderForm.get('mainMenuFG.visible').setValue('');
   }

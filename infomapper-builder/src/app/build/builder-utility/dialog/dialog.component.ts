@@ -58,6 +58,17 @@ export class DialogComponent implements OnInit {
       this.updateHeaderText(this.appBuilderForm.get('appConfigFG.title').value);
     }
   }
+  
+  findInvalidControls(formGroup: string) {
+    const invalid = [];
+    const group = this.appBuilderForm.get(formGroup) as FormGroup;
+    for (const name in group.controls) {
+        if (group.controls[name].invalid) {
+            invalid.push(name);
+        }
+    }
+    return invalid;
+  }
 
   /**
    * 

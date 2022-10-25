@@ -1,6 +1,5 @@
 import { Injectable }        from '@angular/core';
 import { HttpClient }        from '@angular/common/http';
-import { FormGroup }         from '@angular/forms';
 import { BehaviorSubject,
           catchError,
           first,
@@ -289,7 +288,13 @@ export class AppService {
     });
   }
 
-  
+  /**
+   * Send a RESTful POST request to the Python Flask API to save locally.
+   * @param data Data to be sent to the back-end.
+   */
+  postData(data: any): any {
+    return this.http.post('localhost:5000/api/build', data);
+  }
 
   /**
    * Sanitizes the markdown syntax by checking if image links are present, and replacing

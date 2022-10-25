@@ -395,7 +395,6 @@ export class BuildManager {
         delete resultForm[property];
       }
     }
-    console.log('Form to be saved:', JSON.stringify(resultForm, null, 4));
 
     var nodeIndex = this.getNodeIndex(node);
     var parentIndex = this.getNodeParentIndex(node);

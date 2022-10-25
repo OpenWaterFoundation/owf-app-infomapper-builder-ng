@@ -86,6 +86,8 @@ export class SubMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('subMenuFG.dashboardFile').updateValueAndValidity();
       this.appBuilderForm.get('subMenuFG.mapProject').clearValidators();
       this.appBuilderForm.get('subMenuFG.mapProject').updateValueAndValidity();
+      this.appBuilderForm.get('subMenuFG.storyFile').clearValidators();
+      this.appBuilderForm.get('subMenuFG.storyFile').updateValueAndValidity();
       this.appBuilderForm.get('subMenuFG.url').clearValidators();
       this.appBuilderForm.get('subMenuFG.url').updateValueAndValidity();
     } else {
@@ -97,6 +99,8 @@ export class SubMenuConfigComponent implements OnInit {
         controlName = 'dashboardFile';
       } else if (event.value === 'displayMap') {
         controlName = 'mapProject';
+      } else if (event.value === 'story') {
+        controlName = 'storyFile';
       } else {
         controlName = 'url';
       }
@@ -144,6 +148,9 @@ export class SubMenuConfigComponent implements OnInit {
       } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'displayMap') {
         this.appBuilderForm.get('subMenuFG.mapProject')
         .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].mapProject);
+      } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'story') {
+        this.appBuilderForm.get('mainMenuFG.story')
+        .setValue(builderJSON.mainMenu[nodeIndex].storyFile);
       } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'externalLink') {
         this.appBuilderForm.get('subMenuFG.url')
         .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].url);
@@ -210,9 +217,27 @@ export class SubMenuConfigComponent implements OnInit {
     descriptionControl.markAsTouched();
 
     this.appBuilderForm.get('subMenuFG.action').setValue('');
+    // Reset the value and validators for each possibly defined previous action.
+    this.appBuilderForm.get('subMenuFG.markdownFile').setValue('');
+    this.appBuilderForm.get('subMenuFG.markdownFile').clearValidators();
+    this.appBuilderForm.get('subMenuFG.markdownFile').updateValueAndValidity();
+    this.appBuilderForm.get('subMenuFG.dashboardFile').setValue('');
+    this.appBuilderForm.get('subMenuFG.dashboardFile').clearValidators();
+    this.appBuilderForm.get('subMenuFG.dashboardFile').updateValueAndValidity();
+    this.appBuilderForm.get('subMenuFG.mapProject').setValue('');
+    this.appBuilderForm.get('subMenuFG.mapProject').clearValidators();
+    this.appBuilderForm.get('subMenuFG.mapProject').updateValueAndValidity();
+    this.appBuilderForm.get('subMenuFG.storyFile').setValue('');
+    this.appBuilderForm.get('subMenuFG.storyFile').clearValidators();
+    this.appBuilderForm.get('subMenuFG.storyFile').updateValueAndValidity();
+    this.appBuilderForm.get('subMenuFG.url').setValue('');
+    this.appBuilderForm.get('subMenuFG.url').clearValidators();
+    this.appBuilderForm.get('subMenuFG.url').updateValueAndValidity();
+
     this.appBuilderForm.get('subMenuFG.enabled').setValue('');
     this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore').setValue('');
     this.appBuilderForm.get('subMenuFG.separatorBefore').setValue('');
+    this.appBuilderForm.get('subMenuFG.tooltip').setValue('');
     this.appBuilderForm.get('subMenuFG.visible').setValue('');
   }
 

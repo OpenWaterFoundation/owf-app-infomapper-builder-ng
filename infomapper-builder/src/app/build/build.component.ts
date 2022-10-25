@@ -90,6 +90,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     markdownFile: new FormControl(''),
     dashboardFile: new FormControl(''),
     mapProject: new FormControl(''),
+    storyFile: new FormControl(''),
     url: new FormControl(''),
     enabled: new FormControl('True'),
     visible: new FormControl('True'),
@@ -111,6 +112,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     markdownFile: new FormControl(''),
     dashboardFile: new FormControl(''),
     mapProject: new FormControl(''),
+    storyFile: new FormControl(''),
     url: new FormControl(''),
     enabled: new FormControl('True'),
     doubleSeparatorBefore: new FormControl('False'),
@@ -359,6 +361,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   */
   printFinalBuilderJSON(): void {
     console.log(this.buildManager.fullBuilderJSON);
+    this.appService.postData(this.buildManager.fullBuilderJSON);
   }
 
   /**
@@ -453,6 +456,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     // the cdkDragDrop event.currentIndex jives with visible nodes.
     // it calls rememberExpandedTreeNodes to persist expand state.
     const visibleNodes = this.visibleNodes();
+    // console.log('visible nodes:', visibleNodes); // For testing.
 
     // Recursive find function to find siblings of node.
     function findNodeSiblings(arr: Array<any>, id: string): Array<any> {
