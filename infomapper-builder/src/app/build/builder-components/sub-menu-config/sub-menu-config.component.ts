@@ -132,53 +132,62 @@ export class SubMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('subMenuFG.action')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].action);
     } else {
-      this.appBuilderForm.get('subMenuFG.action')
-      .setValue('');
+      this.appBuilderForm.get('subMenuFG.action').setValue('');
     }
-    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'contentPage') {
-      this.appBuilderForm.get('subMenuFG.markdownFile')
-      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].markdownFile);
-    } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'dashboard') {
-      this.appBuilderForm.get('subMenuFG.dashboardFile')
-      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].dashboardFile);
-    } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'displayMap') {
-      this.appBuilderForm.get('subMenuFG.mapProject')
-      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].mapProject);
-    } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'externalLink') {
-      this.appBuilderForm.get('subMenuFG.url')
-      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].url);
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action) {
+      if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'contentPage') {
+        this.appBuilderForm.get('subMenuFG.markdownFile')
+        .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].markdownFile);
+      } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'dashboard') {
+        this.appBuilderForm.get('subMenuFG.dashboardFile')
+        .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].dashboardFile);
+      } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'displayMap') {
+        this.appBuilderForm.get('subMenuFG.mapProject')
+        .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].mapProject);
+      } else if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].action === 'externalLink') {
+        this.appBuilderForm.get('subMenuFG.url')
+        .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].url);
+      }
+    } else {
+      this.appBuilderForm.get('subMenuFG.markdownFile').setValue('');
+      this.appBuilderForm.get('subMenuFG.dashboardFile').setValue('');
+      this.appBuilderForm.get('subMenuFG.mapProject').setValue('');
+      this.appBuilderForm.get('subMenuFG.url').setValue('');
     }
     // Optional.
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled) {
       this.appBuilderForm.get('subMenuFG.enabled')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled);
     } else {
-      this.appBuilderForm.get('subMenuFG.enabled')
-      .setValue('');
+      this.appBuilderForm.get('subMenuFG.enabled').setValue('');
     }
     // Optional.
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore) {
       this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore);
     } else {
-      this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
-      .setValue('');
+      this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore').setValue('');
     }
     // Optional.
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore) {
       this.appBuilderForm.get('subMenuFG.separatorBefore')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore);
     } else {
-      this.appBuilderForm.get('subMenuFG.separatorBefore')
-      .setValue('');
+      this.appBuilderForm.get('subMenuFG.separatorBefore').setValue('');
+    }
+    // Optional.
+    if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].tooltip) {
+      this.appBuilderForm.get('subMenuFG.tooltip')
+      .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].tooltip);
+    } else {
+      this.appBuilderForm.get('subMenuFG.tooltip').setValue('');
     }
     // Optional.
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible) {
       this.appBuilderForm.get('subMenuFG.visible')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible);
     } else {
-      this.appBuilderForm.get('subMenuFG.visible')
-      .setValue('');
+      this.appBuilderForm.get('subMenuFG.visible').setValue('');
     }
   }
 

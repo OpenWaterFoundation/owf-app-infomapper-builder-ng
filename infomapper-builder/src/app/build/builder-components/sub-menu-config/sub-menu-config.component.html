@@ -16,7 +16,7 @@
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.id'))">
-              {{ formErrorMessages[error] }} <br>
+              {{ formErrorMessages[error] }}<br>
             </ng-container>
           </mat-error>
         </mat-form-field>
@@ -36,7 +36,7 @@
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.name'))">
-              {{ formErrorMessages[error] }} <br>
+              {{ formErrorMessages[error] }}<br>
             </ng-container>
           </mat-error>
         </mat-form-field>
@@ -57,7 +57,7 @@
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.description'))">
-              {{ formErrorMessages[error] }} <br>
+              {{ formErrorMessages[error] }}<br>
             </ng-container>
           </mat-error>
         </mat-form-field>
@@ -96,7 +96,7 @@
 
             <mat-error>
               <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.action').value)">
-                {{ formErrorMessages[error] }} <br>
+                {{ formErrorMessages[error] }}<br>
               </ng-container>
             </mat-error>
           </mat-form-field>
@@ -153,6 +153,28 @@
         <mat-card class="form-description">
           Whether or not a separator line should be drawn above the SubMenu item
           to group SubMenu items.
+        </mat-card>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">
+          Tooltip
+        </div>
+        <mat-form-field appearance="outline">
+          <textarea matInput formControlName="tooltip"
+          placeholder="Display a page...">
+          </textarea>
+
+          <mat-error>
+            <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.tooltip'))">
+              {{ formErrorMessages[error] }}<br>
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-card class="form-description">
+          A simple explanation of what this SubMenu does to be shown on the menu
+          as a tooltip.
         </mat-card>
       </div>
 
