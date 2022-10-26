@@ -1,5 +1,6 @@
 import { Injectable }        from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParamsOptions }        from '@angular/common/http';
+import { HttpClient,
+          HttpHeaders }      from '@angular/common/http';
 import { BehaviorSubject,
           catchError,
           first,
@@ -254,8 +255,6 @@ export class AppService {
     };
   }
 
-  
-
   /**
    * Asynchronously loads the application configuration file and sets the necessary
    * variables that describes what kind of application is being created:
@@ -289,17 +288,21 @@ export class AppService {
   }
 
   /**
-   * Send a RESTful POST request to the Python Flask API to save locally.
+   * Send a RESTful POST request to the Python Flask API to save to a local file.
    * @param data Data to be sent to the back-end.
    */
-  postData(data: any): any {
-    console.log('POSTing final builder JSON');
-    // const httpOptions = {
-    //   headers: new HttpHeaders({
-    //     'Content-Type': 'application/json'
-    //   })
-    // };
-    return this.http.post('http://localhost:5000/api/build', data);
+  postData(data: IM.AppConfig): any {
+    // From Stack Overflow: You must subscribe to the returned observable if you
+    // want the call to execute.
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+    return this.http.post('http://localhost:5000/api/save', data, httpOptions)
+    .pipe(first()).subscribe((response: any) => {
+      // console.log('response:', response);
+    });
   }
 
   /**

@@ -357,14 +357,6 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-  * 
-  */
-  printFinalBuilderJSON(): void {
-    console.log(this.buildManager.fullBuilderJSON);
-    this.appService.postData(this.buildManager.fullBuilderJSON);
-  }
-
-  /**
    * 
    */
   publishToAWS(): void {
@@ -440,6 +432,14 @@ export class BuildComponent implements OnInit, OnDestroy {
     }
 
     this.rebuildTreeForData(this.buildManager.treeData);
+  }
+
+  /**
+  * Saves the current business object to the Python Flask back-end which will
+  * save the data to a local file.
+  */
+  saveToLocalFile(): void {
+    this.appService.postData(this.buildManager.fullBuilderJSON);
   }
 
   /**

@@ -9,8 +9,8 @@
       </button>
 
       <mat-menu #nodeMenu="matMenu">
-        <button mat-button (click)="printFinalBuilderJSON()">
-          TEST: Print to console
+        <button mat-menu-item (click)="saveToLocalFile()">
+          Save to local file
         </button>
 
         <mat-divider></mat-divider>
@@ -36,8 +36,8 @@
       <div fxLayout fxLayoutGap="1px" class="build-nav-container">
   
         <mat-nav-list class="build-mat-nav-list">
-          <button mat-flat-button (click)="printFinalBuilderJSON()">
-            TEST: Print to console
+          <button mat-flat-button (click)="saveToLocalFile()">
+            Save to local file
           </button>
           <button mat-flat-button>Publish to GitHub</button>
           <button mat-flat-button>Publish to preview</button>

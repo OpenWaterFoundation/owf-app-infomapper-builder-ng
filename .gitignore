@@ -1,1 +1,8 @@
+# The app folder in assets to prevent bloating.
 infomapper-builder/src/assets/app/
+
+# Dynamic Python files/folders.
+__pycache__/
+
+# The locally saved file created by the IM Builder front-end application.
+server/app-config.json
