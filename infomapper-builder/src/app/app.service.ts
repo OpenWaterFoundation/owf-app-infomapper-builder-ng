@@ -1,5 +1,5 @@
 import { Injectable }        from '@angular/core';
-import { HttpClient }        from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParamsOptions }        from '@angular/common/http';
 import { BehaviorSubject,
           catchError,
           first,
@@ -293,7 +293,13 @@ export class AppService {
    * @param data Data to be sent to the back-end.
    */
   postData(data: any): any {
-    return this.http.post('localhost:5000/api/build', data);
+    console.log('POSTing final builder JSON');
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Content-Type': 'application/json'
+    //   })
+    // };
+    return this.http.post('http://localhost:5000/api/build', data);
   }
 
   /**
