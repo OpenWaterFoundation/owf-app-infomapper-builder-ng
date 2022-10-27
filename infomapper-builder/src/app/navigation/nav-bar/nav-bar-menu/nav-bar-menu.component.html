@@ -73,7 +73,7 @@
   <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
     <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
     class="mainMenu-button" routerLinkActive="mat-selected" [routerLink]="['/build/', mainMenu.id]"
-    [attr.data-cy]="mainMenu.name">
+    [attr.data-cy]="mainMenu.name + '-main-menu'">
       {{mainMenu.name}}
     </a>
   </li>
@@ -84,7 +84,7 @@
   <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
     <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
     class="mainMenu-button" routerLinkActive="mat-selected" [routerLink]="['/content-page/', mainMenu.id]"
-    [attr.data-cy]="mainMenu.name">
+    [attr.data-cy]="mainMenu.name + '-main-menu'">
       {{mainMenu.name}}
     </a>
   </li>
@@ -95,7 +95,7 @@
   <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
     <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
     class="mainMenu-button" routerLinkActive="mat-selected" [routerLink]="['/story/', mainMenu.id]"
-    [attr.data-cy]="mainMenu.name">
+    [attr.data-cy]="mainMenu.name + '-main-menu'">
       {{mainMenu.name}}
     </a>
   </li>
@@ -105,7 +105,8 @@
 <div *ngIf="mainMenu.action === 'externalLink'">
   <li class="nav-item activate .ml-auto" [ngClass]="{ 'li-disabled': mainMenu.enabled === false }">
     <a mat-button [matTooltip]="mainMenu.tooltip" matTooltipPosition="right"
-    [attr.href]="mainMenu.url" target="_blank" class="mainMenu-button" [attr.data-cy]="mainMenu.name">
+    [attr.href]="mainMenu.url" target="_blank" class="mainMenu-button"
+    [attr.data-cy]="mainMenu.name + '-main-menu'">
       {{mainMenu.name}}
     </a>
   </li>

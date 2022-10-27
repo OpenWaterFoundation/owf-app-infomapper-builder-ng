@@ -369,3 +369,12 @@ project's main `tsconfig.json` file and add the following property and value. If
 
 This excludes the cypress folder and its test files from the ts compilation, and
 the issue is resolved.
+
+## cypress.json ##
+
+```json
+{
+  "viewportWidth": 1280,
+  "viewportHeight": 950
+}
+```

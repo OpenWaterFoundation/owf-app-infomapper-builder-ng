@@ -1,6 +1,7 @@
 <mat-toolbar>
   <div fxHide.gt-md>
-    <button mat-icon-button (click)="onToggleSidenav()">
+    <button mat-icon-button (click)="onToggleSidenav()"
+    data-cy="side-nav-toggle-button">
       <fa-icon [icon]="faBars" size="lg"></fa-icon>
     </button>
   </div>

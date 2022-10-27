@@ -1,10 +1,10 @@
 <button mat-icon-button [matMenuTriggerFor]="nodeMenu" class="node-icon-button"
-data-cy="NEEDS-TO-BE-UPDATED">
+[attr.data-cy]="node.id + '-node-dropdown-menu'">
   <fa-icon class="fa-icon" [icon]=faEllipsisVertical size="xl"></fa-icon>
 </button>
 <mat-menu #nodeMenu="matMenu">
   <button mat-menu-item (click)="sendMenuChoice(node, 'editConfig')"
-  data-cy="NEEDS-TO-BE-UPDATED">
+  [attr.data-cy]="node.id + '-edit-config-button'">
     Edit configuration
   </button>
 
@@ -12,12 +12,14 @@ data-cy="NEEDS-TO-BE-UPDATED">
     <div matTooltip="Save configuration before moving on"
     [matTooltipDisabled]="(validAppSaveState | async)" matTooltipPosition="right">
       <button mat-menu-item (click)="sendMenuChoice(node, 'addDatastore')"
-      [disabled]="!(validAppSaveState | async)" data-cy="">
+      [disabled]="!(validAppSaveState | async)" data-cy=""
+      [attr.data-cy]="node.id + '-add-datastore-button'">
         Add Datastore
       </button>
 
       <button mat-menu-item (click)="sendMenuChoice(node, 'addMainMenu')"
-      [disabled]="!(validAppSaveState | async)" data-cy="">
+      [disabled]="!(validAppSaveState | async)" data-cy=""
+      [attr.data-cy]="node.id + '-add-main-menu-button'">
         Add Main Menu
       </button>
     </div>
@@ -28,7 +30,8 @@ data-cy="NEEDS-TO-BE-UPDATED">
     <div matTooltip="Save configuration before moving on"
     [matTooltipDisabled]="(validAppSaveState | async)" matTooltipPosition="right">
       <button mat-menu-item (click)="sendMenuChoice(node, 'addSubMenu')"
-      [disabled]="!(validAppSaveState | async)" data-cy="">
+      [disabled]="!(validAppSaveState | async)" data-cy=""
+      [attr.data-cy]="node.id + '-add-submenu-button'">
         Add SubMenu
       </button>
     </div>
@@ -40,7 +43,7 @@ data-cy="NEEDS-TO-BE-UPDATED">
     <mat-divider></mat-divider>
 
     <button mat-menu-item (click)="sendMenuChoice(node, 'removeNode')"
-    data-cy="NEEDS-TO-BE-UPDATED">
+    [attr.data-cy]="node.id + '-delete-node-config-button'">
       Delete {{ node.level }}
     </button>
   </ng-container>

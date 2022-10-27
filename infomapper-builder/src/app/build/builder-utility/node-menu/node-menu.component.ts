@@ -40,7 +40,6 @@ export class NodeMenuComponent implements OnInit {
    * 
    */
   ngOnInit(): void {
-    
   }
 
   /**

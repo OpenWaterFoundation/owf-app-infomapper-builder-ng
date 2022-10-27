@@ -1,11 +1,8 @@
 import { Component,
           OnDestroy,
           OnInit }                      from '@angular/core';
-import { AbstractControl,
-          FormControl,
+import { FormControl,
           FormGroup,
-          ValidationErrors,
-          ValidatorFn,
           Validators }                  from '@angular/forms';
 import { ActivatedRoute,
           ParamMap }                    from '@angular/router';
@@ -43,8 +40,7 @@ import { BuildManager }                 from '../build/build-manager';
 @Component({
   selector: 'app-build',
   templateUrl: './build.component.html',
-  styleUrls: ['./build.component.scss'],
-  providers: []
+  styleUrls: ['./build.component.scss']
 })
 export class BuildComponent implements OnInit, OnDestroy {
 
@@ -149,7 +145,8 @@ export class BuildComponent implements OnInit, OnDestroy {
     this.treeControl = new FlatTreeControl<IM.TreeFlatNode>(this.getLevel, this.isExpandable);
     this.treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-    this.buildManager.dataChange.subscribe((data: any) => this.rebuildTreeForData(data));
+    this.buildManager.dataChange.pipe(takeUntil(this.destroyed))
+    .subscribe((data: any) => this.rebuildTreeForData(data));
 
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -157,15 +154,13 @@ export class BuildComponent implements OnInit, OnDestroy {
       Breakpoints.Medium,
       Breakpoints.Large,
       Breakpoints.XLarge,
-    ])
-      .pipe(takeUntil(this.destroyed))
-      .subscribe((result: any) => {
-        for (const query of Object.keys(result.breakpoints)) {
-          if (result.breakpoints[query]) {
-            this.currentScreenSize = query;
-          }
+    ]).pipe(takeUntil(this.destroyed)).subscribe((result: any) => {
+      for (const query of Object.keys(result.breakpoints)) {
+        if (result.breakpoints[query]) {
+          this.currentScreenSize = query;
         }
-      });
+      }
+    });
     // Add controls at component creation so it's always performed.
     this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
     this.appBuilderForm.addControl('datastoreFG', this.datastoreFG);
@@ -255,10 +250,10 @@ export class BuildComponent implements OnInit, OnDestroy {
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
       height: isMobile ? "100vh" : "850px",
       width: isMobile ? "100vw" : "875px",
-      minHeight: isMobile ? "100vh" : "850px",
+      minHeight: isMobile ? "100vh" : "20vw",
       minWidth: isMobile ? "100vw" : "875px",
-      maxHeight: isMobile ? "100vh" : "850px",
-      maxWidth: isMobile ? "100vw" : "875px"
+      maxHeight: isMobile ? "100vh" : "95vh",
+      maxWidth: isMobile ? "100vw" : "70vw"
     }
   }
 
@@ -287,8 +282,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-  * 
-  */
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
+   */
   ngOnInit(): void {
 
     // When the parameters in the URL are changed the map will refresh and load
@@ -307,7 +303,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-  * 
+  * Called once right before this component is destroyed.
   */
   ngOnDestroy(): void {
     this.destroyed.next();
@@ -315,7 +311,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
-  * 
+  * Creates and opens an Angular Material dialog to show the passed in node's configuration
+  * form. Subscribes to dialog closure to handle the saved form and update necessary
+  * properties in the app.
   */
   openConfigDialog(node: IM.TreeFlatNode): void {
 

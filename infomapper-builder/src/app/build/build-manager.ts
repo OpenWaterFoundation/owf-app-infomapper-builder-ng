@@ -6,7 +6,6 @@ import * as IM            from '@OpenWaterFoundation/common/services';
 import { SelectionModel } from '@angular/cdk/collections';
 
 
-
 /**
  * A helper singleton class for creating, managing and maintaining objects used by
  * the IM Builder. This includes:
@@ -36,9 +35,8 @@ export class BuildManager {
    * 
    */
   private totalSavedNodesInTree = 0;
-  /**
-   * 
-   */
+  /** The main array of TreeNodeData objects that will be used to build and update
+   * as the tree to be rendered on the screen. */
   private treeNodeData: IM.TreeNodeData[] = [
     {
       level: 'Application',
@@ -77,7 +75,7 @@ export class BuildManager {
 
 
   /**
-   * 
+   * The saved tree object used when 
    */
   get builtTree(): IM.TreeNodeData[] {
     return this.builderTree;
@@ -242,7 +240,10 @@ export class BuildManager {
   }
 
   /**
-   * 
+   * Initializes the treeNodeData by calling the dataChange BehaviorSubject's next
+   * method. This is detected by the Build Component's subscription to dataChange
+   * in the constructor, and calls the rebuildTreeForData function for the first
+   * time.
    */
   private initialize(): void {
     this.dataChange.next(this.treeNodeData);
