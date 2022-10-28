@@ -13,7 +13,7 @@
         </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="title" placeholder="Poudre Basin Information"
-          (keyup)="titleInput()">
+          (keyup)="titleInput()" [attr.data-cy]="node.id + '-app-config-title'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('appConfigFG.title'))">
@@ -46,7 +46,8 @@
           Version<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="version" placeholder="1.0.0">
+          <input matInput formControlName="version" placeholder="1.0.0"
+          [attr.data-cy]="node.id + '-app-config-version'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('appConfigFG.version'))">
@@ -63,7 +64,8 @@
       <div class="form-container">
         <div class="form-title">Data units</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="dataUnitsPath" placeholder="/system/DATAUNIT">
+          <input matInput formControlName="dataUnitsPath" placeholder="/system/DATAUNIT"
+          [attr.data-cy]="node.id + '-app-config-data-units'">
         </mat-form-field>
 
         <mat-card class="form-description">
@@ -76,7 +78,8 @@
         <div class="form-title">Favicon</div>
 
         <mat-form-field appearance="outline">
-          <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico">
+          <input matInput formControlName="favicon" placeholder="assets/app/img/favicon.ico"
+          [attr.data-cy]="node.id + '-app-config-favicon'">
         </mat-form-field>
 
         <mat-card class="form-description">
@@ -87,7 +90,8 @@
       <div class="form-container">
         <div class="form-title">Google analytics tracking Id</div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="googleAnalyticsTrackingId" placeholder="UA-123456789-1">
+          <input matInput formControlName="googleAnalyticsTrackingId" placeholder="UA-123456789-1"
+          [attr.data-cy]="node.id + '-app-config-GATI'">
         </mat-form-field>
 
         <mat-card class="form-description">

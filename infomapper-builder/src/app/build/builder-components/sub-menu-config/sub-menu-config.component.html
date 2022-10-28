@@ -12,7 +12,8 @@
           ID<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
+          <input matInput formControlName="id" placeholder="about-the-project"
+          [attr.data-cy]="node.id + '-subMenu-config-id'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.id'))">
@@ -32,7 +33,7 @@
         </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="name" placeholder="About the Project"
-          (keyup)="titleInput()">
+          (keyup)="titleInput()" [attr.data-cy]="node.id + '-subMenu-config-name'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.name'))">
@@ -51,8 +52,8 @@
           Description<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <textarea matInput formControlName="description"
-          placeholder="This menu is used for...">
+          <textarea matInput formControlName="description" placeholder="This menu is used for..."
+          [attr.data-cy]="node.id + '-subMenu-config-description'">
           </textarea>
 
           <mat-error>
@@ -70,7 +71,8 @@
       <div class="form-container">
         <div class="form-title">Action</div>
         <mat-form-field appearance="outline">
-          <mat-select formControlName="action" (selectionChange)="handleActionControlChoice($event)">
+          <mat-select formControlName="action" (selectionChange)="handleActionControlChoice($event)"
+          [attr.data-cy]="node.id + '-subMenu-config-action'">
             <mat-option value=""></mat-option>
             <mat-option value="contentPage">contentPage</mat-option>
             <mat-option value="dashboard">dashboard</mat-option>
@@ -93,7 +95,8 @@
           <mat-form-field appearance="outline">
             <input matInput
             formControlName="{{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'property' }}"
-            placeholder="{{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'placeholder' }}">
+            placeholder="{{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'placeholder' }}"
+            [attr.data-cy]="node.id + '-subMenu-config-' + (appBuilderForm.get('subMenuFG.action').value | convertFormName : 'property')">
 
             <mat-error>
               <ng-container *ngFor="let error of formErrors(appBuilderForm.get('subMenuFG.action').value)">
@@ -162,8 +165,8 @@
           Tooltip
         </div>
         <mat-form-field appearance="outline">
-          <textarea matInput formControlName="tooltip"
-          placeholder="Display a page...">
+          <textarea matInput formControlName="tooltip" placeholder="Display a page..."
+          [attr.data-cy]="node.id + '-subMenu-config-tooltip'">
           </textarea>
 
           <mat-error>

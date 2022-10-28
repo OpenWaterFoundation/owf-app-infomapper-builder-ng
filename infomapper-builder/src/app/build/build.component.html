@@ -54,7 +54,8 @@
       <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" cdkDropList
       (cdkDropListDropped)="treeNodeDrop($event)">
         <!-- Tree node template for leaf nodes with no children. -->
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding cdkDrag [cdkDragData]="node" [cdkDragDisabled]="node | checkTreeNode">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding cdkDrag [cdkDragData]="node"
+        [cdkDragDisabled]="node | checkTreeNode" [attr.data-cy]="node.id + '-tree-node-no-children'">
   
           <div class="tree-node-content-container">
             <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
@@ -91,9 +92,9 @@
         </mat-tree-node>
       
         <!-- Tree node template for expandable nodes (has children). -->
-        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding cdkDrag
-        [cdkDragData]="node"
-        [cdkDragDisabled]="node | checkTreeNode">
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding
+        cdkDrag [cdkDragData]="node" [cdkDragDisabled]="node | checkTreeNode"
+        [attr.data-cy]="node.id + '-tree-node-with-children'">
   
           <div class="tree-node-content-container">
   
@@ -105,7 +106,10 @@
               </button>
     
               <ng-container *ngIf="node.level !== 'Datastores' && node.level !== 'Main Menus'">
-                <span class="node-name-with-children"><b>{{ node.level }}:</b> {{ node.name }}</span>
+                <span class="node-name-with-children"
+                [attr.data-cy]="node.id + '-tree-node-level-and-name'">
+                  <b>{{ node.level }}:</b> {{ node.name }}
+                </span>
   
                 <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
     

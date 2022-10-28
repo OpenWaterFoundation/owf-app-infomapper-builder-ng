@@ -12,7 +12,8 @@
           ID<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="id" placeholder="about-the-project">
+          <input matInput formControlName="id" placeholder="about-the-project"
+          [attr.data-cy]="node.id + '-main-menu-config-id'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.id'))">
@@ -32,7 +33,7 @@
         </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="name" placeholder="About the Project"
-          (keyup)="titleInput()">
+          (keyup)="titleInput()" [attr.data-cy]="node.id + '-main-menu-config-name'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.name'))">
@@ -51,8 +52,8 @@
           Description<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <textarea matInput formControlName="description"
-          placeholder="This menu is used for...">
+          <textarea matInput formControlName="description" placeholder="This menu is used for..."
+          [attr.data-cy]="node.id + '-main-menu-config-description'">
           </textarea>
 
           <mat-error>

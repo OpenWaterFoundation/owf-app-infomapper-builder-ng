@@ -12,7 +12,8 @@
           Name<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="name" placeholder="StateModGitHub">
+          <input matInput formControlName="name" placeholder="StateModGitHub"
+          [attr.data-cy]="node.id + '-datastore-config-name'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.name'))">
@@ -53,7 +54,7 @@
         </div>
         <mat-form-field appearance="outline">
           <input matInput formControlName="type" placeholder="owf.datastore.statemod"
-          (keyup)="titleInput()">
+          (keyup)="titleInput()" [attr.data-cy]="node.id + '-datastore-config-type'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.type'))">
@@ -78,7 +79,8 @@
           Root URL<span class="required-asterisk">*</span>
         </div>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="rootUrl" placeholder="https://raw.githubusercontent/path">
+          <input matInput formControlName="rootUrl" placeholder="https://raw.githubusercontent/path"
+          [attr.data-cy]="node.id + '-datastore-config-rootUrl'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.rootUrl'))">
@@ -114,7 +116,8 @@
         <div class="form-title">API Key</div>
 
         <mat-form-field appearance="outline">
-          <input matInput formControlName="apiKey" placeholder="1zc8/3kd83y6rhd4iod93u4kf0zzc">
+          <input matInput formControlName="apiKey" placeholder="1zc8/3kd83y6rhd4iod93u4kf0zzc"
+          [attr.data-cy]="node.id + '-datastore-config-apiKey'">
 
           <mat-error>
             <ng-container *ngFor="let error of formErrors(appBuilderForm.get('datastoreFG.apiKey'))">
