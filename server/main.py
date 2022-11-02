@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 
 
+# Starting the server: py -m flask --app=main run
 # https://developer.okta.com/blog/2019/03/25/build-crud-app-with-python-flask-angular
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:*", "http://127.0.0.1:*"]}})

@@ -35,6 +35,7 @@ describe('Test InfoMapper Builder simple build', () => {
       cy.get('[data-cy="dialog-lower-save-button"]').should('be.disabled');
       // Fill out the required form fields.
       cy.get('[data-cy="' + appId + '-app-config-title"]').type(title);
+      cy.wait(250);
       cy.get('[data-cy="dialog-lower-save-button"]').should('be.disabled');
       cy.get('[data-cy="' + appId + '-app-config-version"]').type(version);
       // The Save button should now be enabled.
