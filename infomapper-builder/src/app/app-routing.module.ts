@@ -6,11 +6,13 @@ import { StoryComponent }       from '@OpenWaterFoundation/common/ui/story';
 
 import { BuildComponent }       from './build/build.component';
 import { ContentPageComponent } from './content-page/content-page.component';
+import { SignInComponent }      from './sign-in/sign-in.component';
 
 
 const routes: Routes = [
   { path: 'home', redirectTo: 'content-page/home' },
-  { path: '', redirectTo: 'content-page/home', pathMatch: 'full' },
+  // { path: '', redirectTo: 'content-page/home', pathMatch: 'full' },
+  { path: '', component: SignInComponent },
   { path: 'content-page/:markdownFilename', component: ContentPageComponent },
   { path: 'build/:builderId', component: BuildComponent },
   { path: 'story/:id', component: StoryComponent }

@@ -104,6 +104,20 @@ story. */
   color: #9db66b !important;
 }
 
+/* change color of label */
+::ng-deep .mat-focused .mat-form-field-label {
+  color: #9db66b !important;
+ }
+
+/*change color of underline*/
+::ng-deep.mat-form-field-underline {
+  background-color: #9db66b !important;
+} 
+
+/*change color of underline when focused*/
+::ng-deep.mat-form-field-ripple {
+  background-color: #9db66b !important;
+}
 
 // // mat-label normal state style
 // ::ng-deep .mat-form-field-label {

@@ -13,7 +13,7 @@ import { BuildManager } from '../../build-manager';
 @Component({
   selector: 'sub-menu-config',
   templateUrl: './sub-menu-config.component.html',
-  styleUrls: ['./sub-menu-config.component.scss', '../shared-styles.scss']
+  styleUrls: ['./sub-menu-config.component.scss', '../../../shared-styles.scss']
 })
 export class SubMenuConfigComponent implements OnInit {
 

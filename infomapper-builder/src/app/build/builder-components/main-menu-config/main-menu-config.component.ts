@@ -15,7 +15,7 @@ import { BuildManager } from '../../build-manager';
 @Component({
   selector: 'main-menu-config',
   templateUrl: './main-menu-config.component.html',
-  styleUrls: ['./main-menu-config.component.scss', '../shared-styles.scss']
+  styleUrls: ['./main-menu-config.component.scss', '../../../shared-styles.scss']
 })
 export class MainMenuConfigComponent implements OnInit {
 

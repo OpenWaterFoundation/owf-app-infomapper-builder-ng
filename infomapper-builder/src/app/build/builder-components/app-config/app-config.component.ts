@@ -13,7 +13,7 @@ import { BuildManager } from '../../build-manager';
 @Component({
   selector: 'app-config',
   templateUrl: './app-config.component.html',
-  styleUrls: ['./app-config.component.scss', '../shared-styles.scss']
+  styleUrls: ['./app-config.component.scss', '../../../shared-styles.scss']
 })
 export class AppConfigComponent implements OnInit {
 

@@ -15,7 +15,7 @@ import { BuildManager }   from '../../build-manager';
 @Component({
   selector: 'datastore-config',
   templateUrl: './datastore-config.component.html',
-  styleUrls: ['./datastore-config.component.scss', '../shared-styles.scss']
+  styleUrls: ['./datastore-config.component.scss', '../../../shared-styles.scss']
 })
 export class DatastoreConfigComponent implements OnInit {
 

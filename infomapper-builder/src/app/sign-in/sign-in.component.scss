@@ -1,0 +1,62 @@
+/* CLASSES */
+
+/* The inner container that displays the Content Page contents based on browser
+width. */
+.display-container {
+  height: 100%;
+  margin: 0px 10px;
+}
+
+/*  */
+.log-in-title {
+  font-size: 36px;
+  margin: 50px 0;
+}
+
+/* The overarching container for a Content Page. */
+.main-container {
+  height: 100%;
+  overflow: auto;
+}
+
+/*  */
+.mat-form-fields-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/*  */
+.sign-in-form-group-container {
+  margin-top: 8%;
+}
+
+/*  */
+.sign-in-main-container {
+  height: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/*  */
+.sign-in-button {
+  background-color: #9db66b;
+  font-size: 22px;
+  height: 45px;
+  margin-top: 30px;
+}
+
+/*  */
+.sign-in-title {
+  font-size: 18px;
+  user-select: none;
+}
+
+/* TAGS */
+
+/* Each form field input/textarea in the dialog. */
+mat-form-field {
+  font-size: 16px !important;
+  min-height: 0 !important;
+  width: 100% !important;
+}

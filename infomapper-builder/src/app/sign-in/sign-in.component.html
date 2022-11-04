@@ -1,0 +1,50 @@
+<div fxLayout="row" fxLayoutAlign="center" class="main-container">
+  <div fxFlex="75%" fxFlex.lt-md="100%" fxFlex.gt-lg="50%" class="display-container">
+
+    <div class="sign-in-main-container">
+      <form [formGroup]="signInFG" class="sign-in-form-group-container">
+
+        <div class="mat-form-fields-container">
+
+          <span class="log-in-title">InfoMapper Builder Login</span>
+
+          <div class="sign-in-title">Username or Email</div>
+          <mat-form-field appearance="outline">
+            
+            <input matInput formControlName="user" attr.data-cy="TODO">
+      
+            <mat-error>
+              <ng-container *ngFor="let error of formErrors(signInFG.get('user'))">
+                {{ formErrorMessages[error] }} <br>
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+    
+          <div class="sign-in-title">Password</div>
+          <mat-form-field appearance="outline">
+            
+            <input [type]="visibleInput ? 'text' : 'password'" matInput formControlName="password"
+            attr.data-cy="TODO">
+            <fa-icon matSuffix [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+            (click)="togglePasswordVisibility()" class="visibility-icon">
+            </fa-icon>
+
+            <mat-error>
+              <ng-container *ngFor="let error of formErrors(signInFG.get('password'))">
+                {{ formErrorMessages[error] }} <br>
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+
+          <button mat-stroked-button (click)="signInUser()" [disabled]="signInFG.invalid"
+          class="sign-in-button">
+            Sign In
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
