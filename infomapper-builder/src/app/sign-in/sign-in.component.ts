@@ -5,7 +5,8 @@ import { AbstractControl,
           FormGroup,
           Validators } from '@angular/forms';
 
-import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
+import { S3Client } from "@aws-sdk/client-s3";
+import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
 
 import { faEye,
           faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -65,6 +66,7 @@ export class SignInComponent implements OnInit {
    * 
    */
   signInUser(): void {
+
     console.log(this.signInFG.get('user').value);
     console.log(this.signInFG.get('password').value);
   }
