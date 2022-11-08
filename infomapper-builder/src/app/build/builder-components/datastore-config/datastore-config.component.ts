@@ -6,7 +6,7 @@ import { Component,
 import { AbstractControl,
           FormGroup }     from '@angular/forms';
 
-import { AppService }     from 'src/app/app.service';
+import { AppService }     from 'src/app/services/app.service';
 
 import * as IM            from '@OpenWaterFoundation/common/services';
 import { BuildManager }   from '../../build-manager';

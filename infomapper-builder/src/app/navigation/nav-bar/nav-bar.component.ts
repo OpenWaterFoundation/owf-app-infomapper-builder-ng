@@ -6,7 +6,7 @@ import { Component,
 import { faBars }              from '@fortawesome/free-solid-svg-icons';
 
 import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
-import { AppService }          from '../../app.service';
+import { AppService }          from '../../services/app.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -29,7 +29,6 @@ export class NavBarComponent implements OnInit {
    * @param appService The IM Builder top level service.
    */
   constructor(private appService: AppService, private logger: CommonLoggerService) {
-
   }
 
 

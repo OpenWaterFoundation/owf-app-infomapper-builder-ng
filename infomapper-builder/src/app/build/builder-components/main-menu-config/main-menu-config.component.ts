@@ -7,7 +7,7 @@ import { AbstractControl,
           FormGroup, 
           Validators}   from '@angular/forms';
 
-import { AppService }   from 'src/app/app.service';
+import { AppService }   from 'src/app/services/app.service';
 import * as IM          from '@OpenWaterFoundation/common/services';
 import { BuildManager } from '../../build-manager';
 
@@ -63,7 +63,7 @@ export class MainMenuConfigComponent implements OnInit {
   }
 
   /**
-   * 
+   * When the 
    * @param event 
    */
   handleActionControlChoice(event: any): void {

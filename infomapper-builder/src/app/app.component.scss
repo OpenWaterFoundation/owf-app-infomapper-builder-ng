@@ -3,32 +3,33 @@
 /* Set the minimum width when the side nav is opened, even if menu names are
 extremely small. */
 mat-sidenav {
-  min-width: 100px;
-}
-
-/*  */
-mat-sidenav-content {
-  overflow: hidden;
-}
-
-/* CLASSES */
-
-/* Sets the height and width of the content of the InfoMapper, e.g. Content Page
-and Map Component. */
-.infoMapper-builder-content {
-  height: 100%;
-}
-
-/* The InfoMapper application's main container. */
-.infoMapper-builder-main-container {
-  margin-top: 64px;
-  height: calc(100% - 64px);
-}
-
-/* The Angular Material sidenav container component for InfoMapper. Because this
-tag is not from HTML and from Angular Material, the important keyword is used to
-ensure the height for the container is set. */
-.infoMapper-builder-sidenav-container {
-  height: 100% !important;
-}
-
+    min-width: 100px;
+  }
+  
+  /*  */
+  mat-sidenav-content {
+    overflow: hidden;
+  }
+  
+  /* CLASSES */
+  
+  /* Sets the height and width of the content of the InfoMapper, e.g. Content Page
+  and Map Component. */
+  .infoMapper-builder-content {
+    height: 100%;
+  }
+  
+  /* The InfoMapper application's main container. */
+  .infoMapper-builder-main-container {
+    margin-top: 64px;
+    height: calc(100% - 64px);
+  }
+  
+  /* The Angular Material sidenav container component for InfoMapper. Because this
+  tag is not from HTML and from Angular Material, the important keyword is used to
+  ensure the height for the container is set. */
+  .infoMapper-builder-sidenav-container {
+    height: 100% !important;
+  }
+  
+  

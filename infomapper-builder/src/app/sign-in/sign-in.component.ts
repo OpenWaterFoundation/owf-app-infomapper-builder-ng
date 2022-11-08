@@ -1,15 +1,18 @@
 import { Component,
-          OnInit }     from '@angular/core';
+          EventEmitter,
+          OnInit, 
+          Output}        from '@angular/core';
 import { AbstractControl,
           FormControl,
           FormGroup,
-          Validators } from '@angular/forms';
-
-import { S3Client } from "@aws-sdk/client-s3";
-import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
+          Validators }    from '@angular/forms';
+import { Router }         from '@angular/router';
 
 import { faEye,
-          faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+          faEyeSlash }    from '@fortawesome/free-solid-svg-icons';
+import { Subject,
+          takeUntil }     from 'rxjs';
+import { CognitoService } from '../services/cognito.service';
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -18,6 +21,8 @@ import { faEye,
 })
 export class SignInComponent implements OnInit {
 
+  /** Subject that is completed when this component is destroyed. */
+  destroyed = new Subject<void>();
   /** All used FontAwesome icons in the DialogComponent. */
   
   /** The custom & built-in error messages to be displayed under a form with an error. */
@@ -42,7 +47,7 @@ export class SignInComponent implements OnInit {
   /**
    * 
    */
-  constructor() {
+  constructor(private cognitoService: CognitoService, private router: Router) {
 
   }
 
@@ -63,12 +68,33 @@ export class SignInComponent implements OnInit {
   }
 
   /**
+  * Called once right before this component is destroyed.
+  */
+   ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
+  /**
    * 
    */
   signInUser(): void {
 
-    console.log(this.signInFG.get('user').value);
-    console.log(this.signInFG.get('password').value);
+    const usernameOrEmail = this.signInFG.get('user').value;
+    const pw = this.signInFG.get('password').value;
+
+    this.cognitoService.signIn(usernameOrEmail, pw)
+    .pipe(takeUntil(this.destroyed))
+    .subscribe({
+      next: (response: any) => {
+        console.log('Authentication success:', response);
+        this.router.navigate(['/content-page/home']);
+        this.cognitoService.setUserVerified = true;
+      },
+      error: (error: any) => {
+        console.log('Incorrect credentials:', error);
+      }
+  });
   }
 
   /**

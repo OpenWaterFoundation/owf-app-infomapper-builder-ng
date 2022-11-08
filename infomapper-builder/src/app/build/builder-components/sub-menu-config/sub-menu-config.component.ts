@@ -74,7 +74,7 @@ export class SubMenuConfigComponent implements OnInit {
   }
 
   /**
-   * 
+   * When the 
    * @param event 
    */
   handleActionControlChoice(event: any): void {

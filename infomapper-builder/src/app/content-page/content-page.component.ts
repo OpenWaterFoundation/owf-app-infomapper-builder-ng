@@ -12,7 +12,7 @@ import { first,
           Subject,
           takeUntil}       from 'rxjs';
 
-import { AppService }          from '../app.service';
+import { AppService }          from '../services/app.service';
 import * as IM                 from '@OpenWaterFoundation/common/services';
 
 

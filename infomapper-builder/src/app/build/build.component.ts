@@ -32,7 +32,7 @@ import { first,
 
 import * as IM                          from '@OpenWaterFoundation/common/services';
 
-import { AppService }                   from '../app.service';
+import { AppService }                   from '../services/app.service';
 import { DialogComponent }              from '../build/builder-utility/dialog/dialog.component';
 import { BuildManager }                 from '../build/build-manager';
 

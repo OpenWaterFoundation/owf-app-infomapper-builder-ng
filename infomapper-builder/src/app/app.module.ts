@@ -55,7 +55,7 @@ import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-
 import { NodeMenuComponent }        from './build/builder-utility/node-menu/node-menu.component';
 import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
 import { ContentPageComponent }     from './content-page/content-page.component';
-import { AppService }               from './app.service';
+import { AppService }               from './services/app.service';
 
 import { CheckElementPipe }         from './pipes/check-element.pipe';
 import { ConvertFormNamePipe }      from './pipes/convert-form-name.pipe';
@@ -64,6 +64,7 @@ import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
 // Showdown, to convert markdown to HTML.
 import * as Showdown                from 'showdown';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -120,7 +121,8 @@ function appInit(appService: AppService): () => Observable<any> {
     SubMenuConfigComponent,
     CheckTreeNodePipe,
     DatastoreConfigComponent,
-    SignInComponent
+    SignInComponent,
+    HomeComponent
   ],
   imports: [
     AngularFullpageModule,

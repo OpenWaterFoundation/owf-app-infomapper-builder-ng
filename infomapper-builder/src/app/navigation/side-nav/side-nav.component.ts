@@ -11,7 +11,7 @@ import { faBookOpen,
           faFileLines,
           faGaugeHigh }        from '@fortawesome/free-solid-svg-icons';
 
-import { AppService }          from 'src/app/app.service';
+import { AppService }          from 'src/app/services/app.service';
 
 
 @Component({
@@ -42,7 +42,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
 
   /**
-   * 
+   * Getter for the app config JSON file read into an object.
    */
   get appConfig(): any { return this.appService.appConfigObj; }
 

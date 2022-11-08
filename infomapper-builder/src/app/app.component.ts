@@ -2,10 +2,12 @@ import { Component,
           Inject,
           OnInit }    from '@angular/core';
 import { DOCUMENT }   from '@angular/common';
-import { Title }      from '@angular/platform-browser';
+import { Title }          from '@angular/platform-browser';
 
-import { AppService } from './app.service';
-import * as IM        from '@OpenWaterFoundation/common/services';
+import { AppService }     from './services/app.service';
+import * as IM            from '@OpenWaterFoundation/common/services';
+import { CognitoService } from './services/cognito.service';
+import { Observable }     from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +18,16 @@ export class AppComponent implements OnInit {
 
 
   constructor(private titleService: Title, private appService: AppService,
-  @Inject(DOCUMENT) private document: Document) {}
+  private cognitoService: CognitoService, @Inject(DOCUMENT) private document: Document) {}
 
 
   get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
 
+  get userVerified(): Observable<boolean> { return this.cognitoService.userVerified }
+
+  /**
+   * 
+   */
   ngOnInit(): void {
     this.setWebsiteTitle();
     this.setFavicon();
