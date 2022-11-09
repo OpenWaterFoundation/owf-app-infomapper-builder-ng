@@ -1,26 +1,26 @@
-<ng-container *ngIf="!(userVerified | async)">
+<!-- <ng-container *ngIf="!(userVerified | async)">
   <im-builder-sign-in></im-builder-sign-in>
 </ng-container>
 
-<ng-container *ngIf="userVerified | async">
-  <div class="infoMapper-builder-content">
+<ng-container *ngIf="userVerified | async"> -->
+<div class="infoMapper-builder-content">
 
-    <mat-sidenav-container class="infoMapper-builder-sidenav-container">
-      <!-- Application side navigation bar. -->
-      <mat-sidenav #sidenav mode="over">
-        <app-side-nav (sidenavClose)="sidenav.close()"></app-side-nav>
-      </mat-sidenav>
-    
-      <mat-sidenav-content>
-        <!-- Main application navigation bar. -->
-        <app-nav-bar (sidenavToggle)="sidenav.toggle()"></app-nav-bar>
-        <main class="infoMapper-builder-main-container">
-          <router-outlet></router-outlet>
-        </main>
+  <mat-sidenav-container class="infoMapper-builder-sidenav-container">
+    <!-- Application side navigation bar. -->
+    <mat-sidenav #sidenav mode="over">
+      <app-side-nav (sidenavClose)="sidenav.close()"></app-side-nav>
+    </mat-sidenav>
   
-      </mat-sidenav-content>
-  
-    </mat-sidenav-container>
-  
-  </div>
-</ng-container>
+    <mat-sidenav-content>
+      <!-- Main application navigation bar. -->
+      <app-nav-bar (sidenavToggle)="sidenav.toggle()"></app-nav-bar>
+      <main class="infoMapper-builder-main-container">
+        <router-outlet></router-outlet>
+      </main>
+
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+
+</div>
+<!-- </ng-container> -->

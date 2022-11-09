@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
 
   get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
 
-  get userVerified(): Observable<boolean> { return this.cognitoService.userVerified }
+  get userVerified(): Observable<boolean> { return this.cognitoService.userAuthenticated$ }
 
   /**
    * 

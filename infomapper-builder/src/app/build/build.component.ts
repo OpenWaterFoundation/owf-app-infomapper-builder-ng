@@ -351,7 +351,7 @@ export class BuildComponent implements OnInit, OnDestroy {
       panelClass: 'snackbar-error',
       horizontalPosition: this.snackBarHPosition,
       verticalPosition: this.snackbarVPosition
-    })
+    });
   }
 
   /**

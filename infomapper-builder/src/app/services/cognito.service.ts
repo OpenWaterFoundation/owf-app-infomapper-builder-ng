@@ -8,9 +8,15 @@ import { environment } from 'src/environments/environment';
 })
 export class CognitoService {
 
-  private _userVerified = new BehaviorSubject<boolean>(false);
+  /**
+   * 
+   */
+  private _userAuthenticated = new BehaviorSubject<boolean>(false);
 
 
+  /**
+   * 
+   */
   constructor() {
     Amplify.configure({
       Auth: environment.cognito
@@ -22,12 +28,12 @@ export class CognitoService {
    * 
    * @returns 
    */
-   get userVerified(): Observable<boolean> {
-    return this._userVerified.asObservable();
+   get userAuthenticated$(): Observable<any> {
+    return this._userAuthenticated.asObservable();
   }
 
-  set setUserVerified(verified: boolean) {
-    this._userVerified.next(verified);
+  set setUserAuthenticated(verified: boolean) {
+    this._userAuthenticated.next(verified);
   }
 
   /**

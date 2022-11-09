@@ -6,18 +6,16 @@ import { StoryComponent }       from '@OpenWaterFoundation/common/ui/story';
 
 import { BuildComponent }       from './build/build.component';
 import { ContentPageComponent } from './content-page/content-page.component';
-// import { HomeComponent }        from './home/home.component';
+import { AuthGuard }            from './services/auth-guard.service';
 import { SignInComponent }      from './sign-in/sign-in.component';
 
 
 const routes: Routes = [
-  // { path: 'home', redirectTo: 'content-page/home' },
-  { path: '', redirectTo: 'infomapper-builder/sign-in', pathMatch: 'full' },
-  // { path: 'content-page/home', component: HomeComponent },
-  // { path: 'infomapper-builder/sign-in', component: SignInComponent },
-  { path: 'content-page/:markdownFilename', component: ContentPageComponent },
-  { path: 'build/:builderId', component: BuildComponent },
-  { path: 'story/:id', component: StoryComponent }
+  { path: 'home', redirectTo: 'content-page/home' },
+  { path: '', component: SignInComponent, pathMatch: 'full' },
+  { path: 'content-page/:markdownFilename', component: ContentPageComponent, canActivate: [AuthGuard] },
+  { path: 'build/:builderId', component: BuildComponent, canActivate: [AuthGuard] },
+  { path: 'story/:id', component: StoryComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

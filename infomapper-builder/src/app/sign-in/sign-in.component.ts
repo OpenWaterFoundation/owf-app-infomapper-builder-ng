@@ -1,18 +1,21 @@
 import { Component,
-          EventEmitter,
-          OnInit, 
-          Output}        from '@angular/core';
+          OnInit }                      from '@angular/core';
 import { AbstractControl,
           FormControl,
           FormGroup,
-          Validators }    from '@angular/forms';
-import { Router }         from '@angular/router';
+          Validators }                  from '@angular/forms';
+import { Router }                       from '@angular/router';
+
+import { MatSnackBar,
+          MatSnackBarHorizontalPosition,
+          MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 import { faEye,
-          faEyeSlash }    from '@fortawesome/free-solid-svg-icons';
-import { Subject,
-          takeUntil }     from 'rxjs';
-import { CognitoService } from '../services/cognito.service';
+          faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
+import { first,
+          Subject,
+          takeUntil }                   from 'rxjs';
+import { CognitoService }               from '../services/cognito.service';
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -36,6 +39,14 @@ export class SignInComponent implements OnInit {
     user: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   });
+  /** How many milliseconds the error snackbar will be displayed for. */
+  snackBarDuration = 5000;
+  /** Sets the horizontal position of the error snackbar to display on the right
+   * side of the screen. */
+  snackBarHorizontalPos: MatSnackBarHorizontalPosition = 'end';
+  /** Sets the vertical position of the error snackbar to display at the top of
+  * the screen. */
+  snackbarVerticalPos: MatSnackBarVerticalPosition = 'top';
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -47,7 +58,8 @@ export class SignInComponent implements OnInit {
   /**
    * 
    */
-  constructor(private cognitoService: CognitoService, private router: Router) {
+  constructor(private cognitoService: CognitoService, private router: Router,
+  private snackBar: MatSnackBar) {
 
   }
 
@@ -65,6 +77,14 @@ export class SignInComponent implements OnInit {
    * 
    */
   ngOnInit(): void {
+    // If the user is already authenticated, navigate  to the home page.
+    this.cognitoService.userAuthenticated$.pipe(first()).subscribe((authenticated: boolean) => {
+      // console.log('User authenticated after sign in component init:', authenticated);
+
+      if (authenticated) {
+        this.router.navigate(['/content-page/home']);
+      }
+    })
   }
 
   /**
@@ -73,6 +93,18 @@ export class SignInComponent implements OnInit {
    ngOnDestroy(): void {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  /**
+  * Displays the self-closing error message so users know what went wrong.
+  */
+  openErrorSnackBar() {
+    this.snackBar.open('Incorrect username/email or password. ', null, {
+      duration: this.snackBarDuration,
+      panelClass: 'snackbar-error',
+      horizontalPosition: this.snackBarHorizontalPos,
+      verticalPosition: this.snackbarVerticalPos
+    });
   }
 
   /**
@@ -87,12 +119,11 @@ export class SignInComponent implements OnInit {
     .pipe(takeUntil(this.destroyed))
     .subscribe({
       next: (response: any) => {
-        console.log('Authentication success:', response);
         this.router.navigate(['/content-page/home']);
-        this.cognitoService.setUserVerified = true;
+        this.cognitoService.setUserAuthenticated = true;
       },
       error: (error: any) => {
-        console.log('Incorrect credentials:', error);
+        this.openErrorSnackBar();
       }
   });
   }
