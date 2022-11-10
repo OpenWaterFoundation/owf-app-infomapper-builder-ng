@@ -23,11 +23,13 @@
           <div class="sign-in-title">Password</div>
           <mat-form-field appearance="outline">
             
-            <input [type]="visibleInput ? 'text' : 'password'" matInput formControlName="password"
-            attr.data-cy="TODO">
-            <fa-icon matSuffix [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
-            (click)="togglePasswordVisibility()" class="visibility-icon">
-            </fa-icon>
+            <div style="display: flex; ">
+              <input [type]="visibleInput ? 'text' : 'password'" matInput formControlName="password"
+              attr.data-cy="TODO">
+              <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+              (click)="togglePasswordVisibility()" class="visibility-icon">
+              </fa-icon>
+            </div>
 
             <mat-error>
               <ng-container *ngFor="let error of formErrors(signInFG.get('password'))">

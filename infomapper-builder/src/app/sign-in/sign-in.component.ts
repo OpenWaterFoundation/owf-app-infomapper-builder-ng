@@ -108,7 +108,8 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * 
+   * Utilizes the Cognito service to attempt to sign the user in with the provided
+   * credentials. Shows the home page is successful, and an error snackbar
    */
   signInUser(): void {
 
@@ -119,6 +120,7 @@ export class SignInComponent implements OnInit {
     .pipe(takeUntil(this.destroyed))
     .subscribe({
       next: (response: any) => {
+        console.log('Successful login response:', response);
         this.router.navigate(['/content-page/home']);
         this.cognitoService.setUserAuthenticated = true;
       },
