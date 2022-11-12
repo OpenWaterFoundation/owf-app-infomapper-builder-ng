@@ -1,17 +1,11 @@
-# Welcome to MkDocs
+# InfoMapper Builder
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
-
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+This is the user documentation for the Open Water Foundation (OWF) InfoMapper Builder
+software. User documentation describes how to configure, deploy, and use the software.
 
 ## Project layout
 
     mkdocs.yml    # The configuration file.
     docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+      index.md  # The documentation homepage.
+      ...       # Other markdown pages, images and other files.

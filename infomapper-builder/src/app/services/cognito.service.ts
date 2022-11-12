@@ -1,6 +1,7 @@
 import { Injectable }    from '@angular/core';
 import { Amplify,
-          Auth }         from 'aws-amplify';
+          Auth,
+          Storage }         from 'aws-amplify';
 import { BehaviorSubject,
           from,
           Observable }   from 'rxjs';
@@ -17,6 +18,8 @@ export class CognitoService {
    */
   private _userAuthenticated = new BehaviorSubject<boolean>(false);
 
+  private _cognitoUser: any = {};
+
 
   /**
    * Constructor the CognitoService. Configures the Amplify class with the Cognito
@@ -24,7 +27,14 @@ export class CognitoService {
    */
   constructor() {
     Amplify.configure({
-      Auth: environment.cognito
+      Auth: environment.cognito,
+      Storage: {
+        AWSS3: {
+          bucket: 'test.openwaterfoundation.org',
+          region: 'us-west-2',
+          level: 'public'
+        }
+      }
     });
   }
 
@@ -45,6 +55,20 @@ export class CognitoService {
   }
 
   /**
+   * 
+   */
+  get cognitoUser(): any {
+    return this._cognitoUser;
+  }
+
+  /**
+   * 
+   */
+  set cognitoUser(cognitoUser: any) {
+    this._cognitoUser = cognitoUser;
+  }
+
+  /**
    * Attempts to sign-in the user with the provided credentials, and........
    * @param userNameOrEmail The username or email entered by the user.
    * @param pw The password to be entered.
@@ -62,5 +86,36 @@ export class CognitoService {
     return from(Auth.signOut());
   }
 
+  /**
+   * 
+   * @returns 
+   */
+  listAllBucketFiles(): any {
+    // let currentSession = from(Auth.currentSession());
+    // let currentUserInfo = from(Auth.currentUserInfo());
+    // let currentAuthenticatedUser = from(Auth.currentAuthenticatedUser());
+    // let currentUserCredentials = from(Auth.currentUserCredentials());
+    // return combineLatest([currentSession, currentUserInfo,
+    // currentAuthenticatedUser, currentUserCredentials]);
+
+    // return from(Auth.currentSession());
+    // return from(Auth.currentUserInfo());
+    // return from(Storage.list(''));
+
+    // return from(Auth.currentUserCredentials()
+    // .then((currentUserCredentials: any) => {
+    //   console.log('currentUserCredentials:', currentUserCredentials);
+    //   Storage.list('').then((allFiles: any) => {
+    //     console.log('All files (service):', allFiles);
+    //     return allFiles
+    //   });
+    // }));
+
+    Storage.list('')
+    .then((result: any) => {
+      console.log('result:', result);
+    })
+    .catch((err: any) => console.log('error:', err));
+  }
   
 }

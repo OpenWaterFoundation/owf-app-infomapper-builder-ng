@@ -130,6 +130,7 @@ cd "${scriptFolder}" || exit
 
 cd ../mkdocs-project || exit
 
+# Write some code to check for open port?
 port=8000
 echo "View the website using http://localhost:${port}"
 echo "Stop the server with CTRL-C"

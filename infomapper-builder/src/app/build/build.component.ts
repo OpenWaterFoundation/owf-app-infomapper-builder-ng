@@ -33,6 +33,7 @@ import { first,
 import * as IM                          from '@OpenWaterFoundation/common/services';
 
 import { AppService }                   from '../services/app.service';
+import { CognitoService }               from '../services/cognito.service';
 import { DialogComponent }              from '../build/builder-utility/dialog/dialog.component';
 import { BuildManager }                 from '../build/build-manager';
 
@@ -137,8 +138,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   * @param snackBar 
   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
-    private breakpointObserver: BreakpointObserver, private dialog: MatDialog,
-    private logger: IM.CommonLoggerService, private snackBar: MatSnackBar) {
+    private breakpointObserver: BreakpointObserver, private cognitoService: CognitoService,
+    private dialog: MatDialog, private logger: IM.CommonLoggerService,
+    private snackBar: MatSnackBar) {
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
@@ -358,7 +360,23 @@ export class BuildComponent implements OnInit, OnDestroy {
    * 
    */
   publishToAWS(): void {
+    console.log('Cognito User:', this.cognitoService.cognitoUser);
 
+    this.cognitoService.listAllBucketFiles();
+    // .pipe(first())
+    // .subscribe(([currentSession, currentUserInfo, currentAuthenticatedUser, currentUserCredentials, allFiles]) => {
+    //   console.log('Current session:', currentSession);
+    //   console.log('Current user info:', currentUserInfo);
+    //   console.log('Current authenticated user:', currentAuthenticatedUser);
+    //   console.log(currentAuthenticatedUser.signInUserSession.accessToken.payload["cognito:groups"]);
+    //   console.log('Current user credentials:', currentUserCredentials);
+    //   console.log('All S3 files:', allFiles);
+    // });
+
+    // this.cognitoService.listAllBucketFiles().pipe(first())
+    // .subscribe((allFiles: any) => {
+    //   console.log('All files (build):', allFiles);
+    // });
   }
 
   /**

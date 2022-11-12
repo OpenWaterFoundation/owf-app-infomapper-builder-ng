@@ -123,6 +123,7 @@ export class SignInComponent implements OnInit {
         console.log('Successful login response:', response);
         this.router.navigate(['/content-page/home']);
         this.cognitoService.setUserAuthenticated = true;
+        this.cognitoService.cognitoUser = response;
       },
       error: (error: any) => {
         this.openErrorSnackBar();

@@ -3,3 +3,13 @@ nav:
 - Home: index.md
 # ------- configuration properties ---------------
 copyright:  Copyright Open Water Foundation
+# Don't indicate the repo because Edit will be shown on every page (don't want that in deployed mode):
+# - Also see edit_uri if repo_url is specified
+#repo_url:  https://github.com/OpenWaterFoundation/owf-learn-mkdocs
+site_description:  Open Water Foundation Learn AWS
+site_author:  Open Water Foundation
+# Use Material theme:
+# - installation notes:  https://github.com/squidfunk/mkdocs-material
+theme:
+  name: material
+  favicon:  'images/OWF-Logo-Favicon-32x32.png'

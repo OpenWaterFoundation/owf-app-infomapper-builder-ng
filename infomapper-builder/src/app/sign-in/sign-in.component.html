@@ -24,7 +24,7 @@
           <mat-form-field appearance="outline">
             
             <div style="display: flex; ">
-              <input [type]="visibleInput ? 'text' : 'password'" matInput formControlName="password"
+              <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="password"
               attr.data-cy="TODO">
               <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
               (click)="togglePasswordVisibility()" class="visibility-icon">
