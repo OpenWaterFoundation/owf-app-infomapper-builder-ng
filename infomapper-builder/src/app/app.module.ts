@@ -15,7 +15,6 @@ import { DragDropModule }           from '@angular/cdk/drag-drop';
 import { PortalModule }             from '@angular/cdk/portal';
 import { ScrollingModule }          from '@angular/cdk/scrolling';
 
-
 import { MatButtonModule }          from '@angular/material/button';
 import { MatCardModule }            from '@angular/material/card';
 import { MatDialogModule }          from '@angular/material/dialog';
@@ -37,6 +36,7 @@ import { AngularFullpageModule }    from '@fullpage/angular-fullpage';
 
 import { Observable }               from 'rxjs/internal/Observable';
 
+import { CookieModule }             from 'ngx-cookie'
 import { ShowdownModule }           from 'ngx-showdown';
 import { LoggerModule,
           NgxLoggerLevel }          from 'ngx-logger';
@@ -149,6 +149,7 @@ function appInit(appService: AppService): () => Observable<any> {
       ]
     }),
     
+    CookieModule.withOptions(),
     CdkStepperModule,
     CdkTableModule,
     CdkTreeModule,

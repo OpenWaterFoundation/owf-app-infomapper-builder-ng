@@ -362,20 +362,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   publishToAWS(): void {
     console.log('Cognito User:', this.cognitoService.cognitoUser);
 
-    this.cognitoService.listAllBucketFiles();
-    // .pipe(first())
-    // .subscribe(([currentSession, currentUserInfo, currentAuthenticatedUser, currentUserCredentials, allFiles]) => {
-    //   console.log('Current session:', currentSession);
-    //   console.log('Current user info:', currentUserInfo);
-    //   console.log('Current authenticated user:', currentAuthenticatedUser);
-    //   console.log(currentAuthenticatedUser.signInUserSession.accessToken.payload["cognito:groups"]);
-    //   console.log('Current user credentials:', currentUserCredentials);
-    //   console.log('All S3 files:', allFiles);
-    // });
-
-    // this.cognitoService.listAllBucketFiles().pipe(first())
-    // .subscribe((allFiles: any) => {
-    //   console.log('All files (build):', allFiles);
+    // this.cognitoService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
+    //   console.log('All files:', allFiles);
     // });
   }
 
