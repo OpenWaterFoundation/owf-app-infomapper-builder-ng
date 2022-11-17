@@ -117,13 +117,11 @@ export class SignInComponent implements OnInit {
     const pw = this.signInFG.get('password').value;
 
     this.cognitoService.signIn(usernameOrEmail, pw)
-    .pipe(takeUntil(this.destroyed))
+    .pipe(first())
     .subscribe({
       next: (response: any) => {
-        console.log('Successful login response:', response);
         this.router.navigate(['/content-page/home']);
-        this.cognitoService.setUserAuthenticated = true;
-        this.cognitoService.cognitoUser = response;
+        this.cognitoService.loginSuccessful(response);
       },
       error: (error: any) => {
         this.openErrorSnackBar();

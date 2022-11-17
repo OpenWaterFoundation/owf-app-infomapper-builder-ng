@@ -362,9 +362,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   publishToAWS(): void {
     console.log('Cognito User:', this.cognitoService.cognitoUser);
 
-    // this.cognitoService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
-    //   console.log('All files:', allFiles);
-    // });
+    this.cognitoService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
+      console.log('All files:', allFiles);
+    });
   }
 
   /**

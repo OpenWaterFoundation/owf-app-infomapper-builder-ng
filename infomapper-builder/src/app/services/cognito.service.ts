@@ -3,6 +3,8 @@ import { Amplify,
           Auth,
           Storage }         from 'aws-amplify';
 import { BehaviorSubject,
+          combineLatest,
+          first,
           from,
           Observable }   from 'rxjs';
 
@@ -31,7 +33,7 @@ export class CognitoService {
       public: '',
       protected: '',
       private: ''
-    },
+    }
   };
 
 
@@ -110,17 +112,47 @@ export class CognitoService {
    * @returns 
    */
   listAllBucketFiles(): Observable<any> {
-    // let currentSession = from(Auth.currentSession());
-    // let currentUserInfo = from(Auth.currentUserInfo());
-    // let currentAuthenticatedUser = from(Auth.currentAuthenticatedUser());
-    // let currentUserCredentials = from(Auth.currentUserCredentials());
+    // return from(
+    //   Storage.list('4.0.0/assets/app-default/app-config.json', this.storageOptions)
+    //   .then((result: any) => { return result; })
+    //   .catch((err: any) => { return err; })
+    // );
 
     return from(
-      Storage.list('', this.storageOptions)
+      Storage.get('4.0.0/assets/app-default/app-config.json', {
+        customPrefix: {
+          public: '',
+          protected: '',
+          private: ''
+        }
+      })
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     );
-    
+  }
+
+  /**
+   * 
+   * @param response 
+   */
+  loginSuccessful(response: any): void {
+
+    const allSources = [
+      from(Auth.currentSession()),
+      from(Auth.currentUserInfo()),
+      from(Auth.currentAuthenticatedUser()),
+      from(Auth.currentUserCredentials())
+    ]
+
+    combineLatest(allSources).pipe(first())
+    .subscribe(([currentSession, currentUserInfo, currentAuthenticatedUser, currentUserCredentials]) => {
+      console.log('currentSession:', currentSession);
+      console.log('currentUserInfo:', currentUserInfo);
+      console.log('currentAuthenticatedUser:', currentAuthenticatedUser);
+      console.log('currentUserCredentials:', currentUserCredentials);
+    });
+    this.setUserAuthenticated = true;
+    this.cognitoUser = response;
   }
   
 }
