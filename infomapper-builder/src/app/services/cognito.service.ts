@@ -1,12 +1,15 @@
-import { Injectable }    from '@angular/core';
+import { Injectable }            from '@angular/core';
 import { Amplify,
           Auth,
-          Storage }         from 'aws-amplify';
+          Storage }              from 'aws-amplify';
 import { BehaviorSubject,
           combineLatest,
           first,
           from,
-          Observable }   from 'rxjs';
+          Observable }           from 'rxjs';
+import { CognitoUser,
+          CognitoUserSession }   from 'amazon-cognito-identity-js';
+import { ICredentials }          from 'node_modules/aws-amplify/src/Common/types/types';
 
 
 @Injectable({
@@ -22,7 +25,7 @@ export class CognitoService {
   /**
    * 
    */
-  private _cognitoUser: any = {};
+  private _cognitoUser: CognitoUser;
   /**
    * This is required, as Amazon will add the default 'public/', 'protected/',
    * and 'private/' prefixes in the URL. Since OWF is not using those folder names
@@ -78,14 +81,14 @@ export class CognitoService {
   /**
    * 
    */
-  get cognitoUser(): any {
+  get cognitoUser(): CognitoUser {
     return this._cognitoUser;
   }
 
   /**
    * 
    */
-  set cognitoUser(cognitoUser: any) {
+  set cognitoUser(cognitoUser: CognitoUser) {
     this._cognitoUser = cognitoUser;
   }
 
@@ -95,7 +98,7 @@ export class CognitoService {
    * @param pw The password to be entered.
    * @returns An observable response to the authentication request.
    */
-  signIn(userNameOrEmail: string, pw: string): Observable<any> {
+  signIn(userNameOrEmail: string, pw: string): Observable<CognitoUser | any> {
     return from(Auth.signIn(userNameOrEmail, pw));
   }
 
@@ -133,9 +136,9 @@ export class CognitoService {
 
   /**
    * 
-   * @param response 
+   * @param user 
    */
-  loginSuccessful(response: any): void {
+  loginSuccessful(user: CognitoUser): void {
 
     const allSources = [
       from(Auth.currentSession()),
@@ -145,14 +148,17 @@ export class CognitoService {
     ]
 
     combineLatest(allSources).pipe(first())
-    .subscribe(([currentSession, currentUserInfo, currentAuthenticatedUser, currentUserCredentials]) => {
+    .subscribe(([currentSession, currentUserInfo, currentAuthenticatedUser, currentUserCredentials]:
+    [CognitoUserSession, any, CognitoUser, ICredentials]) => {
+      
       console.log('currentSession:', currentSession);
       console.log('currentUserInfo:', currentUserInfo);
       console.log('currentAuthenticatedUser:', currentAuthenticatedUser);
       console.log('currentUserCredentials:', currentUserCredentials);
     });
     this.setUserAuthenticated = true;
-    this.cognitoUser = response;
+    this.cognitoUser = user;
+
   }
   
 }

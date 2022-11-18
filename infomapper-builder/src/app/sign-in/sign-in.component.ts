@@ -16,6 +16,7 @@ import { first,
           Subject,
           takeUntil }                   from 'rxjs';
 import { CognitoService }               from '../services/cognito.service';
+import { CognitoUser }                  from 'amazon-cognito-identity-js'
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -119,9 +120,9 @@ export class SignInComponent implements OnInit {
     this.cognitoService.signIn(usernameOrEmail, pw)
     .pipe(first())
     .subscribe({
-      next: (response: any) => {
+      next: (user: CognitoUser) => {
         this.router.navigate(['/content-page/home']);
-        this.cognitoService.loginSuccessful(response);
+        this.cognitoService.loginSuccessful(user);
       },
       error: (error: any) => {
         this.openErrorSnackBar();
