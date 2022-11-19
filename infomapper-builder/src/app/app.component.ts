@@ -1,13 +1,14 @@
 import { Component,
           Inject,
-          OnInit }    from '@angular/core';
-import { DOCUMENT }   from '@angular/common';
+          OnInit }        from '@angular/core';
+import { DOCUMENT }       from '@angular/common';
 import { Title }          from '@angular/platform-browser';
+import { Observable }     from 'rxjs';
 
 import { AppService }     from './services/app.service';
 import * as IM            from '@OpenWaterFoundation/common/services';
-import { CognitoService } from './services/cognito.service';
-import { Observable }     from 'rxjs';
+import { AuthService }    from './services/auth.service';
+
 
 @Component({
   selector: 'app-root',
@@ -18,12 +19,12 @@ export class AppComponent implements OnInit {
 
 
   constructor(private titleService: Title, private appService: AppService,
-  private cognitoService: CognitoService, @Inject(DOCUMENT) private document: Document) {}
+  private authService: AuthService, @Inject(DOCUMENT) private document: Document) {}
 
 
   get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
 
-  get userVerified(): Observable<boolean> { return this.cognitoService.userAuthenticated$ }
+  get userVerified(): Observable<boolean> { return this.authService.userAuthenticated$ }
 
   /**
    * 

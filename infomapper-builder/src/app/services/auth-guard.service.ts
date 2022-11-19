@@ -11,7 +11,7 @@ import { MatSnackBar,
 import { first,
           map,
           Observable }                  from 'rxjs';
-import { CognitoService }               from './cognito.service';
+import { AuthService }               from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,11 +30,11 @@ export class AuthGuard implements CanActivate {
 
   /**
    * 
-   * @param cognitoService 
+   * @param authService 
    * @param router A service that provides navigation among views and URL manipulation
    * capabilities.
    */
-  constructor(private cognitoService: CognitoService, private router: Router,
+  constructor(private authService: AuthService, private router: Router,
   private snackBar: MatSnackBar) { }
 
   
@@ -46,9 +46,9 @@ export class AuthGuard implements CanActivate {
    * @returns An observable of type boolean if the user is authenticated.
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.cognitoService.userAuthenticated$.pipe(
+    return this.authService.userAuthenticated$.pipe(
       map((authenticated: boolean) => {
-        // console.log('User authenticated when running AuthGuard:', authenticated);
+
         if (authenticated) {
           return true;
         } else {

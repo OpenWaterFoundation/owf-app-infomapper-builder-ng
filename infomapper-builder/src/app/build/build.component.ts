@@ -33,7 +33,7 @@ import { first,
 import * as IM                          from '@OpenWaterFoundation/common/services';
 
 import { AppService }                   from '../services/app.service';
-import { CognitoService }               from '../services/cognito.service';
+import { AuthService }               from '../services/auth.service';
 import { DialogComponent }              from '../build/builder-utility/dialog/dialog.component';
 import { BuildManager }                 from '../build/build-manager';
 
@@ -138,7 +138,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   * @param snackBar 
   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
-    private breakpointObserver: BreakpointObserver, private cognitoService: CognitoService,
+    private breakpointObserver: BreakpointObserver, private authService: AuthService,
     private dialog: MatDialog, private logger: IM.CommonLoggerService,
     private snackBar: MatSnackBar) {
 
@@ -360,9 +360,7 @@ export class BuildComponent implements OnInit, OnDestroy {
    * 
    */
   publishToAWS(): void {
-    console.log('Cognito User:', this.cognitoService.cognitoUser);
-
-    this.cognitoService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
+    this.authService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
       console.log('All files:', allFiles);
     });
   }

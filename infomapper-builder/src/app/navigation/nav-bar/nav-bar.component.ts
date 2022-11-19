@@ -6,7 +6,9 @@ import { Component,
 import { faBars }              from '@fortawesome/free-solid-svg-icons';
 
 import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
-import { AppService }          from '../../services/app.service';
+import { Observable }          from 'rxjs';
+import { AppService }          from 'src/app/services/app.service';
+import { AuthService }         from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -28,9 +30,18 @@ export class NavBarComponent implements OnInit {
    * Constructor for the NavBarComponent.
    * @param appService The IM Builder top level service.
    */
-  constructor(private appService: AppService, private logger: CommonLoggerService) {
+  constructor(private appService: AppService, private logger: CommonLoggerService,
+  private authService: AuthService) {
   }
 
+
+  get authUsername(): Observable<string> {
+    return this.authService.authUsername$;
+  }
+
+  get userVerified(): Observable<boolean> {
+    return this.authService.userAuthenticated$;
+  }
 
   /**
    * Getter for the application configuration JSON object.

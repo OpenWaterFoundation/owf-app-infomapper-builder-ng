@@ -13,9 +13,8 @@ import { MatSnackBar,
 import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
 import { first,
-          Subject,
-          takeUntil }                   from 'rxjs';
-import { CognitoService }               from '../services/cognito.service';
+          Subject }                     from 'rxjs';
+import { AuthService }                  from '../services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js'
 
 @Component({
@@ -59,7 +58,7 @@ export class SignInComponent implements OnInit {
   /**
    * 
    */
-  constructor(private cognitoService: CognitoService, private router: Router,
+  constructor(private authService: AuthService, private router: Router,
   private snackBar: MatSnackBar) {
 
   }
@@ -75,17 +74,22 @@ export class SignInComponent implements OnInit {
   }
 
   /**
+   * If the user is already authenticated, navigate to the home page.
+   */
+  private isLoggedIn(): void {
+
+    this.authService.alreadyLoggedIn().pipe(first()).subscribe((isLoggedIn: boolean) => {
+      if (isLoggedIn) {
+        this.authService.initLogin();
+      }
+    });
+  }
+
+  /**
    * 
    */
   ngOnInit(): void {
-    // If the user is already authenticated, navigate  to the home page.
-    this.cognitoService.userAuthenticated$.pipe(first()).subscribe((authenticated: boolean) => {
-      // console.log('User authenticated after sign in component init:', authenticated);
-
-      if (authenticated) {
-        this.router.navigate(['/content-page/home']);
-      }
-    })
+    this.isLoggedIn();
   }
 
   /**
@@ -117,17 +121,15 @@ export class SignInComponent implements OnInit {
     const usernameOrEmail = this.signInFG.get('user').value;
     const pw = this.signInFG.get('password').value;
 
-    this.cognitoService.signIn(usernameOrEmail, pw)
-    .pipe(first())
+    this.authService.signIn(usernameOrEmail, pw).pipe(first())
     .subscribe({
       next: (user: CognitoUser) => {
-        this.router.navigate(['/content-page/home']);
-        this.cognitoService.loginSuccessful(user);
+        this.authService.initLogin(user);
       },
       error: (error: any) => {
         this.openErrorSnackBar();
       }
-  });
+    });
   }
 
   /**

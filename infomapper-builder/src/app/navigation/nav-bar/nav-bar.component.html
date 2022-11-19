@@ -1,24 +1,45 @@
 <mat-toolbar>
-  <div fxHide.gt-md>
-    <button mat-icon-button (click)="onToggleSidenav()"
-    data-cy="side-nav-toggle-button">
-      <fa-icon [icon]="faBars" size="lg"></fa-icon>
-    </button>
-  </div>
 
-  <button mat-button class="home-button" [routerLink]="['/home']">
-    {{title}}
-  </button>
-
-  <div fxFlex fxLayout fxLayoutAlign="start" fxHide.lt-lg>
-    <ul fxLayout fxLayoutGap="1px" class="main-menu-buttons">
-
-      <div *ngFor="let mainMenu of appConfig.mainMenu">
-        <div *ngIf="mainMenu | checkElement : 'mainMenuIsVisible'">
-          <nav-bar-menu [mainMenu]="mainMenu"></nav-bar-menu>
-        </div>
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <div style="display: flex;">
+      <div fxHide.gt-md>
+        <button mat-icon-button (click)="onToggleSidenav()"
+        data-cy="side-nav-toggle-button">
+          <fa-icon [icon]="faBars" size="lg"></fa-icon>
+        </button>
       </div>
+    
+      <button mat-button class="home-button" [routerLink]="['/home']">
+        {{title}}
+      </button>
+    
+      <div fxFlex fxLayout fxLayoutAlign="start" fxHide.lt-lg>
+        <ul fxLayout fxLayoutGap="1px" class="main-menu-buttons">
+    
+          <div *ngFor="let mainMenu of appConfig.mainMenu">
+            <div *ngIf="mainMenu | checkElement : 'mainMenuIsVisible'">
+              <nav-bar-menu [mainMenu]="mainMenu"></nav-bar-menu>
+            </div>
+          </div>
+    
+        </ul>
+      </div>
+    </div>
 
-    </ul>
+    <div *ngIf="userVerified | async" style="display: flex; align-items: center; user-select: none;">
+      <button mat-stroked-button [matMenuTriggerFor]="menu">Account</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <span style="font-size: 13px;">
+            User: <span style="font-size: 15px; color: darkblue;">{{ authUsername | async }}</span>
+          </span>
+        </button>
+        <button mat-menu-item>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+      
+    </div>
   </div>
+
 </mat-toolbar>
