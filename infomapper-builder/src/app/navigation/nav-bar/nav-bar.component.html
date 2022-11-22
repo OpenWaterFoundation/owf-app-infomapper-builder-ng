@@ -1,7 +1,7 @@
 <mat-toolbar>
 
-  <div style="display: flex; justify-content: space-between; width: 100%;">
-    <div style="display: flex;">
+  <div class="toolbar-main-container">
+    <div class="toolbar-left-container">
       <div fxHide.gt-md>
         <button mat-icon-button (click)="onToggleSidenav()"
         data-cy="side-nav-toggle-button">
@@ -26,17 +26,22 @@
       </div>
     </div>
 
-    <div *ngIf="userVerified | async" style="display: flex; align-items: center; user-select: none;">
-      <button mat-stroked-button [matMenuTriggerFor]="menu">Account</button>
+    <div *ngIf="isLoggedIn | async" class="toolbar-right-container">
+      <button mat-stroked-button matRipple [matMenuTriggerFor]="menu" >
+        <span>Account</span>
+      </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>
-          <span style="font-size: 13px;">
-            User: <span style="font-size: 15px; color: darkblue;">{{ authUsername | async }}</span>
+
+        <button mat-menu-item disabled>
+          <span class="user-text">
+            User: <span class="username-text-logged-in">{{ authUsername | async }}</span>
           </span>
         </button>
-        <button mat-menu-item>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logoutUser()">
           <span>Logout</span>
         </button>
+
       </mat-menu>
       
     </div>

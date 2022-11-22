@@ -5,6 +5,8 @@ import { Component,
 
 import { faBars }              from '@fortawesome/free-solid-svg-icons';
 
+import * as IM                 from '@OpenWaterFoundation/common/services'
+
 import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 import { Observable }          from 'rxjs';
 import { AppService }          from 'src/app/services/app.service';
@@ -19,10 +21,13 @@ export class NavBarComponent implements OnInit {
 
   /** All used FontAwesome icons in the NavBarComponent. */
   faBars = faBars;
+  /** The color for a button's Angular Material ripple. */
+  rippleColor = '#9db66b';
   /** Emits an event when the sidenav button is clicked in the nav bar and toggles
    * the sidenav itself. */
   @Output('sidenavToggle') sidenavToggle = new EventEmitter<any>();
-  /** The top application title property from the app-config file. */
+  /** The top application title property from the app-config file to be shown on
+   * the Builder's home button. */
   title: string;
 
   
@@ -30,8 +35,8 @@ export class NavBarComponent implements OnInit {
    * Constructor for the NavBarComponent.
    * @param appService The IM Builder top level service.
    */
-  constructor(private appService: AppService, private logger: CommonLoggerService,
-  private authService: AuthService) {
+  constructor(private appService: AppService, private authService: AuthService,
+  private logger: CommonLoggerService) {
   }
 
 
@@ -39,14 +44,21 @@ export class NavBarComponent implements OnInit {
     return this.authService.authUsername$;
   }
 
-  get userVerified(): Observable<boolean> {
+  get isLoggedIn(): Observable<boolean> {
     return this.authService.userAuthenticated$;
   }
 
   /**
    * Getter for the application configuration JSON object.
    */
-  get appConfig(): any { return this.appService.appConfigObj; }
+  get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
+
+  /**
+   * Uses the auth service to log the user out of this session.
+   */
+  logoutUser(): void {
+    this.authService.signOut();
+  }
 
   /**
    * Lifecycle hook that is called after Angular has initialized all data-bound

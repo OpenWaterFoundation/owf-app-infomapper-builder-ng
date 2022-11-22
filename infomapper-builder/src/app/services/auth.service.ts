@@ -3,7 +3,6 @@ import { Amplify,
           Auth,
           Storage }              from 'aws-amplify';
 import { BehaviorSubject,
-          combineLatest,
           first,
           from,
           Observable }           from 'rxjs';
@@ -19,6 +18,9 @@ import { Router }                from '@angular/router';
 })
 export class AuthService {
 
+  /**
+   * 
+   */
   private _authUsername = new BehaviorSubject<string>('');
   /**
    * Used for determining whether the current user is authenticated from the
@@ -119,8 +121,12 @@ export class AuthService {
    * Signs the user out of the session.
    * @returns An observable of the response from Cognito upon sign out.
    */
-  signOut(): Observable<any> {
-    return from(Auth.signOut());
+  signOut(): void {
+    from(Auth.signOut()).pipe(first()).subscribe(() => {
+      this._authUsername.next('');
+      this._userAuthenticated.next(false);
+      this.router.navigate(['']);
+    });
   }
 
   /**
@@ -162,35 +168,12 @@ export class AuthService {
 
     this.setUserAuthenticated = true;
     this.router.navigate(['/content-page/home']);
-
-    // const allSources = [from(Auth.currentSession()), from(Auth.currentCredentials())];
-
-    // combineLatest(allSources).pipe(first())
-    // .subscribe((
-    //   [currentSession, currentCredentials]: [CognitoUserSession, ICredentials]) => {
-      
-    //   console.log('currentSession:', currentSession);
-    //   console.log('currentCredentials:', currentCredentials);
-    //   console.log('user:', cognitoUser);
-
-    //   try {
-    //     console.log(window.location.href.split('/')[2].split(':')[0]);
-    //   } catch {
-    //     console.log('Domain did not work.');
-    //   }
-
-    //   const opt: CookieOptions = {
-    //     sameSite: "lax"
-    //   };
-    //   // this.cookieService.putObject('currentSession', currentSession, opt);
-    //   this.cookieService.putObject('currentCredentials', currentCredentials, opt);
-    //   // this.cookieService.putObject('cognitoUser', cognitoUser, opt);
-    // });
   }
 
   /**
-   * 
-   * @returns 
+   * Determines if the user has already provided valid credentials.
+   * @returns An observable with a boolean that represents whether the user has previously
+   * logged in to the IM Builder.
    */
   alreadyLoggedIn(): Observable<boolean> {
     return from(
@@ -203,7 +186,6 @@ export class AuthService {
         }
       })
       .catch((err: any) => {
-        console.log('Error:', err);
         return false;
       })
     );

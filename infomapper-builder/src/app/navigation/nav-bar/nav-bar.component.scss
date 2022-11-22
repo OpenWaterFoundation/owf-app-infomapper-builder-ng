@@ -17,6 +17,16 @@ mat-toolbar {
 
 /* CLASSES */
 
+/*  */
+.username-text-logged-in {
+  color: darkblue;
+}
+
+/*  */
+.user-text {
+  color: black;
+}
+
 /* InfoMapper home button. */
 .home-button {
   font-size: 26px;
@@ -29,4 +39,23 @@ mat-toolbar {
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+/* Div holding all main content elements on the left side of the toolbar. */
+.toolbar-left-container {
+  display: flex;
+}
+
+/* Top level toolbar div. */
+.toolbar-main-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Div holding all main content elements on the right side of the toolbar. */
+.toolbar-right-container {
+  display: flex;
+  align-items: center;
+  user-select: none;
 }

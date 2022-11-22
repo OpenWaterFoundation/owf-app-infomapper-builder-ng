@@ -39,8 +39,8 @@ export class NavBarMenuComponent implements OnInit {
   }
 
   /**
-   * Converts all enabled, visible, and separatorBefore properties to booleans for easier HTML creation
-   * for this component's template file.
+   * Converts all enabled, visible, and separatorBefore properties to booleans for
+   * easier HTML creation for this component's template file.
    */
    private cleanProperties(): void {
     // Convert enabled to boolean.
@@ -50,7 +50,7 @@ export class NavBarMenuComponent implements OnInit {
         break;
       }
     }
-    // Convert every sub menu's enabled, visible, and separatorBefore properties to a boolean
+    // Convert every sub menu's enabled, visible, and separatorBefore properties to a boolean.
     if (this.mainMenu.menus) {
       for (let subMenu of this.mainMenu.menus) {
         switch (typeof subMenu.enabled) {

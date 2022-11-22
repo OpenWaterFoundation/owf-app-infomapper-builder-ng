@@ -11,7 +11,7 @@ import { MatSnackBar,
 import { first,
           map,
           Observable }                  from 'rxjs';
-import { AuthService }               from './auth.service';
+import { AuthService }                  from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +49,7 @@ export class AuthGuard implements CanActivate {
     return this.authService.userAuthenticated$.pipe(
       map((authenticated: boolean) => {
 
+        // TODO: Don't display the snack bar initially.
         if (authenticated) {
           return true;
         } else {

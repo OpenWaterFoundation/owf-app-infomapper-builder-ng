@@ -78,10 +78,13 @@ export class SignInComponent implements OnInit {
    */
   private isLoggedIn(): void {
 
-    this.authService.alreadyLoggedIn().pipe(first()).subscribe((isLoggedIn: boolean) => {
-      if (isLoggedIn) {
-        this.authService.initLogin();
-      }
+    this.authService.alreadyLoggedIn().pipe(first()).subscribe({
+      next: (isLoggedIn: boolean) => {
+        if (isLoggedIn) {
+          this.authService.initLogin();
+        }
+      },
+      error: (err: any) => {}
     });
   }
 
