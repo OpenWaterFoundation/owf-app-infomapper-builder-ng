@@ -86,7 +86,9 @@
               "jquery",
               "papaparse",
               "select2",
-              "showdown"
+              "showdown",
+              "quick-scale",
+              "xdim"
             ],
             "aot": true,
             "outputPath": "dist/infomapper-builder",

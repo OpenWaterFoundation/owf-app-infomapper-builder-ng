@@ -33,8 +33,9 @@ import { first,
 import * as IM                          from '@OpenWaterFoundation/common/services';
 
 import { AppService }                   from '../services/app.service';
-import { AuthService }               from '../services/auth.service';
-import { DialogComponent }              from '../build/builder-utility/dialog/dialog.component';
+import { AuthService }                  from '../services/auth.service';
+import { BrowseDialogComponent }        from './builder-utility/dialog/browse-dialog/browse-dialog.component';
+import { ConfigDialogComponent }        from './builder-utility/dialog/config-dialog/config-dialog.component';
 import { BuildManager }                 from '../build/build-manager';
 
 
@@ -96,7 +97,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   snackBarDuration = 4000;
   /** Sets the horizontal position of the error snackbar to display on the right
    * side of the screen. */
-  snackBarHPosition: MatSnackBarHorizontalPosition = 'end';
+  snackBarHPosition: MatSnackBarHorizontalPosition = 'center';
   /** Sets the vertical position of the error snackbar to display at the top of
   * the screen. */
   snackbarVPosition: MatSnackBarVerticalPosition = 'top';
@@ -138,9 +139,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   * @param snackBar 
   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
-    private breakpointObserver: BreakpointObserver, private authService: AuthService,
-    private dialog: MatDialog, private logger: IM.CommonLoggerService,
-    private snackBar: MatSnackBar) {
+  private breakpointObserver: BreakpointObserver, private authService: AuthService,
+  private dialog: MatDialog, private logger: IM.CommonLoggerService,
+  private snackBar: MatSnackBar) {
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
@@ -235,6 +236,16 @@ export class BuildComponent implements OnInit, OnDestroy {
     }
   }
 
+  browseS3Files(): void {
+    const dialogConfigData = {
+      test: 'test'
+    };
+
+    var dialogRef: MatDialogRef<BrowseDialogComponent, any> = this.dialog.open(
+      BrowseDialogComponent, this.createDialogConfig(dialogConfigData)
+    );
+  }
+
   /**
   * Creates a dialog config object and sets its width & height properties based
   * on the current screen size.
@@ -324,8 +335,8 @@ export class BuildComponent implements OnInit, OnDestroy {
       node: node
     }
 
-    var dialogRef: MatDialogRef<DialogComponent, any> = this.dialog.open(
-      DialogComponent, this.createDialogConfig(dialogConfigData)
+    var dialogRef: MatDialogRef<ConfigDialogComponent, any> = this.dialog.open(
+      ConfigDialogComponent, this.createDialogConfig(dialogConfigData)
     );
 
     // To run when the opened dialog is closed.
@@ -360,9 +371,7 @@ export class BuildComponent implements OnInit, OnDestroy {
    * 
    */
   publishToAWS(): void {
-    this.authService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
-      console.log('All files:', allFiles);
-    });
+
   }
 
   /**

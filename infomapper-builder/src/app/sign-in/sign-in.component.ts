@@ -26,7 +26,7 @@ export class SignInComponent implements OnInit {
 
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
-  /** All used FontAwesome icons in the DialogComponent. */
+  /** All used FontAwesome icons in the SignInComponent. */
   
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {

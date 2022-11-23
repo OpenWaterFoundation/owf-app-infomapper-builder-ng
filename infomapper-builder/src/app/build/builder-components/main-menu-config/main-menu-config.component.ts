@@ -7,7 +7,6 @@ import { AbstractControl,
           FormGroup, 
           Validators}   from '@angular/forms';
 
-import { AppService }   from 'src/app/services/app.service';
 import * as IM          from '@OpenWaterFoundation/common/services';
 import { BuildManager } from '../../build-manager';
 
@@ -63,8 +62,10 @@ export class MainMenuConfigComponent implements OnInit {
   }
 
   /**
-   * When the 
-   * @param event 
+   * Clears all current action validators and adds a new validator when a new action
+   * option is chosen from the dropdown menu.
+   * @param event The event passed in from the template file when a new selection
+   * has been chosen.
    */
   handleActionControlChoice(event: any): void {
 

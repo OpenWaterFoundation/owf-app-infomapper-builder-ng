@@ -42,7 +42,6 @@ class="cdk-drag" data-cy="main-dialog-container">
       </sub-menu-config>
     </ng-container>
     
-    
   </div>
 
   <div class="dialog-utility-container">
@@ -52,8 +51,7 @@ class="cdk-drag" data-cy="main-dialog-container">
       Cancel
     </button>
 
-    <button mat-raised-button (click)="saveData(node)"
-    [disabled]="isSaveDisabled()"
+    <button mat-raised-button (click)="saveData(node)" [disabled]="isSaveDisabled()"
     class="dialog-save-button" data-cy="dialog-lower-save-button">
       Save
     </button>

@@ -18,6 +18,10 @@ import { AuthService }                  from './auth.service';
 })
 export class AuthGuard implements CanActivate {
 
+  /**
+   * 
+   */
+  activateCheckCounter = 0;
   /** How many milliseconds the error snackbar will be displayed for. */
   snackBarDuration = 5000;
   /** Sets the horizontal position of the error snackbar to display on the right
@@ -49,11 +53,13 @@ export class AuthGuard implements CanActivate {
     return this.authService.userAuthenticated$.pipe(
       map((authenticated: boolean) => {
 
-        // TODO: Don't display the snack bar initially.
         if (authenticated) {
           return true;
         } else {
-          this.openErrorSnackBar();
+          if (this.activateCheckCounter !== 0) {
+            this.openErrorSnackBar();
+          }
+          ++this.activateCheckCounter;
           this.router.navigate(['']);
         }
       }),

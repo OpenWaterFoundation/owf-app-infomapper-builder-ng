@@ -10,15 +10,15 @@ import { faXmark }          from '@fortawesome/free-solid-svg-icons';
 import * as IM              from '@OpenWaterFoundation/common/services';
 
 @Component({
-  selector: 'app-dialog',
-  templateUrl: './dialog.component.html',
-  styleUrls: ['./dialog.component.scss']
+  selector: 'app-config-dialog',
+  templateUrl: './config-dialog.component.html',
+  styleUrls: ['./config-dialog.component.scss']
 })
-export class DialogComponent implements OnInit {
+export class ConfigDialogComponent implements OnInit {
 
   /** The main FormGroup for the entire application. */
   appBuilderForm: FormGroup;
-  /** All used FontAwesome icons in the DialogComponent. */
+  /** All used FontAwesome icons in the ConfigDialogComponent. */
   faXmark = faXmark;
   /** The string to be dynamically displayed on this component's top header. */
   headerText = '';
@@ -26,8 +26,13 @@ export class DialogComponent implements OnInit {
   node: IM.TreeFlatNode;
 
 
+  /**
+   * 
+   * @param dialogData 
+   * @param dialogRef 
+   */
   constructor(@Inject(MAT_DIALOG_DATA) private dialogData: any,
-  private dialogRef: MatDialogRef<DialogComponent>) {
+  private dialogRef: MatDialogRef<ConfigDialogComponent>) {
 
     this.appBuilderForm = this.dialogData.appBuilderForm;
     this.node = this.dialogData.node;
@@ -59,6 +64,11 @@ export class DialogComponent implements OnInit {
     }
   }
   
+  /**
+   * 
+   * @param formGroup 
+   * @returns 
+   */
   findInvalidControls(formGroup: string) {
     const invalid = [];
     const group = this.appBuilderForm.get(formGroup) as FormGroup;

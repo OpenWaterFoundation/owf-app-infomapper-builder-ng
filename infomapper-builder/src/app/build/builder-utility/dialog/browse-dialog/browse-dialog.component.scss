@@ -1,0 +1,75 @@
+/* CLASSES */
+
+/* Top level container for the component. */
+.cdk-drag {
+  height: 100%;
+}
+
+/* The lower right Cancel button. */
+.dialog-cancel-button {
+  background-color: #ff3636;
+}
+
+/* The main dialog content to display. */
+.dialog-content {
+  height: calc(100% - 130px);
+  padding: 0px 15px 10px 15px;
+  overflow: auto;
+}
+
+/* The lower left Save button. */
+.dialog-open-button {
+  background-color: #b3b3b3;
+}
+
+/* Container for all dialog utility buttons. */
+.dialog-utility-container {
+  background-color: #e6e6e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+}
+
+/* All buttons in the lower dialog utility section. */
+.dialog-utility-container button {
+  font-size: 22px;
+  margin: 0px 50px;
+}
+
+/* Div class that takes up 5.5% of the height of the dialog and is gray to differentiate
+itself from the dialog content */
+.drag-header-main {
+  display: flex;
+  background-color: #e6e6e6;
+  height: 40px;
+  margin: 0;
+}
+
+/* The header portion of the draggable div. */
+.header {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: calc(100% - 80px);
+}
+
+/* Text to be displayed at the top of the dialog. */
+.header-title {
+  font-size: large;
+  padding-top: 5px;
+  padding-left: 80px;
+  text-align: center;
+  height: 100%;
+  margin: 0;
+}
+
+/* The class for the upper-right close button in a dialog. The inline-block display
+makes it so that it will share with the title header div, rendering them side-by-side. */
+.upper-dialog-close-button {
+  background-color: #c2c1c1;
+  height: 100%;
+  width: 80px;
+  float: right;
+  outline: none;
+}

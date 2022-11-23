@@ -70,7 +70,6 @@ export class AppConfigComponent implements OnInit {
   private populateFromBuilderJSON(): void {
 
     let fullBuilderJSON = this.buildManager.fullBuilderJSON;
-
     this.updateTitleInput.emit(fullBuilderJSON.title);
 
     this.appBuilderForm.get('appConfigFG.title').setValue(fullBuilderJSON.title);

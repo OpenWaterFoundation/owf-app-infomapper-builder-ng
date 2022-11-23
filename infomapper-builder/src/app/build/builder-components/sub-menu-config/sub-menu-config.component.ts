@@ -74,8 +74,10 @@ export class SubMenuConfigComponent implements OnInit {
   }
 
   /**
-   * When the 
-   * @param event 
+   * Clears all current action validators and adds a new validator when a new action
+   * option is chosen from the dropdown menu.
+   * @param event The event passed in from the template file when a new selection
+   * has been chosen.
    */
   handleActionControlChoice(event: any): void {
 

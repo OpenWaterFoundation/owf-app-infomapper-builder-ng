@@ -14,7 +14,6 @@ import { CdkTreeModule }            from '@angular/cdk/tree';
 import { DragDropModule }           from '@angular/cdk/drag-drop';
 import { PortalModule }             from '@angular/cdk/portal';
 import { ScrollingModule }          from '@angular/cdk/scrolling';
-
 import { MatButtonModule }          from '@angular/material/button';
 import { MatCardModule }            from '@angular/material/card';
 import { MatDialogModule }          from '@angular/material/dialog';
@@ -34,27 +33,31 @@ import { MatTreeModule }            from '@angular/material/tree';
 import { FontAwesomeModule }        from '@fortawesome/angular-fontawesome';
 import { AngularFullpageModule }    from '@fullpage/angular-fullpage';
 
-import { Observable }               from 'rxjs/internal/Observable';
-
-import { CookieModule }             from 'ngx-cookie'
-import { ShowdownModule }           from 'ngx-showdown';
+import { CookieModule }             from 'ngx-cookie';
 import { LoggerModule,
           NgxLoggerLevel }          from 'ngx-logger';
+import { ShowdownModule }           from 'ngx-showdown';
+
+import { Observable }               from 'rxjs/internal/Observable';
 
 import { AppRoutingModule }         from './app-routing.module';
 
 import { AppComponent }             from './app.component';
 import { AppConfigComponent }       from './build/builder-components/app-config/app-config.component';
 import { BuildComponent }           from './build/build.component';
+import { BrowseDialogComponent }    from './build/builder-utility/dialog/browse-dialog/browse-dialog.component';
+import { ConfigDialogComponent }    from './build/builder-utility/dialog/config-dialog/config-dialog.component';
+import { ContentPageComponent }     from './content-page/content-page.component';
 import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
-import { DialogComponent }          from './build/builder-utility/dialog/dialog.component';
+import { HomeComponent }            from './home/home.component';
 import { MainMenuConfigComponent }  from './build/builder-components/main-menu-config/main-menu-config.component';
-import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
 import { NavBarComponent }          from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { NodeMenuComponent }        from './build/builder-utility/node-menu/node-menu.component';
 import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
-import { ContentPageComponent }     from './content-page/content-page.component';
+import { SignInComponent }          from './sign-in/sign-in.component';
+import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
+
 import { AppService }               from './services/app.service';
 
 import { CheckElementPipe }         from './pipes/check-element.pipe';
@@ -63,10 +66,6 @@ import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown                from 'showdown';
-import { SignInComponent } from './sign-in/sign-in.component';
-import { HomeComponent } from './home/home.component';
-
-
 
 
 const classMap: any = {
@@ -106,23 +105,25 @@ function appInit(appService: AppService): () => Observable<any> {
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ContentPageComponent,
-    NavBarComponent,
-    SideNavComponent,
-    NavBarMenuComponent,
-    CheckElementPipe,
-    BuildComponent,
     AppConfigComponent,
-    MainMenuConfigComponent,
-    DialogComponent,
-    NodeMenuComponent,
-    ConvertFormNamePipe,
-    SubMenuConfigComponent,
-    CheckTreeNodePipe,
+    AppComponent,
+    BuildComponent,
+    BrowseDialogComponent,
+    ConfigDialogComponent,
+    ContentPageComponent,
     DatastoreConfigComponent,
+    HomeComponent,
+    MainMenuConfigComponent,
+    NavBarComponent,
+    NavBarMenuComponent,
+    NodeMenuComponent,
+    SideNavComponent,
     SignInComponent,
-    HomeComponent
+    SubMenuConfigComponent,
+
+    CheckElementPipe,
+    CheckTreeNodePipe,
+    ConvertFormNamePipe
   ],
   imports: [
     AngularFullpageModule,

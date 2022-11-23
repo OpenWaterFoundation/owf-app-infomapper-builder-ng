@@ -108,6 +108,37 @@ export class AuthService {
   }
 
   /**
+   * 
+   * @param filePath 
+   * @returns 
+   */
+  getBucketFile(filePath: string): Observable<any> {
+    return from(
+      Storage.get(filePath, {
+        customPrefix: {
+          public: '',
+          protected: '',
+          private: ''
+        }
+      })
+      .then((result: any) => { return result; })
+      .catch((err: any) => { return err; })
+    );
+  }
+
+  /**
+   * 
+   * @returns 
+   */
+  listAllBucketFiles(): Observable<any> {
+    return from(
+      Storage.list('', this.storageOptions)
+      .then((result: any) => { return result; })
+      .catch((err: any) => { return err; })
+    );
+  }
+
+  /**
    * Attempts to sign-in the user with the provided credentials, and........
    * @param userNameOrEmail The username or email entered by the user.
    * @param pw The password to be entered.
@@ -127,30 +158,6 @@ export class AuthService {
       this._userAuthenticated.next(false);
       this.router.navigate(['']);
     });
-  }
-
-  /**
-   * 
-   * @returns 
-   */
-  listAllBucketFiles(): Observable<any> {
-    return from(
-      Storage.list('', this.storageOptions)
-      .then((result: any) => { return result; })
-      .catch((err: any) => { return err; })
-    );
-
-    // return from(
-    //   Storage.get('4.0.0/assets/app-default/app-config.json', {
-    //     customPrefix: {
-    //       public: '',
-    //       protected: '',
-    //       private: ''
-    //     }
-    //   })
-    //   .then((result: any) => { return result; })
-    //   .catch((err: any) => { return err; })
-    // );
   }
 
   /**

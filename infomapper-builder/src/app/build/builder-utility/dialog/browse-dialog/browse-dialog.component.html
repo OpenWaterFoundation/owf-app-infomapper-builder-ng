@@ -1,0 +1,41 @@
+<!-- Use for keeping the entire dialog in the app window. cdkDragBoundary=".cdk-overlay-container" -->
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+class="cdk-drag" data-cy="main-browse-dialog-container">
+  <div mat-dialog-title class="drag-header-main" cdkDragHandle
+  data-cy="browse-dialog-drag-header-main">
+
+    <div class="header">
+      <p class="header-title">
+        Browse S3 Bucket Files
+      </p>
+    </div>
+
+    <button mat-button (click)="closeDialog()" class="upper-dialog-close-button"
+    attr.data-cy="dialog-upper-close-NEEDS-TO-BE-CHANGED">
+      <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    
+    <!-- <div *ngFor="let obj of allFiles">
+      <span>{{ obj.key }}</span>
+    </div> -->
+    
+  </div>
+
+  <div class="dialog-utility-container">
+
+    <button mat-raised-button (click)="closeDialog()" class="dialog-cancel-button"
+    attr.data-cy="browse-dialog-lower-cancel-NEEDS-TO-BE-CHANGED">
+      Cancel
+    </button>
+    <!-- [disabled]="isSaveDisabled()" -->
+    <button mat-raised-button (click)="openFile()"
+    class="dialog-open-button" data-cy="browse-dialog-lower-save-button">
+      Open
+    </button>
+
+  </div>
+
+</div>
