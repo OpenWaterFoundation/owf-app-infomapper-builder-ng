@@ -16,12 +16,17 @@ class="cdk-drag" data-cy="main-browse-dialog-container">
     </button>
   </div>
 
+  <mat-toolbar>
+    <!-- *ngIf="canNavigateUp" (click)="navigateUp() -->
+    <button mat-icon-button *ngIf="true">
+      <fa-icon [icon]="faLeftLong" size="lg"></fa-icon>
+    </button>
+    
+    <span style="margin-left: 8px">{{ bucketName }}/{{ bucketPath | async }}</span>
+  </mat-toolbar>
+
   <div class="dialog-content">
-    
-    <!-- <div *ngFor="let obj of allFiles">
-      <span>{{ obj.key }}</span>
-    </div> -->
-    
+    <app-file-browser [allFiles]="allFiles"></app-file-browser>
   </div>
 
   <div class="dialog-utility-container">

@@ -65,7 +65,7 @@
               <div aria-label="Tree node name, level, node menu, & exclamation icon.">
                 <span class="node-name-no-children"><b>{{ node.level }}:</b> {{ node.name }}</span>
   
-                <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+                <tree-node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></tree-node-menu>
   
                 <ng-container *ngIf="!node.saved">
                   <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
@@ -114,7 +114,7 @@
                   <b>{{ node.level }}:</b> {{ node.name }}
                 </span>
   
-                <node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></node-menu>
+                <tree-node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></tree-node-menu>
     
                 <ng-container *ngIf="!node.saved">
                   <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"

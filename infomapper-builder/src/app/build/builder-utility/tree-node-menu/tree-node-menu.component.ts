@@ -12,9 +12,9 @@ import { BuildManager }            from '../../build-manager';
 
 
 @Component({
-  selector: 'node-menu',
-  templateUrl: './node-menu.component.html',
-  styleUrls: ['./node-menu.component.scss']
+  selector: 'tree-node-menu',
+  templateUrl: './tree-node-menu.component.html',
+  styleUrls: ['./tree-node-menu.component.scss']
 })
 export class NodeMenuComponent implements OnInit {
 

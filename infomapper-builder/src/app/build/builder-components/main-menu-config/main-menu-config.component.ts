@@ -94,6 +94,7 @@ export class MainMenuConfigComponent implements OnInit {
       } else {
         controlName = 'url';
       }
+      // Add the required validator to the newly added control.
       this.appBuilderForm.get('mainMenuFG.' + controlName).addValidators(Validators.required);
       this.appBuilderForm.get('mainMenuFG.' + controlName).updateValueAndValidity();
       this.appBuilderForm.get('mainMenuFG.' + controlName).markAsTouched();

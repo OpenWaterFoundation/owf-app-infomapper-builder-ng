@@ -46,7 +46,6 @@ export class AppConfigComponent implements OnInit {
    * properties of a directive.
    */
   ngOnInit(): void {
-    // FIXME: Update this check for the app node. this.buildManager.hasNodeBeenSaved('0')
     if (this.node.saved) {
       this.populateFromBuilderJSON();
     } else {

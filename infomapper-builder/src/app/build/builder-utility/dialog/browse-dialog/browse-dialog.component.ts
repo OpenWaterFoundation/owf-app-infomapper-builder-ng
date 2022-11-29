@@ -2,8 +2,13 @@ import { Component,
           OnInit }      from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { faXmark }      from '@fortawesome/free-solid-svg-icons';
+import { faLeftLong,
+          faXmark }     from '@fortawesome/free-solid-svg-icons';
+
+import { Observable,
+          of }          from 'rxjs';
 import { first }        from 'rxjs/internal/operators/first';
+
 import { AuthService }  from 'src/app/services/auth.service';
 
 @Component({
@@ -18,6 +23,7 @@ export class BrowseDialogComponent implements OnInit {
    */
   allFiles: any;
   /** All used FontAwesome icons in the ConfigDialogComponent. */
+  faLeftLong = faLeftLong;
   faXmark = faXmark;
 
 
@@ -25,7 +31,15 @@ export class BrowseDialogComponent implements OnInit {
   private authService: AuthService) { }
 
 
-   /**
+  get bucketName(): string {
+    return this.authService.amplify.Storage.AWSS3.bucket;
+  }
+
+  get bucketPath(): Observable<string> {
+    return of('some/path/');
+  }
+
+  /**
    * Closes the Mat Dialog popup when the Close button is clicked, and removes this
    * dialog's window ID from the windowManager.
    */
@@ -38,7 +52,7 @@ export class BrowseDialogComponent implements OnInit {
    */
   private fetchS3BucketFiles(): void {
     this.authService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
-      this.allFiles = allFiles;
+      this.allFiles = this.processStorageList(allFiles);
       console.log('Processed file object:', this.processStorageList(allFiles));
     });
   }

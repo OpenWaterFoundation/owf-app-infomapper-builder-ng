@@ -4,12 +4,12 @@ import { Component,
           OnInit,
           Output }             from '@angular/core';
 
-import { Subject }             from 'rxjs';
-
 import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 import { faBookOpen,
           faFileLines,
           faGaugeHigh }        from '@fortawesome/free-solid-svg-icons';
+
+import { Subject }             from 'rxjs';
 
 import { AppService }          from 'src/app/services/app.service';
 

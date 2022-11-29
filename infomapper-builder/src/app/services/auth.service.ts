@@ -22,6 +22,8 @@ export class AuthService {
    * 
    */
   private _authUsername = new BehaviorSubject<string>('');
+
+  private _amplify: any;
   /**
    * Used for determining whether the current user is authenticated from the
    * Cognito User Pool.
@@ -50,7 +52,7 @@ export class AuthService {
    * User Pool Id and the User Pool web client Id.
    */
   constructor(private router: Router) {
-    Amplify.configure({
+    this._amplify = Amplify.configure({
       Auth: {
         identityPoolId: 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a',
         region: 'us-west-2',
@@ -72,6 +74,10 @@ export class AuthService {
         this._cognitoUser = user;
       }
     });
+  }
+
+  get amplify(): any {
+    return this._amplify;
   }
 
   get authUsername$(): Observable<string> {

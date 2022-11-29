@@ -6,9 +6,9 @@ import { Component,
 import { faBars }              from '@fortawesome/free-solid-svg-icons';
 
 import * as IM                 from '@OpenWaterFoundation/common/services'
-
 import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 import { Observable }          from 'rxjs';
+
 import { AppService }          from 'src/app/services/app.service';
 import { AuthService }         from 'src/app/services/auth.service';
 

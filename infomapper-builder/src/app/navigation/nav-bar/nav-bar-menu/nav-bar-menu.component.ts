@@ -6,7 +6,7 @@ import { faBookOpen,
           faFileLines,
           faGaugeHigh } from '@fortawesome/free-solid-svg-icons';
 
-import * as IM from '@OpenWaterFoundation/common/services';
+import * as IM          from '@OpenWaterFoundation/common/services';
 
 @Component({
   selector: 'nav-bar-menu',

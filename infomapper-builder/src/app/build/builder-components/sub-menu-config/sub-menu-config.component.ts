@@ -106,6 +106,7 @@ export class SubMenuConfigComponent implements OnInit {
       } else {
         controlName = 'url';
       }
+      // Add the required validator to the newly added control.
       this.appBuilderForm.get('subMenuFG.' + controlName).addValidators(Validators.required);
       this.appBuilderForm.get('subMenuFG.' + controlName).updateValueAndValidity();
       this.appBuilderForm.get('subMenuFG.' + controlName).markAsTouched();

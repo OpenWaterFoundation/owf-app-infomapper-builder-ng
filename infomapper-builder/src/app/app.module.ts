@@ -53,7 +53,7 @@ import { HomeComponent }            from './home/home.component';
 import { MainMenuConfigComponent }  from './build/builder-components/main-menu-config/main-menu-config.component';
 import { NavBarComponent }          from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
-import { NodeMenuComponent }        from './build/builder-utility/node-menu/node-menu.component';
+import { NodeMenuComponent }        from './build/builder-utility/tree-node-menu/tree-node-menu.component';
 import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
 import { SignInComponent }          from './sign-in/sign-in.component';
 import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
@@ -66,6 +66,7 @@ import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown                from 'showdown';
+import { FileBrowserComponent } from './file-browser/file-browser/file-browser.component';
 
 
 const classMap: any = {
@@ -123,7 +124,8 @@ function appInit(appService: AppService): () => Observable<any> {
 
     CheckElementPipe,
     CheckTreeNodePipe,
-    ConvertFormNamePipe
+    ConvertFormNamePipe,
+    FileBrowserComponent
   ],
   imports: [
     AngularFullpageModule,
