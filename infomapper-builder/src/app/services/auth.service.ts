@@ -114,6 +114,27 @@ export class AuthService {
   }
 
   /**
+   * Determines if the user has already provided valid credentials.
+   * @returns An observable with a boolean that represents whether the user has previously
+   * logged in to the IM Builder.
+   */
+  alreadyLoggedIn(): Observable<boolean> {
+    return from(
+      Auth.currentAuthenticatedUser()
+      .then((user: CognitoUser) => {
+        if (user) {
+          return true;
+        } else {
+          return false
+        }
+      })
+      .catch((err: any) => {
+        return false;
+      })
+    );
+  }
+
+  /**
    * 
    * @param filePath 
    * @returns 
@@ -130,6 +151,24 @@ export class AuthService {
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     );
+  }
+
+  /**
+   * 
+   * @param cognitoUser 
+   */
+  initLogin(cognitoUser?: CognitoUser): void {
+
+    if (!cognitoUser) {
+      
+      this._authUsername.next(this._cognitoUser.getUsername());
+    } else {
+      this._authUsername.next(cognitoUser.getUsername());
+      this.cognitoUser = cognitoUser;
+    }
+
+    this.setUserAuthenticated = true;
+    this.router.navigate(['/content-page/home']);
   }
 
   /**
@@ -164,44 +203,6 @@ export class AuthService {
       this._userAuthenticated.next(false);
       this.router.navigate(['']);
     });
-  }
-
-  /**
-   * 
-   * @param cognitoUser 
-   */
-  initLogin(cognitoUser?: CognitoUser): void {
-
-    if (!cognitoUser) {
-      this._authUsername.next(this._cognitoUser.getUsername());
-    } else {
-      this._authUsername.next(cognitoUser.getUsername());
-      this.cognitoUser = cognitoUser;
-    }
-
-    this.setUserAuthenticated = true;
-    this.router.navigate(['/content-page/home']);
-  }
-
-  /**
-   * Determines if the user has already provided valid credentials.
-   * @returns An observable with a boolean that represents whether the user has previously
-   * logged in to the IM Builder.
-   */
-  alreadyLoggedIn(): Observable<boolean> {
-    return from(
-      Auth.currentAuthenticatedUser()
-      .then((user: CognitoUser) => {
-        if (user) {
-          return true;
-        } else {
-          return false
-        }
-      })
-      .catch((err: any) => {
-        return false;
-      })
-    );
   }
   
 }
