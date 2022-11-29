@@ -1,5 +1,5 @@
 <div class="file-browser-container">
-  <!-- <div *ngFor="let fileNode of allFiles">
-    {{ fileNode.key }}
-  </div> -->
+  <div *ngFor="let item of allFiles | keyvalue">
+    {{ item.key }}
+  </div>
 </div>

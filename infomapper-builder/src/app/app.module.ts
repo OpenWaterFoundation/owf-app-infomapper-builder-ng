@@ -8,30 +8,10 @@ import { FlexLayoutModule }         from '@angular/flex-layout';
 import { FormsModule,
           ReactiveFormsModule }     from '@angular/forms';
 
-import { CdkStepperModule }         from '@angular/cdk/stepper';
-import { CdkTableModule }           from '@angular/cdk/table';
-import { CdkTreeModule }            from '@angular/cdk/tree';
-import { DragDropModule }           from '@angular/cdk/drag-drop';
-import { PortalModule }             from '@angular/cdk/portal';
-import { ScrollingModule }          from '@angular/cdk/scrolling';
-import { MatButtonModule }          from '@angular/material/button';
-import { MatCardModule }            from '@angular/material/card';
-import { MatDialogModule }          from '@angular/material/dialog';
-import { MatDividerModule }         from '@angular/material/divider';
-import { MatFormFieldModule }       from '@angular/material/form-field';
-import { MatIconModule }            from '@angular/material/icon';
-import { MatInputModule }           from '@angular/material/input';
-import { MatListModule }            from '@angular/material/list';
-import { MatMenuModule }            from '@angular/material/menu';
-import { MatSelectModule }          from '@angular/material/select';
-import { MatSidenavModule }         from '@angular/material/sidenav';
-import { MatSnackBarModule }        from '@angular/material/snack-bar';
-import { MatToolbarModule }         from '@angular/material/toolbar';
-import { MatTooltipModule }         from '@angular/material/tooltip';
-import { MatTreeModule }            from '@angular/material/tree';
-
 import { FontAwesomeModule }        from '@fortawesome/angular-fontawesome';
 import { AngularFullpageModule }    from '@fullpage/angular-fullpage';
+
+import { MaterialModule }           from './material.module';
 
 import { CookieModule }             from 'ngx-cookie';
 import { LoggerModule,
@@ -138,6 +118,8 @@ function appInit(appService: AppService): () => Observable<any> {
     FormsModule,
     ReactiveFormsModule,
 
+    MaterialModule,
+
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
       // timestampFormat: "medium",
@@ -153,29 +135,6 @@ function appInit(appService: AppService): () => Observable<any> {
     }),
     
     CookieModule.withOptions(),
-    CdkStepperModule,
-    CdkTableModule,
-    CdkTreeModule,
-    DragDropModule,
-    PortalModule,
-    ScrollingModule,
-
-    MatButtonModule,
-    MatCardModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSnackBarModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
-
     ShowdownModule.forRoot({
       emoji: true,
       flavor: 'github',
