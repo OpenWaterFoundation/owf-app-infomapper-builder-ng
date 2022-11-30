@@ -1,8 +1,10 @@
 import { Component,
           Input,
-          OnInit }     from '@angular/core';
+          OnInit }      from '@angular/core';
 
-import { faLeftLong }  from '@fortawesome/free-solid-svg-icons';
+import { faFile,
+          faFolder,
+          faLeftLong }  from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -17,12 +19,30 @@ export class FileBrowserComponent implements OnInit {
    */
   @Input('allFiles') allFiles: any;
   /** All used FontAwesome icons in the FileBrowserComponent. */
+  faFile = faFile;
+  faFolder = faFolder;
   faLeftLong = faLeftLong;
 
   constructor() { }
 
 
   ngOnInit(): void {
+  }
+
+  /**
+   * 
+   * @param item 
+   */
+  itemClick(item: any): void {
+    if (item.__data) {
+      console.log('File clicked:', item);
+    } else {
+
+    }
+  }
+
+  navigateDown(): void {
+    
   }
 
 }

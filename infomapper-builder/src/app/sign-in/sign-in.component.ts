@@ -12,7 +12,8 @@ import { MatSnackBar,
 
 import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
-import { first,
+import { delay,
+          first,
           Subject }                     from 'rxjs';
 import { AuthService }                  from '../services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js'
@@ -78,7 +79,7 @@ export class SignInComponent implements OnInit {
    */
   private isLoggedIn(): void {
 
-    this.authService.alreadyLoggedIn().pipe(first()).subscribe({
+    this.authService.alreadyLoggedIn().pipe(first(), delay(1000)).subscribe({
       next: (isLoggedIn: boolean) => {
         if (isLoggedIn) {
           this.authService.initLogin();

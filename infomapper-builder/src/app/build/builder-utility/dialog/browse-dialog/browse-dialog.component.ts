@@ -10,6 +10,7 @@ import { Observable,
 import { first }        from 'rxjs/internal/operators/first';
 
 import { AuthService }  from 'src/app/services/auth.service';
+import { FileService }  from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-browse-dialog',
@@ -27,8 +28,8 @@ export class BrowseDialogComponent implements OnInit {
   faXmark = faXmark;
 
 
-  constructor(private dialogRef: MatDialogRef<BrowseDialogComponent>,
-  private authService: AuthService) { }
+  constructor(private authService: AuthService, private dialogRef: MatDialogRef<BrowseDialogComponent>,
+  private fileService: FileService) { }
 
 
   get bucketName(): string {
@@ -85,7 +86,7 @@ export class BrowseDialogComponent implements OnInit {
    * @param allFiles 
    * @returns 
    */
-  processStorageList(allFiles: any) {
+  private processStorageList(allFiles: any) {
 
     const filesystem = {};
     // https://stackoverflow.com/questions/44759750/how-can-i-create-a-nested-object-representation-of-a-folder-structure
@@ -101,6 +102,10 @@ export class BrowseDialogComponent implements OnInit {
     };
     allFiles.forEach((item: any) => add(item.key, filesystem, item));
     return filesystem;
+  }
+
+  processListIntoFileNodes(): void {
+
   }
 
 }
