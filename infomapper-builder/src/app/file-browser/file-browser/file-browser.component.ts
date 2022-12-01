@@ -41,11 +41,10 @@ export class FileBrowserComponent implements OnInit {
    * @param item 
    */
   itemClick(item: any): void {
-    if (Object.keys(item.value.__data.value).length > 1) {
-      console.log('Folder clicked:', item);
+    console.log('Folder clicked:', item);
+    if (Object.keys(item.value.__data.key).length > 1) {
       this.navigateDown(item);
     } else {
-      console.log('File clicked:', item);
       this.selectFile();
     }
   }
@@ -53,7 +52,6 @@ export class FileBrowserComponent implements OnInit {
   navigateDown(item: any): void {
     this.fileService.appendBucketPath(item.key);
 
-    // this.fileService.updateCurrentLevelItems();
     this.fileService.updateCurrentLevelItems(item.value);
   }
 
@@ -61,4 +59,6 @@ export class FileBrowserComponent implements OnInit {
 
   }
 
+
+  // TODO: Add mat progress spinner.
 }
