@@ -1,10 +1,11 @@
 import { Component,
-          Input,
-          OnInit }      from '@angular/core';
+          OnInit }     from '@angular/core';
 
 import { faFile,
           faFolder,
-          faLeftLong }  from '@fortawesome/free-solid-svg-icons';
+          faLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
+import { FileService } from 'src/app/services/file.service';
 
 
 @Component({
@@ -14,16 +15,22 @@ import { faFile,
 })
 export class FileBrowserComponent implements OnInit {
 
-  /**
-   * 
-   */
-  @Input('allFiles') allFiles: any;
   /** All used FontAwesome icons in the FileBrowserComponent. */
   faFile = faFile;
   faFolder = faFolder;
   faLeftLong = faLeftLong;
+  
 
-  constructor() { }
+  /**
+   * 
+   * @param fileService 
+   */
+  constructor(private fileService: FileService) { }
+
+
+  get currentLevelItems(): Observable<{}> {
+    return this.fileService.currentLevelItems;
+  }
 
 
   ngOnInit(): void {
@@ -34,15 +41,24 @@ export class FileBrowserComponent implements OnInit {
    * @param item 
    */
   itemClick(item: any): void {
-    if (item.__data) {
-      console.log('File clicked:', item);
+    if (Object.keys(item.value.__data.value).length > 1) {
+      console.log('Folder clicked:', item);
+      this.navigateDown(item);
     } else {
-
+      console.log('File clicked:', item);
+      this.selectFile();
     }
   }
 
-  navigateDown(): void {
-    
+  navigateDown(item: any): void {
+    this.fileService.appendBucketPath(item.key);
+
+    // this.fileService.updateCurrentLevelItems();
+    this.fileService.updateCurrentLevelItems(item.value);
+  }
+
+  selectFile(): void {
+
   }
 
 }

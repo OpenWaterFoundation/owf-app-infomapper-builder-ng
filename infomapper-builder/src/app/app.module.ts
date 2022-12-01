@@ -47,6 +47,7 @@ import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
 // Showdown, to convert markdown to HTML.
 import * as Showdown                from 'showdown';
 import { FileBrowserComponent } from './file-browser/file-browser/file-browser.component';
+import { IsFolderPipe } from './pipes/is-folder.pipe';
 
 
 const classMap: any = {
@@ -105,7 +106,8 @@ function appInit(appService: AppService): () => Observable<any> {
     CheckElementPipe,
     CheckTreeNodePipe,
     ConvertFormNamePipe,
-    FileBrowserComponent
+    FileBrowserComponent,
+    IsFolderPipe
   ],
   imports: [
     AngularFullpageModule,

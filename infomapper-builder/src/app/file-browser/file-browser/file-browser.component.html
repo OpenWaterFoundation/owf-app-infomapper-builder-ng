@@ -1,14 +1,15 @@
 <div class="file-browser-container">
 
-  <mat-grid-list cols="5" rowHeight="100px">
-    <mat-grid-tile *ngFor="let item of allFiles | keyvalue" class=file-or-folder>
+  <mat-grid-list cols="6" rowHeight="100px">
+    <mat-grid-tile *ngFor="let item of (currentLevelItems | async) | keyvalue" class=file-or-folder>
       <div style="display: flex; flex-direction: column; cursor: pointer;" (click)="itemClick(item)">
 
-        <fa-icon *ngIf="!item.__data" [icon]="faFolder" size="4x"
+        <fa-icon *ngIf="item | isFolder : 'isFolder'" [icon]="faFolder" size="4x"
         style="text-align: center; color: #9db66b;"></fa-icon>
-        <fa-icon *ngIf="item.__data" [icon]="faFile" size="4x"
+        <fa-icon *ngIf="item | isFolder : 'isFolder'" [icon]="faFile" size="4x"
         style="text-align: center; color: #9db66b;"></fa-icon>
-        <span style="text-align: center;">{{item.key}}</span>
+
+        <span style="text-align: center; margin-top: 5px;">{{item.key}}</span>
 
       </div>
     </mat-grid-tile>

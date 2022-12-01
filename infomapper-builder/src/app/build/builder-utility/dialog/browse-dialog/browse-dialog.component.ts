@@ -9,6 +9,8 @@ import { Observable,
           of }          from 'rxjs';
 import { first }        from 'rxjs/internal/operators/first';
 
+import * as IM          from '@OpenWaterFoundation/common/services';
+
 import { AuthService }  from 'src/app/services/auth.service';
 import { FileService }  from 'src/app/services/file.service';
 
@@ -19,10 +21,6 @@ import { FileService }  from 'src/app/services/file.service';
 })
 export class BrowseDialogComponent implements OnInit {
 
-  /**
-   * 
-   */
-  allFiles: any;
   /** All used FontAwesome icons in the ConfigDialogComponent. */
   faLeftLong = faLeftLong;
   faXmark = faXmark;
@@ -37,7 +35,7 @@ export class BrowseDialogComponent implements OnInit {
   }
 
   get bucketPath(): Observable<string> {
-    return of('some/path/');
+    return this.fileService.bucketPath;
   }
 
   /**
@@ -53,18 +51,14 @@ export class BrowseDialogComponent implements OnInit {
    */
   private fetchS3BucketFiles(): void {
     this.authService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
-      this.allFiles = this.processStorageList(allFiles);
-      console.log('Processed file object:', this.processStorageList(allFiles));
+      this.fileService.setAllFiles(this.fileService.processStorageList(allFiles));
+      console.log('Processed file object:', this.fileService.processStorageList(allFiles));
+
     });
   }
 
-  /**
-   * 
-   * @param key 
-   * @returns 
-   */
-  private isFolder(key: string): boolean {
-    return key.includes('/') ? true : false;
+  navigateUp(item: any): void {
+    this.fileService.popBucketPath();
   }
 
   /**
@@ -81,31 +75,6 @@ export class BrowseDialogComponent implements OnInit {
     console.log('File totally opened.');
   }
 
-  /**
-   * 
-   * @param allFiles 
-   * @returns 
-   */
-  private processStorageList(allFiles: any) {
-
-    const filesystem = {};
-    // https://stackoverflow.com/questions/44759750/how-can-i-create-a-nested-object-representation-of-a-folder-structure
-    const add = (source: string, target: any, item: any) => {
-      const elements = source.split('/');
-      const element = elements.shift();
-      if (!element) return; // blank
-      target[element] = target[element] || { __data: item }; // element;
-      if (elements.length) {
-        target[element] = typeof target[element] === 'object' ? target[element] : {};
-        add(elements.join('/'), target[element], item);
-      }
-    };
-    allFiles.forEach((item: any) => add(item.key, filesystem, item));
-    return filesystem;
-  }
-
-  processListIntoFileNodes(): void {
-
-  }
+  
 
 }
