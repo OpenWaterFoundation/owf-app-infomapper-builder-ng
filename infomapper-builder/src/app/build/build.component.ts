@@ -139,9 +139,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   * @param snackBar 
   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
-  private breakpointObserver: BreakpointObserver, private authService: AuthService,
-  private dialog: MatDialog, private logger: IM.CommonLoggerService,
-  private snackBar: MatSnackBar) {
+  private breakpointObserver: BreakpointObserver,private dialog: MatDialog,
+  private logger: IM.CommonLoggerService, private snackBar: MatSnackBar) {
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
@@ -379,7 +378,6 @@ export class BuildComponent implements OnInit, OnDestroy {
   * @param data 
   */
   rebuildTreeForData(data: any) {
-    // console.log('Rebuilt treeNodeData:', data);
     this.treeDataSource.data = data;
     this.expansionModel.selected.forEach((id) => {
       const node = this.treeControl.dataNodes.find((n) => n.id === id);
@@ -467,7 +465,6 @@ export class BuildComponent implements OnInit, OnDestroy {
     // the cdkDragDrop event.currentIndex jives with visible nodes.
     // it calls rememberExpandedTreeNodes to persist expand state.
     const visibleNodes = this.visibleNodes();
-    // console.log('visible nodes:', visibleNodes); // For testing.
 
     // Recursive find function to find siblings of node.
     function findNodeSiblings(arr: Array<any>, id: string): Array<any> {
@@ -559,6 +556,5 @@ export class BuildComponent implements OnInit, OnDestroy {
     });
     return result;
   }
-
 }
 

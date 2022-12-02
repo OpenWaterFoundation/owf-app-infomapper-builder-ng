@@ -14,11 +14,11 @@ export class FileService {
 
   private _currentLevelItems = new BehaviorSubject({});
 
+  private _isLoading = new BehaviorSubject(true);
+
   private allFiles: any;
 
-  private fullBucketPath = '';
-
-  private map = new Map<string, IM.FileNode>();
+  private _fullBucketPath = '';
 
   private idCount = -1;
 
@@ -27,6 +27,10 @@ export class FileService {
 
   constructor() { }
 
+
+  get allOriginalFiles(): any {
+    return this.allFiles;
+  }
 
   /**
    * 
@@ -38,8 +42,15 @@ export class FileService {
   /**
    * 
    */
-  get currentLevelItems(): any {
+  get currentLevelItems(): Observable<any> {
     return this._currentLevelItems.asObservable();
+  }
+
+  /**
+   * 
+   */
+  get isLoading(): Observable<boolean> {
+    return this._isLoading.asObservable();
   }
 
   /**
@@ -47,19 +58,8 @@ export class FileService {
    * @param path 
    */
   appendBucketPath(path: string): void {
-    this.fullBucketPath = this.fullBucketPath + path + '/';
-    this._bucketPath.next(this.fullBucketPath);
-  }
-
-  /**
-   * 
-   * @param fileElement 
-   * @returns 
-   */
-  add(fileElement: IM.FileNode) {
-    fileElement.id = (++this.idCount).toString();
-    this.map.set(fileElement.id, this.clone(fileElement));
-    return fileElement;
+    this._fullBucketPath = this._fullBucketPath + path + '/';
+    this._bucketPath.next(this._fullBucketPath);
   }
 
   /**
@@ -73,35 +73,53 @@ export class FileService {
 
   /**
    * 
-   * @param id 
+   * @param item 
    */
-  delete(id: string) {
-    this.map.delete(id);
+  navigateDown(item: any): void {
+    this.appendBucketPath(item.key);
+    this.updateCurrentLevelItems(item.value);
   }
 
   /**
    * 
-   * @param id 
-   * @returns 
    */
-  get(id: string) {
-    return this.map.get(id);
+  navigateUp(): void {
+    this.popBucketPath();
+
+    var navigatedItem: any;
+    var folderNames = this._fullBucketPath.split('/').filter(item => { return item; })
+    console.log('Folder names:', folderNames);
+
+    if (folderNames.length) {
+      folderNames.forEach((name: string, i: number) => {
+        if (i === 0) {
+          navigatedItem = this.clone(this.allFiles[name]);
+        } else {
+          navigatedItem = this.clone(navigatedItem[name]);
+        }
+      });
+      this.updateCurrentLevelItems(navigatedItem);
+    }
+    else {
+      this.updateCurrentLevelItems(this.allFiles);
+    }
+    
   }
 
   /**
    * 
    */
   popBucketPath(): void {
-    var elements = this.fullBucketPath.split('/');
+    var elements = this._fullBucketPath.split('/');
     elements.pop();
     elements.pop();
 
     if (elements.length) {
-      this.fullBucketPath = elements.join('/') + '/';
-      this._bucketPath.next(this.fullBucketPath);
+      this._fullBucketPath = elements.join('/') + '/';
+      this._bucketPath.next(this._fullBucketPath);
     } else {
-      this.fullBucketPath = '';
-      this._bucketPath.next(this.fullBucketPath);
+      this._fullBucketPath = '';
+      this._bucketPath.next(this._fullBucketPath);
     }
     
   }
@@ -125,68 +143,50 @@ export class FileService {
         add(elements.join('/'), target[element], item);
       }
     };
+
     allFiles.forEach((item: any) => add(item.key, filesystem, item));
     return filesystem;
   }
 
   /**
    * 
-   * @param folderId 
-   * @returns 
    */
-   queryInFolder(folderId: string) {
-    const result: IM.FileNode[] = [];
-    this.map.forEach(element => {
-      if (element.parent === folderId) {
-        result.push(this.clone(element));
-      }
-    });
-    if (!this.querySubject) {
-      this.querySubject = new BehaviorSubject(result);
-    } else {
-      this.querySubject.next(result);
-    }
-    return this.querySubject.asObservable();
+   resetFullBucketPath() {
+    this._fullBucketPath = '';
+    this._bucketPath.next(this._fullBucketPath);
   }
 
+  /**
+   * 
+   * @param allFiles 
+   */
   setAllFiles(allFiles: any): void {
     this.allFiles = this.clone(allFiles);
     this._currentLevelItems.next(this.clone(allFiles));
+    this._isLoading.next(false);
   }
 
+  /**
+   * 
+   * @param items 
+   */
   setCurrentLevelItems(items: any): void {
     this._currentLevelItems.next(this.clone(items));
   }
 
   /**
    * 
-   * @param id 
-   * @param update 
+   * @param loading 
    */
-  update(id: string, update: Partial<IM.FileNode>) {
-    let element = this.map.get(id);
-    element = Object.assign(element, update);
-    this.map.set(element.id, element);
+  setToLoading(loading: boolean) {
+    this._isLoading.next(loading);
   }
 
+  /**
+   * 
+   * @param currentItem 
+   */
   updateCurrentLevelItems(currentItem: any): void {
-    // var currentItems: any;
-
-    // var splits = this.fullBucketPath.split('/');
-    // splits = splits.filter((key: string) => { return key != '' });
-    // console.log('Splits:', splits);
-
-    // splits.forEach((key: string, i: number) => {
-    //   if (i === 0) {
-    //     currentItems = this.clone(this.allFiles[key]);
-    //   } else {
-    //     currentItems = this.clone(currentItems[key]);
-    //   }
-    // });
-
-    // console.log('currentItems:', currentItems);
-    // this._currentLevelItems.next(this.clone(currentItems));
-    console.log('currentItems:', currentItem);
     this._currentLevelItems.next(this.clone(currentItem));
   }
   

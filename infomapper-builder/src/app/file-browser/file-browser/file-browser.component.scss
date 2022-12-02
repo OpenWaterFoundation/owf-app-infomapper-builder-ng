@@ -1,0 +1,31 @@
+/* CLASSES */
+
+/* Container around each item icon and name in the explorer. */
+.item-container {
+  display: flex;
+  flex-direction: column;
+  
+  cursor: pointer;
+}
+
+/* The item icon in the explorer. */
+.item-icon {
+  text-align: center;
+  color: #9db66b;
+}
+
+/* The item name in the explorer. */
+.item-name {
+  text-align: center;
+  margin-top: 5px;
+  height: 40px;
+}
+
+/* The main component container. */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+}

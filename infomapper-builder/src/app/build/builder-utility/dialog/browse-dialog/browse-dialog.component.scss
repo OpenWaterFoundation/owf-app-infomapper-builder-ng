@@ -46,6 +46,18 @@ itself from the dialog content */
   margin: 0;
 }
 
+/*  */
+.full-bucket-path {
+  margin-left: 8px;
+  font-size: 16px;
+}
+
+/*  */
+.full-bucket-path-alone {
+  margin-left: 48px;
+  font-size: 16px;
+}
+
 /* The header portion of the draggable div. */
 .header {
   display: flex;
@@ -62,6 +74,11 @@ itself from the dialog content */
   text-align: center;
   height: 100%;
   margin: 0;
+}
+
+/*  */
+.navigate-up-button {
+  background-color: #dddddd;
 }
 
 /* The class for the upper-right close button in a dialog. The inline-block display

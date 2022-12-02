@@ -55,7 +55,6 @@ export class DatastoreConfigComponent implements OnInit {
 
 
   /**
-   * 
    * @param control The FormControl that will be checked for errors.
    * @returns An array with all errors for the control, or an empty array of no errors.
    */
@@ -118,5 +117,4 @@ export class DatastoreConfigComponent implements OnInit {
    titleInput(): void {
     this.updateTitleInput.emit(this.appBuilderForm.get('datastoreFG.name').value);
   }
-
 }

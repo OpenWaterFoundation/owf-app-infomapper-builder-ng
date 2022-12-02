@@ -90,7 +90,8 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     this.isLoggedIn();
@@ -137,7 +138,7 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * 
+   * Toggles the password field's icon and tooltip message.
    */
   togglePasswordVisibility(): void {
     this.visibleInput = !this.visibleInput;

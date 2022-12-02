@@ -41,9 +41,10 @@ export class MainMenuConfigComponent implements OnInit {
 
 
   /**
-   * 
+   * Determines the array of errors to supply to the mat-error.
    * @param control The FormControl that will be checked for errors.
-   * @returns An array with each 
+   * @returns An array with each error for either the static forms, or the dynamically
+   * added action form.
    */
   formErrors(control: AbstractControl | string): string[] {
 
@@ -217,5 +218,4 @@ export class MainMenuConfigComponent implements OnInit {
    titleInput(): void {
     this.updateTitleInput.emit(this.appBuilderForm.get('mainMenuFG.name').value);
   }
-
 }

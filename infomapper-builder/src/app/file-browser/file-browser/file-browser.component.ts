@@ -1,10 +1,9 @@
 import { Component,
           OnInit }     from '@angular/core';
-
-import { faFile,
-          faFolder,
+import { faFile}       from '@fortawesome/free-regular-svg-icons';
+import { faFolder,
           faLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { Observable } from 'rxjs';
+import { Observable }  from 'rxjs';
 import { FileService } from 'src/app/services/file.service';
 
 
@@ -32,7 +31,14 @@ export class FileBrowserComponent implements OnInit {
     return this.fileService.currentLevelItems;
   }
 
+  get isLoading(): Observable<boolean> {
+    return this.fileService.isLoading;
+  }
 
+  /**
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
+   */
   ngOnInit(): void {
   }
 
@@ -41,22 +47,16 @@ export class FileBrowserComponent implements OnInit {
    * @param item 
    */
   itemClick(item: any): void {
-    console.log('Folder clicked:', item);
-    if (Object.keys(item.value.__data.key).length > 1) {
-      this.navigateDown(item);
+    if (Object.keys(item.value).length > 1) {
+      // this.fileSelected = false;
+      this.fileService.navigateDown(item);
     } else {
-      this.selectFile();
+      this.selectFile(item);
     }
   }
 
-  navigateDown(item: any): void {
-    this.fileService.appendBucketPath(item.key);
-
-    this.fileService.updateCurrentLevelItems(item.value);
-  }
-
-  selectFile(): void {
-
+  selectFile(file: any): void {
+    console.log('File selected:', file);
   }
 
 

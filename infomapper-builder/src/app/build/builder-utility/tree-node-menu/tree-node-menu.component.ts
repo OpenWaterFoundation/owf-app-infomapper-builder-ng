@@ -35,12 +35,16 @@ export class NodeMenuComponent implements OnInit {
   constructor() { }
 
 
+  /**
+   * 
+   */
   get validAppSaveState(): Observable<boolean> {
     return this.buildManager.isAppInSavedState();
   }
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
   }

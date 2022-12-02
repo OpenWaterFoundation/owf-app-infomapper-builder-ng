@@ -36,14 +36,19 @@ export class NavBarComponent implements OnInit {
    * @param appService The IM Builder top level service.
    */
   constructor(private appService: AppService, private authService: AuthService,
-  private logger: CommonLoggerService) {
-  }
+  private logger: CommonLoggerService) { }
 
 
+  /**
+   * 
+   */
   get authUsername(): Observable<string> {
     return this.authService.authUsername$;
   }
 
+  /**
+   * 
+   */
   get isLoggedIn(): Observable<boolean> {
     return this.authService.userAuthenticated$;
   }

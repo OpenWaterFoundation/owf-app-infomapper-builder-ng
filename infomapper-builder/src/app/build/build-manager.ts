@@ -15,7 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 // @dynamic
 export class BuildManager {
   
-  /** The object used to create the final app configuration file. (?) */
+  /** The object used to create the final app configuration file. */
   private builderJSON: IM.AppConfig = { title: '', homePage: '', version: '' };
   /** The persisted tree object used between application URL changes. This is so
    * the tree isn't created from scratch upon new Build Component construction if

@@ -70,7 +70,7 @@ export class ConfigDialogComponent implements OnInit {
    * @returns 
    */
   findInvalidControls(formGroup: string) {
-    const invalid = [];
+    var invalid = [];
     const group = this.appBuilderForm.get(formGroup) as FormGroup;
     for (const name in group.controls) {
         if (group.controls[name].invalid) {
@@ -81,7 +81,8 @@ export class ConfigDialogComponent implements OnInit {
   }
 
   /**
-   * 
+   * Determines whether the config form is invalid and enables the Save button based
+   * on the result.
    * @returns 
    */
   isSaveDisabled(): boolean {

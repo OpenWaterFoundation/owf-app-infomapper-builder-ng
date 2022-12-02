@@ -54,7 +54,6 @@ export class AppConfigComponent implements OnInit {
   }
 
   /**
-   * 
    * @param control The FormControl that will be checked for errors.
    * @returns An array with each error key as a string.
    */
@@ -80,7 +79,8 @@ export class AppConfigComponent implements OnInit {
   }
 
   /**
-   * Set the 
+   * Sets the required defaults of the app config form. Both title and version are
+   * created as empty strings.
    */
   private setRequiredDefaults(): void {
 

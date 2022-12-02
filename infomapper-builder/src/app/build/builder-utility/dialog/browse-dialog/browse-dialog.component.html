@@ -17,12 +17,14 @@ class="cdk-drag" data-cy="main-browse-dialog-container">
   </div>
 
   <mat-toolbar>
-    <!-- *ngIf="canNavigateUp" (click)="navigateUp() -->
-    <button mat-icon-button *ngIf="true">
+    <button mat-icon-button *ngIf="(canNavigateUp$ | async) !== ''" class="navigate-up-button">
       <fa-icon [icon]="faLeftLong" size="lg" (click)="navigateUp()"></fa-icon>
     </button>
     
-    <span style="margin-left: 8px">{{ bucketName }}/{{ bucketPath | async }}</span>
+    <span [ngClass]="{'full-bucket-path': (canNavigateUp$ | async) !== '', 'full-bucket-path-alone': (canNavigateUp$ | async) === ''}"
+    class="full-bucket-path">
+      {{ bucketName }}/{{ bucketPath$ | async }}
+    </span>
   </mat-toolbar>
 
   <div class="dialog-content">

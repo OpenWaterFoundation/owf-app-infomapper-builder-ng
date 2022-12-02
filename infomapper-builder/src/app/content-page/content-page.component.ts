@@ -3,8 +3,7 @@ import { Component,
           Input,
           OnDestroy }          from '@angular/core';
 import { ActivatedRoute,
-          ParamMap,
-          Router }             from '@angular/router';
+          ParamMap }           from '@angular/router';
 
 // import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 
@@ -51,8 +50,7 @@ export class ContentPageComponent implements OnInit, OnDestroy {
   * @param appService The reference to the AppService injected object.
   * @param actRoute The reference to the ActivatedRoute Angular object; used with URL routing for the app.
   */
-  constructor(private appService: AppService, private actRoute: ActivatedRoute,
-  private router: Router) {
+  constructor(private appService: AppService, private actRoute: ActivatedRoute) {
 
   }
 

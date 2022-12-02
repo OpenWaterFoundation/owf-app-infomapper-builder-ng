@@ -4,10 +4,10 @@ import { Component,
           OnInit,
           Output }             from '@angular/core';
 
-import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 import { faBookOpen,
           faFileLines,
           faGaugeHigh }        from '@fortawesome/free-solid-svg-icons';
+import { CommonLoggerService } from '@OpenWaterFoundation/common/services';
 
 import { Subject }             from 'rxjs';
 
@@ -38,6 +38,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
    * @param logger Logger from the Common package for debugging and testing.
    */
   constructor(private appService: AppService, private logger: CommonLoggerService) {
+    
   }
 
 
@@ -68,5 +69,4 @@ export class SideNavComponent implements OnInit, OnDestroy {
   onSidenavClose(): void {
     this.sidenavClose.emit();
   }
-
 }

@@ -27,7 +27,9 @@ export class NavBarMenuComponent implements OnInit {
   /**
    * Constructor for the NavBarMenuComponent.
    */
-  constructor() { }
+  constructor() {
+    
+  }
 
 
   /**
@@ -50,7 +52,7 @@ export class NavBarMenuComponent implements OnInit {
         break;
       }
     }
-    // Convert every sub menu's enabled, visible, and separatorBefore properties to a boolean.
+    // Convert every subMenu's enabled, visible, and separatorBefore properties to a boolean.
     if (this.mainMenu.menus) {
       for (let subMenu of this.mainMenu.menus) {
         switch (typeof subMenu.enabled) {
@@ -68,5 +70,4 @@ export class NavBarMenuComponent implements OnInit {
       }      
     }
   }
-
 }
