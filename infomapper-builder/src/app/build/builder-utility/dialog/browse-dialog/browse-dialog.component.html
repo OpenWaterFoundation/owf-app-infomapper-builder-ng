@@ -28,7 +28,8 @@ class="cdk-drag" data-cy="main-browse-dialog-container">
   </mat-toolbar>
 
   <div class="dialog-content">
-    <app-file-browser></app-file-browser>
+    <app-file-browser (fileSourcePath)="updateFileSourcePath($event)">
+    </app-file-browser>
   </div>
 
   <div class="dialog-utility-container">

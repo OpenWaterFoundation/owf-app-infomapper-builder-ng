@@ -24,6 +24,10 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
   /** All used FontAwesome icons in the ConfigDialogComponent. */
   faLeftLong = faLeftLong;
   faXmark = faXmark;
+  /**
+   * 
+   */
+  private fileSourcePath: string;
 
 
   /**
@@ -76,8 +80,6 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
 
     this.authService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
       this.fileService.setAllFiles(this.fileService.processStorageList(allFiles));
-      console.log('Processed file object:', this.fileService.processStorageList(allFiles));
-
     });
   }
 
@@ -112,9 +114,15 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
    * 
    */
   openFile(): void {
-    console.log('File totally opened.');
+    this.dialogRef.close(this.fileSourcePath ? this.fileSourcePath : undefined);
   }
 
-  
+  /**
+   * 
+   * @param fileSourcePath 
+   */
+  updateFileSourcePath(fileSourcePath: string): void {
+    this.fileSourcePath = fileSourcePath;
+  }
 
 }

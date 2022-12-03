@@ -10,10 +10,10 @@
 
       <mat-menu #nodeMenu="matMenu">
         <button mat-menu-item (click)="saveToLocalFile()">
-          Save to local file
+          Save to Local File
         </button>
         <button mat-menu-item (click)="browseS3Files()">
-          Open a builder file
+          Open Builder from File
         </button>
 
         <mat-divider></mat-divider>
@@ -26,7 +26,7 @@
         </button>
         <button mat-menu-item
         data-cy="">
-          Publish to preview
+          Publish to Preview
         </button>
         <button mat-menu-item (click)="publishToAWS()" data-cy="">
           Publish to AWS
@@ -40,10 +40,13 @@
   
         <mat-nav-list class="build-mat-nav-list">
           <button mat-flat-button (click)="saveToLocalFile()">
-            Save to local file
+            Save to Local File
+          </button>
+          <button mat-menu-item (click)="browseS3Files()">
+            Open Builder from File
           </button>
           <button mat-flat-button>Publish to GitHub</button>
-          <button mat-flat-button>Publish to preview</button>
+          <button mat-flat-button>Publish to Preview</button>
           <button mat-flat-button (click)="publishToAWS()">Publish to AWS</button>
         </mat-nav-list>
   

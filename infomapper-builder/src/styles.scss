@@ -60,6 +60,11 @@ hand corner of the Dialog do not appear to the user. */
   height: 100%;
 }
 
+/*  */
+.mat-progress-spinner circle, .mat-spinner circle {
+  stroke: #9db66b !important;
+}
+
 /* Might not be needed */
 .mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
   transform: none !important;

@@ -1,9 +1,13 @@
 import { Component,
-          OnInit }     from '@angular/core';
+          EventEmitter,
+          OnInit, 
+          Output }     from '@angular/core';
 import { faFile}       from '@fortawesome/free-regular-svg-icons';
 import { faFolder,
           faLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { Observable }  from 'rxjs';
+import { first,
+          Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 import { FileService } from 'src/app/services/file.service';
 
 
@@ -18,13 +22,22 @@ export class FileBrowserComponent implements OnInit {
   faFile = faFile;
   faFolder = faFolder;
   faLeftLong = faLeftLong;
+  /** EventEmitter that alerts the BrowseDialogComponent (parent) that an update
+   * has occurred, and sends the source path. */
+  @Output('fileSourcePath') fileSourcePath = new EventEmitter<string>();
+  /**
+   * Determines what the currently selected file is.
+   */
+  selectedItem: string;
   
 
   /**
    * 
    * @param fileService 
    */
-  constructor(private fileService: FileService) { }
+  constructor(private fileService: FileService, private authService: AuthService) {
+
+  }
 
 
   get currentLevelItems(): Observable<{}> {
@@ -48,17 +61,23 @@ export class FileBrowserComponent implements OnInit {
    */
   itemClick(item: any): void {
     if (Object.keys(item.value).length > 1) {
-      // this.fileSelected = false;
+      // this.fileSelected = '';
       this.fileService.navigateDown(item);
     } else {
       this.selectFile(item);
     }
   }
 
+  /**
+   * @param file 
+   */
   selectFile(file: any): void {
-    console.log('File selected:', file);
+    this.selectedItem = file.value.__data.key.split('/').pop();
+
+    this.authService.getBucketFile(file.value.__data.key).pipe(first())
+    .subscribe((sourcePathToFile: string) => {
+      this.fileSourcePath.emit(sourcePathToFile)
+    });
   }
 
-
-  // TODO: Add mat progress spinner.
 }

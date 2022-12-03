@@ -9,9 +9,21 @@
 }
 
 /* The item icon in the explorer. */
-.item-icon {
+.item-icon-folder {
   text-align: center;
   color: #9db66b;
+}
+
+/* The item icon in the explorer. */
+.item-icon-file {
+  text-align: center;
+  color: #9db66b;
+}
+
+/*  */
+.item-icon-file-active {
+  text-align: center;
+  color: black;
 }
 
 /* The item name in the explorer. */

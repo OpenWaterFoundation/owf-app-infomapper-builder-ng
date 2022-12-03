@@ -88,7 +88,6 @@ export class FileService {
 
     var navigatedItem: any;
     var folderNames = this._fullBucketPath.split('/').filter(item => { return item; })
-    console.log('Folder names:', folderNames);
 
     if (folderNames.length) {
       folderNames.forEach((name: string, i: number) => {

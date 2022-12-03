@@ -1,5 +1,5 @@
 <div *ngIf="isLoading | async" class="loading">
-  <mat-spinner appCustomSpinner></mat-spinner>
+  <mat-spinner></mat-spinner>
 </div>
 
 <div class="file-browser-container" *ngIf="!(isLoading | async)">
@@ -8,12 +8,13 @@
 
     <ng-container *ngFor="let item of (currentLevelItems | async) | keyvalue">
       <mat-grid-tile *ngIf="item.key !== '__data'">
-        <div class="item-container" (click)="itemClick(item)">
+        <div class="item-container"
+        (click)="itemClick(item)">
   
           <fa-icon *ngIf="item | isFolder : 'isFolder'" [icon]="faFolder" size="4x"
-          class="item-icon"></fa-icon>
+          class="item-icon-folder"></fa-icon>
           <fa-icon *ngIf="item | isFolder : 'isFile'" [icon]="faFile" size="4x"
-          class="item-icon"></fa-icon>
+          [ngClass]="{'item-icon-file': !(item.key === selectedItem), 'item-icon-file-active': item.key === selectedItem}"></fa-icon>
   
           <span class="item-name">{{ item.key }}</span>
   

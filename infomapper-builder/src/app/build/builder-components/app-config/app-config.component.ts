@@ -28,8 +28,8 @@ export class AppConfigComponent implements OnInit {
   }
   /** The application Tree Node. */
   @Input('node') node: IM.TreeNodeData;
-  /** EventEmitter that alerts the Map component (parent) that an update has happened,
-   * and sends the basin name. */
+  /** EventEmitter that alerts the ConfigDialogComponent (parent) that an update
+   * has happened, and sends the basin name. */
   @Output('updateTitleInput') updateTitleInput = new EventEmitter<string>();
 
 
