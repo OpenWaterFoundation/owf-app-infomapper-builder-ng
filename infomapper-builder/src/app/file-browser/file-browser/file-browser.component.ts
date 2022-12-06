@@ -18,17 +18,17 @@ import { FileService } from 'src/app/services/file.service';
 })
 export class FileBrowserComponent implements OnInit {
 
+  /**
+   * 
+   */
+  clickTimer: any;
   /** All used FontAwesome icons in the FileBrowserComponent. */
   faFile = faFile;
   faFolder = faFolder;
   faLeftLong = faLeftLong;
   /** EventEmitter that alerts the BrowseDialogComponent (parent) that an update
    * has occurred, and sends the source path. */
-  @Output('fileSourcePath') fileSourcePath = new EventEmitter<string>();
-  /**
-   * Determines what the currently selected file is.
-   */
-  selectedItem: string;
+  @Output('fileSourcePath') fileSourcePath = new EventEmitter<{sourcePath: string, isDblClick: boolean}>();
   
 
   /**
@@ -40,12 +40,34 @@ export class FileBrowserComponent implements OnInit {
   }
 
 
+  /**
+   * 
+   */
   get currentLevelItems(): Observable<{}> {
     return this.fileService.currentLevelItems;
   }
 
+  /**
+   * 
+   */
   get isLoading(): Observable<boolean> {
     return this.fileService.isLoading;
+  }
+
+  /**
+   * 
+   */
+  get selectedFile(): string {
+    return this.fileService.selectedFile;
+  }
+
+  /**
+   * 
+   * @param item 
+   * @returns 
+   */
+  itemIsFile(item: any): boolean {
+    return Object.keys(item.value).length === 1 ? true : false;
   }
 
   /**
@@ -60,23 +82,44 @@ export class FileBrowserComponent implements OnInit {
    * @param item 
    */
   itemClick(item: any): void {
-    if (Object.keys(item.value).length > 1) {
-      // this.fileSelected = '';
+    this.clickTimer = setTimeout(() => { this.itemSingleClick(item); }, 250);
+  }
+
+  /**
+   * 
+   * @param item 
+   */
+  itemDoubleClick(item: any): void {
+    clearTimeout(this.clickTimer);
+    this.clickTimer = undefined;
+
+    if (this.itemIsFile(item)) {
+      this.selectFile(item, true);
+    }
+  }
+
+  /**
+   * 
+   * @param item 
+   */
+  private itemSingleClick(item: any) {
+    if (!this.itemIsFile(item)) {
+      this.fileService.selectedFile = '';
       this.fileService.navigateDown(item);
     } else {
-      this.selectFile(item);
+      this.selectFile(item, false);
     }
   }
 
   /**
    * @param file 
    */
-  selectFile(file: any): void {
-    this.selectedItem = file.value.__data.key.split('/').pop();
+  selectFile(file: any, isDblClick: boolean): void {
+    this.fileService.selectedFile = file.value.__data.key.split('/').pop();
 
     this.authService.getBucketFile(file.value.__data.key).pipe(first())
     .subscribe((sourcePathToFile: string) => {
-      this.fileSourcePath.emit(sourcePathToFile)
+      this.fileSourcePath.emit({ sourcePath: sourcePathToFile, isDblClick: isDblClick })
     });
   }
 

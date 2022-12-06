@@ -86,7 +86,15 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
   /**
    * 
    */
+  isOpenDisabled(): boolean {
+    return this.fileService.selectedFile ? false : true;
+  }
+
+  /**
+   * 
+   */
   navigateUp(): void {
+    this.fileService.selectedFile = '';
     this.fileService.navigateUp();
   }
 
@@ -107,22 +115,27 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
    * Called once, before the instance is destroyed.
    */
   ngOnDestroy(): void {
+    this.fileService.selectedFile = '';
     this.fileService.resetFullBucketPath();
   }
 
   /**
    * 
    */
-  openFile(): void {
+  openFileAndCloseDialog(): void {
     this.dialogRef.close(this.fileSourcePath ? this.fileSourcePath : undefined);
   }
 
   /**
    * 
-   * @param fileSourcePath 
+   * @param $event 
    */
-  updateFileSourcePath(fileSourcePath: string): void {
-    this.fileSourcePath = fileSourcePath;
+  updateFileSourcePath($event: any): void {
+    this.fileSourcePath = $event.sourcePath;
+
+    if ($event.isDblClick) {
+      this.openFileAndCloseDialog();
+    }
   }
 
 }

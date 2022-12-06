@@ -8,6 +8,7 @@ import { faBookOpen,
 
 import * as IM          from '@OpenWaterFoundation/common/services';
 
+
 @Component({
   selector: 'nav-bar-menu',
   templateUrl: './nav-bar-menu.component.html',

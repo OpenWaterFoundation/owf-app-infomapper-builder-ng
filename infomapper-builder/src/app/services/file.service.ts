@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject,
+          Observable } from 'rxjs';
 
 import * as IM from '@OpenWaterFoundation/common/services';
 
@@ -10,24 +11,45 @@ import * as IM from '@OpenWaterFoundation/common/services';
 })
 export class FileService {
 
+  /**
+   * 
+   */
   private _bucketPath = new BehaviorSubject('');
-
+  /**
+   * 
+   */
   private _currentLevelItems = new BehaviorSubject({});
-
+  /**
+   * 
+   */
   private _isLoading = new BehaviorSubject(true);
-
-  private allFiles: any;
-
+  /**
+   * 
+   */
   private _fullBucketPath = '';
-
+  /**
+   * 
+   */
+  private _selectedFile = '';
+  /**
+   * 
+   */
+  private allFiles: any;
+  /**
+   * 
+   */
   private idCount = -1;
 
-  private querySubject: BehaviorSubject<IM.FileNode[]>;
 
-
+  /**
+   * Constructor for the FileService.
+   */
   constructor() { }
 
 
+  /**
+   * 
+   */
   get allOriginalFiles(): any {
     return this.allFiles;
   }
@@ -51,6 +73,20 @@ export class FileService {
    */
   get isLoading(): Observable<boolean> {
     return this._isLoading.asObservable();
+  }
+
+  /**
+   * 
+   */
+  get selectedFile(): string {
+    return this._selectedFile;
+  }
+
+  /**
+   * 
+   */
+  set selectedFile(fileName: string) {
+    this._selectedFile = fileName;
   }
 
   /**

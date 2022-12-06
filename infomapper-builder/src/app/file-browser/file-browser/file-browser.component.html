@@ -9,12 +9,17 @@
     <ng-container *ngFor="let item of (currentLevelItems | async) | keyvalue">
       <mat-grid-tile *ngIf="item.key !== '__data'">
         <div class="item-container"
-        (click)="itemClick(item)">
+        (click)="itemClick(item)" (dblclick)="itemDoubleClick(item)">
   
           <fa-icon *ngIf="item | isFolder : 'isFolder'" [icon]="faFolder" size="4x"
-          class="item-icon-folder"></fa-icon>
+          class="item-icon-folder">
+          </fa-icon>
           <fa-icon *ngIf="item | isFolder : 'isFile'" [icon]="faFile" size="4x"
-          [ngClass]="{'item-icon-file': !(item.key === selectedItem), 'item-icon-file-active': item.key === selectedItem}"></fa-icon>
+          [ngClass]="{
+            'item-icon-file': !(item.key === selectedFile),
+            'item-icon-file-active': item.key === selectedFile
+          }">
+          </fa-icon>
   
           <span class="item-name">{{ item.key }}</span>
   

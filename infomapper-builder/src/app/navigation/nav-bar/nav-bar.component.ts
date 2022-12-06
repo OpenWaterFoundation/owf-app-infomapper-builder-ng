@@ -12,6 +12,7 @@ import { Observable }          from 'rxjs';
 import { AppService }          from 'src/app/services/app.service';
 import { AuthService }         from 'src/app/services/auth.service';
 
+
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',

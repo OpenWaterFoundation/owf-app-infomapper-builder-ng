@@ -21,8 +21,10 @@ class="cdk-drag" data-cy="main-browse-dialog-container">
       <fa-icon [icon]="faLeftLong" size="lg" (click)="navigateUp()"></fa-icon>
     </button>
     
-    <span [ngClass]="{'full-bucket-path': (canNavigateUp$ | async) !== '', 'full-bucket-path-alone': (canNavigateUp$ | async) === ''}"
-    class="full-bucket-path">
+    <span [ngClass]="{
+      'full-bucket-path': (canNavigateUp$ | async) !== '',
+      'full-bucket-path-alone': (canNavigateUp$ | async) === ''
+    }" class="full-bucket-path">
       {{ bucketName }}/{{ bucketPath$ | async }}
     </span>
   </mat-toolbar>
@@ -38,8 +40,7 @@ class="cdk-drag" data-cy="main-browse-dialog-container">
     attr.data-cy="browse-dialog-lower-cancel-NEEDS-TO-BE-CHANGED">
       Cancel
     </button>
-    <!-- [disabled]="isSaveDisabled()" -->
-    <button mat-raised-button (click)="openFile()"
+    <button mat-raised-button (click)="openFileAndCloseDialog()" [disabled]="isOpenDisabled()"
     class="dialog-open-button" data-cy="browse-dialog-lower-save-button">
       Open
     </button>
