@@ -9,7 +9,7 @@
     <ng-container *ngFor="let item of (currentLevelItems | async) | keyvalue">
       <mat-grid-tile *ngIf="item.key !== '__data'">
         <div class="item-container"
-        (click)="itemClick(item)" (dblclick)="itemDoubleClick(item)">
+        (click)="itemSingleClick(item)">
   
           <fa-icon *ngIf="item | isFolder : 'isFolder'" [icon]="faFolder" size="4x"
           class="item-icon-folder">

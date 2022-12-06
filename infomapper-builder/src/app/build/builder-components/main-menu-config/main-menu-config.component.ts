@@ -2,14 +2,22 @@ import { Component,
           EventEmitter,
           Input,
           OnInit,
-          Output }      from '@angular/core';
+          Output }                   from '@angular/core';
 import { AbstractControl,
           FormGroup, 
-          Validators}   from '@angular/forms';
+          Validators}                from '@angular/forms';
+import { MatDialog,
+          MatDialogConfig,
+          MatDialogRef }             from '@angular/material/dialog';
 
-import * as IM          from '@OpenWaterFoundation/common/services';
+import { faFolderOpen }              from '@fortawesome/free-regular-svg-icons';
 
-import { BuildManager } from '../../build-manager';
+import * as IM                       from '@OpenWaterFoundation/common/services';
+import { first }                     from 'rxjs';
+import { BreakpointObserverService } from 'src/app/services/breakpoint-observer.service';
+
+import { BuildManager }              from '../../build-manager';
+import { BrowseDialogComponent }     from '../../builder-utility/dialog/browse-dialog/browse-dialog.component';
 
 
 @Component({
@@ -24,6 +32,8 @@ export class MainMenuConfigComponent implements OnInit {
   /** Singleton BuildManager instance to uniquely add different nodes to the
    * displayed tree. */
   buildManager: BuildManager = BuildManager.getInstance();
+  /** All used FontAwesome icons in the MainMenuConfigComponent. */
+  faFolderOpen = faFolderOpen;
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -37,9 +47,52 @@ export class MainMenuConfigComponent implements OnInit {
 
   /**
    * 
+   * @param dialog 
+   * @param screenSizeService 
    */
-  constructor() { }
+  constructor(private dialog: MatDialog, private screenSizeService: BreakpointObserverService) {
+    
+  }
 
+
+  /**
+   * Open up and display the files accessible to this user from an AWS bucket.
+   */
+  browseS3Files(): void {
+    var fileExplorerDialogRef: MatDialogRef<BrowseDialogComponent, any> = this.dialog.open(
+      BrowseDialogComponent, this.createDialogConfig()
+    );
+
+    // To run when the opened dialog is closed.
+    fileExplorerDialogRef.afterClosed().pipe(first()).subscribe((fileSourcePath: string) => {
+      if (fileSourcePath) {
+        console.log('Main Menu Config component fileSourcePath:', fileSourcePath);
+      }
+    });
+  }
+
+  /**
+  * Creates a dialog config object and sets its width & height properties based
+  * on the current screen size.
+  * @returns An object to be used for creating a dialog with its initial, min, and max
+  * height and width conditionally.
+  */
+  private createDialogConfig(dialogConfigData?: any): MatDialogConfig {
+
+    var isMobile = this.screenSizeService.isMobile;
+
+    return {
+      data: dialogConfigData ? dialogConfigData : null,
+      disableClose: true,
+      panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
+      height: isMobile ? "100vh" : "850px",
+      width: isMobile ? "100vw" : "875px",
+      minHeight: isMobile ? "100vh" : "20vw",
+      minWidth: isMobile ? "100vw" : "875px",
+      maxHeight: isMobile ? "100vh" : "95vh",
+      maxWidth: isMobile ? "100vw" : "70vw"
+    }
+  }
 
   /**
    * Determines the array of errors to supply to the mat-error.

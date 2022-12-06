@@ -92,9 +92,17 @@
             <span class="required-asterisk">*</span>
           </div>
           <mat-form-field appearance="outline">
-            <input matInput
-            formControlName="{{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'property' }}"
-            placeholder="Path or URL">
+
+            <div class="input-container">
+              <input matInput
+              formControlName="{{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'property' }}"
+              placeholder="Path or URL">
+
+              <fa-icon [icon]="faFolderOpen" size="lg" class="browse-folder-icon"
+              (click)="browseS3Files()">
+              </fa-icon>
+            </div>
+            
 
             <mat-error>
               <ng-container *ngFor="let error of formErrors(appBuilderForm.get('mainMenuFG.action').value)">

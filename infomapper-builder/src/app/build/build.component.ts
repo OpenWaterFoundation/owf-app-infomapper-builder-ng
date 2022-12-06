@@ -14,8 +14,7 @@ import { MatSnackBar,
           MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MatTreeFlatDataSource,
           MatTreeFlattener }            from '@angular/material/tree';
-import { BreakpointObserver,
-          Breakpoints }                 from '@angular/cdk/layout';
+import { Breakpoints }                  from '@angular/cdk/layout';
 import { SelectionModel }               from '@angular/cdk/collections';
 import { CdkDragDrop }                  from '@angular/cdk/drag-drop';
 import { FlatTreeControl }              from '@angular/cdk/tree';
@@ -33,7 +32,7 @@ import { first,
 import * as IM                          from '@OpenWaterFoundation/common/services';
 
 import { AppService }                   from '../services/app.service';
-import { AuthService }                  from '../services/auth.service';
+import { BreakpointObserverService }    from '../services/breakpoint-observer.service';
 import { BrowseDialogComponent }        from './builder-utility/dialog/browse-dialog/browse-dialog.component';
 import { ConfigDialogComponent }        from './builder-utility/dialog/config-dialog/config-dialog.component';
 import { BuildManager }                 from '../build/build-manager';
@@ -134,13 +133,13 @@ export class BuildComponent implements OnInit, OnDestroy {
   * 
   * @param actRoute 
   * @param appService 
-  * @param breakpointObserver 
   * @param dialog 
+  * @param screenSizeService
   * @param snackBar 
   */
   constructor(private actRoute: ActivatedRoute, private appService: AppService,
-  private breakpointObserver: BreakpointObserver,private dialog: MatDialog,
-  private logger: IM.CommonLoggerService, private snackBar: MatSnackBar) {
+  private dialog: MatDialog, private logger: IM.CommonLoggerService,
+  private screenSizeService: BreakpointObserverService, private snackBar: MatSnackBar) {
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
@@ -150,19 +149,6 @@ export class BuildComponent implements OnInit, OnDestroy {
     this.buildManager.dataChange.pipe(takeUntil(this.destroyed))
     .subscribe((data: any) => this.rebuildTreeForData(data));
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge,
-    ]).pipe(takeUntil(this.destroyed)).subscribe((result: any) => {
-      for (const query of Object.keys(result.breakpoints)) {
-        if (result.breakpoints[query]) {
-          this.currentScreenSize = query;
-        }
-      }
-    });
     // Add controls at component creation so it's always performed.
     this.appBuilderForm.addControl('appConfigFG', this.appConfigFG);
     this.appBuilderForm.addControl('datastoreFG', this.datastoreFG);
@@ -170,52 +156,6 @@ export class BuildComponent implements OnInit, OnDestroy {
     this.appBuilderForm.addControl('subMenuFG', this.subMenuFG);
   }
 
-
-  /**
-  * 
-  * @param node 
-  * @returns 
-  */
-  private getChildren = (node: IM.TreeNodeData): Observable<IM.TreeNodeData[]> => of(node.children);
-
-  /**
-  * 
-  * @param node 
-  * @returns 
-  */
-  private isExpandable = (node: IM.TreeFlatNode) => node.expandable;
-
-  /**
-  * 
-  * @param node 
-  * @returns 
-  */
-  private getLevel = (node: IM.TreeFlatNode) => node.flatLevel;
-
-  /**
-  * 
-  * @param _ 
-  * @param _nodeData 
-  * @returns 
-  */
-  hasChild = (_: number, _nodeData: IM.TreeFlatNode) => _nodeData.expandable;
-
-  /**
-  * 
-  * @param node 
-  * @param level 
-  * @returns 
-  */
-  transformer = (node: IM.TreeNodeData, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      flatLevel: level,
-      name: node.name,
-      id: node.id,
-      saved: node.saved,
-      level: node.level
-    } as IM.TreeFlatNode;
-  }
 
   /**
   * Adds a new node to the flat tree, rebuilds the tree so it can be rerendered,
@@ -247,6 +187,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     fileExplorerDialogRef.afterClosed().pipe(first()).subscribe((fileSourcePath: string) => {
       if (fileSourcePath) {
         console.log('Build component fileSourcePath:', fileSourcePath);
+        this.openBuiltConfigFromFile(fileSourcePath);
       }
     });
   }
@@ -259,8 +200,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   */
   private createDialogConfig(dialogConfigData?: any): MatDialogConfig {
 
-    var isMobile = (this.currentScreenSize === Breakpoints.XSmall ||
-      this.currentScreenSize === Breakpoints.Small);
+    var isMobile = this.screenSizeService.isMobile;
 
     return {
       data: dialogConfigData ? dialogConfigData : null,
@@ -300,6 +240,28 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   /**
+  * 
+  * @param node 
+  * @returns 
+  */
+  private getChildren = (node: IM.TreeNodeData): Observable<IM.TreeNodeData[]> => of(node.children);
+
+  /**
+  * 
+  * @param node 
+  * @returns 
+  */
+  private getLevel = (node: IM.TreeFlatNode) => node.flatLevel;
+
+  /**
+  * 
+  * @param _ 
+  * @param _nodeData 
+  * @returns 
+  */
+  hasChild = (_: number, _nodeData: IM.TreeFlatNode) => _nodeData.expandable;
+
+  /**
    * Lifecycle hook that is called after Angular has initialized all data-bound
    * properties of a directive.
    */
@@ -319,6 +281,13 @@ export class BuildComponent implements OnInit, OnDestroy {
       this.determineTreeInit();
     });
   }
+
+  /**
+  * 
+  * @param node 
+  * @returns 
+  */
+  private isExpandable = (node: IM.TreeFlatNode) => node.expandable;
 
   /**
   * Called once right before this component is destroyed.
@@ -357,6 +326,14 @@ export class BuildComponent implements OnInit, OnDestroy {
         this.treeControl.expand(node);
       }
     });
+  }
+
+  /**
+   * 
+   * @param sourcePath 
+   */
+  openBuiltConfigFromFile(sourcePath: string): void {
+
   }
 
   /**
@@ -454,6 +431,23 @@ export class BuildComponent implements OnInit, OnDestroy {
   */
   saveToLocalFile(): void {
     this.appService.postData(this.buildManager.fullBuilderJSON);
+  }
+
+  /**
+  * 
+  * @param node 
+  * @param level 
+  * @returns 
+  */
+  transformer = (node: IM.TreeNodeData, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      flatLevel: level,
+      name: node.name,
+      id: node.id,
+      saved: node.saved,
+      level: node.level
+    } as IM.TreeFlatNode;
   }
 
   /**

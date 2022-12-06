@@ -94,6 +94,7 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
    * 
    */
   navigateUp(): void {
+    console.log('Back button is being clicked.');
     this.fileService.selectedFile = '';
     this.fileService.navigateUp();
   }

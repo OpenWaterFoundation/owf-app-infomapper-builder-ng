@@ -78,7 +78,7 @@ export class FileBrowserComponent implements OnInit {
   }
 
   /**
-   * 
+   * Not currently used.
    * @param item 
    */
   itemClick(item: any): void {
@@ -86,7 +86,7 @@ export class FileBrowserComponent implements OnInit {
   }
 
   /**
-   * 
+   * Not currently used.
    * @param item 
    */
   itemDoubleClick(item: any): void {

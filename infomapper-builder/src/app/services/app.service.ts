@@ -51,8 +51,10 @@ export class AppService {
    * 
    * @param http 
    */
-  constructor(private http: HttpClient, private logger: CommonLoggerService,
-  private commonService: OwfCommonService) { }
+  constructor(private commonService: OwfCommonService, private http: HttpClient,
+  private logger: CommonLoggerService) {
+
+  }
 
 
   /**
