@@ -34,6 +34,10 @@ export class MainMenuConfigComponent implements OnInit {
   buildManager: BuildManager = BuildManager.getInstance();
   /** All used FontAwesome icons in the MainMenuConfigComponent. */
   faFolderOpen = faFolderOpen;
+  /**
+   * 
+   */
+  fileSourcePath = '';
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -66,7 +70,7 @@ export class MainMenuConfigComponent implements OnInit {
     // To run when the opened dialog is closed.
     fileExplorerDialogRef.afterClosed().pipe(first()).subscribe((fileSourcePath: string) => {
       if (fileSourcePath) {
-        console.log('Main Menu Config component fileSourcePath:', fileSourcePath);
+        this.enterActionOptionField(fileSourcePath);
       }
     });
   }
@@ -92,6 +96,16 @@ export class MainMenuConfigComponent implements OnInit {
       maxHeight: isMobile ? "100vh" : "95vh",
       maxWidth: isMobile ? "100vw" : "70vw"
     }
+  }
+
+  /**
+   * 
+   * @param fileSourcePath 
+   */
+  private enterActionOptionField(fileSourcePath: string): void {
+    this.fileSourcePath = fileSourcePath;
+
+    console.log(this.appBuilderForm.get('mainMenuFG.action').value);
   }
 
   /**

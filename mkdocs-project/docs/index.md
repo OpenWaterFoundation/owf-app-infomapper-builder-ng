@@ -7,5 +7,6 @@ software. User documentation describes how to configure, deploy, and use the sof
 
     mkdocs.yml    # The configuration file.
     docs/
-      index.md  # The documentation homepage.
-      ...       # Other markdown pages, images and other files.
+      index.md    # The documentation homepage.
+      ...         # Other markdown pages, images and other files.
+    resources/    # Extra resources for the documentation.

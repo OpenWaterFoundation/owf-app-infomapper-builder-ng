@@ -94,9 +94,8 @@
           <mat-form-field appearance="outline">
 
             <div class="input-container">
-              <input matInput
-              formControlName="{{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'property' }}"
-              placeholder="Path or URL">
+              <input matInput placeholder="Path or URL" [value]="fileSourcePath"
+              formControlName="{{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'property' }}">
 
               <fa-icon [icon]="faFolderOpen" size="lg" class="browse-folder-icon"
               (click)="browseS3Files()">
