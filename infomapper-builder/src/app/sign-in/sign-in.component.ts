@@ -51,15 +51,15 @@ export class SignInComponent implements OnInit {
   snackbarVerticalPos: MatSnackBarVerticalPosition = 'top';
 
   readonly testAccountArray = [
-    { name: '' },
-    { name: 'Open Water Foundation' },
-    { name: 'CWCB' },
-    { name: 'City of Denver' },
-    { name: 'Orson Welles' },
-    { name: 'Scott Pilgrim' },
-    { name: 'The Justice League' },
-    { name: 'Captain Jack Sparrow' },
-    { name: 'Google' }
+    { slug: '', name: '' },
+    { slug: 'owf', name: 'Open Water Foundation' },
+    { slug: 'cwcb', name: 'CWCB' },
+    { slug: 'city-of-denver', name: 'City of Denver' },
+    { slug: 'orson-welles', name: 'Orson Welles' },
+    { slug: 'scott-pilgrim', name: 'Scott Pilgrim' },
+    { slug: 'justice-league', name: 'The Justice League' },
+    { slug: 'cap-jack-sparrow', name: 'Captain Jack Sparrow' },
+    { slug: 'google', name: 'Google' }
   ]
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;

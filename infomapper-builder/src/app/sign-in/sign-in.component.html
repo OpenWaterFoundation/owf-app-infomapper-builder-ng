@@ -12,9 +12,9 @@
 
           <mat-form-field appearance="outline">
             <mat-select formControlName="accountType" (selectionChange)="setUserPoolId($event)">
-              <ng-container *ngFor="let account of testAccountArray">
-                <mat-option [value]="account.name"></mat-option>
-              </ng-container>
+              <mat-option *ngFor="let account of testAccountArray" [value]="account.slug">
+                {{ account.name }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -35,7 +35,7 @@
 
           <mat-form-field appearance="outline">
             
-            <div class="input-container">
+            <div class="pw-input-container">
               <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="password"
               attr.data-cy="TODO">
               <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
