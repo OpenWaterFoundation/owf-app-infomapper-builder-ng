@@ -9,18 +9,23 @@ import { BreakpointObserver,
 })
 export class BreakpointObserverService {
 
+  /** The current size of the application, determined by built-in breakpoints. */
   private _currentScreenSize: string;
 
 
   /**
-   * 
-   * @param breakpointObserver 
+   * The constructor for the BreakpointObserverService.
+   * @param breakpointObserver Utility for checking the matching state of `@media`
+   * queries.
    */
   constructor(private breakpointObserver: BreakpointObserver) {
-    this.initObserver();
+    this.initializeObserver();
   }
 
 
+  /**
+   * Getter that determines whether the application is in a minimized size.
+   */
   get isMobile(): boolean {
     return (this._currentScreenSize === Breakpoints.XSmall ||
     this._currentScreenSize === Breakpoints.Small) ?
@@ -28,9 +33,10 @@ export class BreakpointObserverService {
   }
 
   /**
-   * 
+   * Subscribe to the breakpoint observer, which will listen for changes to the
+   * window size and set the current screen size variable.
    */
-  private initObserver(): void {
+  private initializeObserver(): void {
 
     this.breakpointObserver.observe([
       Breakpoints.XSmall,

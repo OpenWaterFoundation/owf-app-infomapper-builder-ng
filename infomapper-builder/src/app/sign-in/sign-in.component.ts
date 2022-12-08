@@ -37,6 +37,7 @@ export class SignInComponent implements OnInit {
    * 
    */
   signInFG = new FormGroup({
+    accountType: new FormControl('', Validators.required),
     user: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   });
@@ -48,6 +49,18 @@ export class SignInComponent implements OnInit {
   /** Sets the vertical position of the error snackbar to display at the top of
   * the screen. */
   snackbarVerticalPos: MatSnackBarVerticalPosition = 'top';
+
+  readonly testAccountArray = [
+    { name: '' },
+    { name: 'Open Water Foundation' },
+    { name: 'CWCB' },
+    { name: 'City of Denver' },
+    { name: 'Orson Welles' },
+    { name: 'Scott Pilgrim' },
+    { name: 'The Justice League' },
+    { name: 'Captain Jack Sparrow' },
+    { name: 'Google' }
+  ]
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -115,6 +128,14 @@ export class SignInComponent implements OnInit {
       horizontalPosition: this.snackBarHorizontalPos,
       verticalPosition: this.snackbarVerticalPos
     });
+  }
+
+  /**
+   * 
+   * @param accountType 
+   */
+  setUserPoolId(accountType: string): void {
+    console.log('Account type:', accountType);
   }
 
   /**

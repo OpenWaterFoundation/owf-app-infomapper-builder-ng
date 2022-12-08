@@ -52,6 +52,7 @@ export class AuthService {
    * User Pool Id and the User Pool web client Id.
    */
   constructor(private router: Router) {
+
     this._amplify = Amplify.configure({
       Auth: {
         identityPoolId: 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a',
@@ -139,7 +140,7 @@ export class AuthService {
    * @param filePath 
    * @returns 
    */
-  getBucketFile(filePath: string): Observable<any> {
+  getFileSourcePath(filePath: string): Observable<any> {
     return from(
       Storage.get(filePath, {
         customPrefix: {

@@ -34,10 +34,6 @@ export class MainMenuConfigComponent implements OnInit {
   buildManager: BuildManager = BuildManager.getInstance();
   /** All used FontAwesome icons in the MainMenuConfigComponent. */
   faFolderOpen = faFolderOpen;
-  /**
-   * 
-   */
-  fileSourcePath = '';
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
@@ -63,8 +59,12 @@ export class MainMenuConfigComponent implements OnInit {
    * Open up and display the files accessible to this user from an AWS bucket.
    */
   browseS3Files(): void {
+    const dialogData = {
+      type: 'sourcePath'
+    };
+
     var fileExplorerDialogRef: MatDialogRef<BrowseDialogComponent, any> = this.dialog.open(
-      BrowseDialogComponent, this.createDialogConfig()
+      BrowseDialogComponent, this.createDialogConfig(dialogData)
     );
 
     // To run when the opened dialog is closed.
@@ -81,12 +81,12 @@ export class MainMenuConfigComponent implements OnInit {
   * @returns An object to be used for creating a dialog with its initial, min, and max
   * height and width conditionally.
   */
-  private createDialogConfig(dialogConfigData?: any): MatDialogConfig {
+  private createDialogConfig(dialogData?: any): MatDialogConfig {
 
     var isMobile = this.screenSizeService.isMobile;
 
     return {
-      data: dialogConfigData ? dialogConfigData : null,
+      data: dialogData ? dialogData : null,
       disableClose: true,
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
       height: isMobile ? "100vh" : "850px",
@@ -100,12 +100,28 @@ export class MainMenuConfigComponent implements OnInit {
 
   /**
    * 
+   * @param formName 
+   * @returns 
+   */
+  private getPropertyName(formName: string): string {
+
+    switch(formName) {
+      case 'contentPage': return 'markdownFile';
+      case 'dashboard': return 'dashboardFile';
+      case 'displayMap': return 'mapProject';
+      case 'externalLink': return 'url';
+    }
+    return '';
+  }
+
+  /**
+   * 
    * @param fileSourcePath 
    */
   private enterActionOptionField(fileSourcePath: string): void {
-    this.fileSourcePath = fileSourcePath;
 
-    console.log(this.appBuilderForm.get('mainMenuFG.action').value);
+    var actionChoice = this.getPropertyName(this.appBuilderForm.get('mainMenuFG.action').value);
+    this.appBuilderForm.get('mainMenuFG.'  + actionChoice).setValue(fileSourcePath);
   }
 
   /**
@@ -133,32 +149,24 @@ export class MainMenuConfigComponent implements OnInit {
   /**
    * Clears all current action validators and adds a new validator when a new action
    * option is chosen from the dropdown menu.
-   * @param event The event passed in from the template file when a new selection
+   * @param $event The event passed in from the template file when a new selection
    * has been chosen.
    */
-  handleActionControlChoice(event: any): void {
+  handleActionControlChoice($event: any): void {
 
-    if (event.value === '') {
-      this.appBuilderForm.get('mainMenuFG.markdownFile').clearValidators();
-      this.appBuilderForm.get('mainMenuFG.markdownFile').updateValueAndValidity();
-      this.appBuilderForm.get('mainMenuFG.dashboardFile').clearValidators();
-      this.appBuilderForm.get('mainMenuFG.dashboardFile').updateValueAndValidity();
-      this.appBuilderForm.get('mainMenuFG.mapProject').clearValidators();
-      this.appBuilderForm.get('mainMenuFG.mapProject').updateValueAndValidity();
-      this.appBuilderForm.get('mainMenuFG.storyFile').clearValidators();
-      this.appBuilderForm.get('mainMenuFG.storyFile').updateValueAndValidity();
-      this.appBuilderForm.get('mainMenuFG.url').clearValidators();
-      this.appBuilderForm.get('mainMenuFG.url').updateValueAndValidity();
+    if ($event.value === '') {
+      this.resetAllActionOptionValidators();
     } else {
-      var controlName: string;
+      this.resetAllActionOptionValidators();
 
-      if (event.value === 'contentPage') {
+      var controlName: string;
+      if ($event.value === 'contentPage') {
         controlName = 'markdownFile';
-      } else if (event.value === 'dashboard') {
+      } else if ($event.value === 'dashboard') {
         controlName = 'dashboardFile';
-      } else if (event.value === 'displayMap') {
+      } else if ($event.value === 'displayMap') {
         controlName = 'mapProject';
-      } else if (event.value === 'story') {
+      } else if ($event.value === 'story') {
         controlName = 'storyFile';
       } else {
         controlName = 'url';
@@ -250,6 +258,22 @@ export class MainMenuConfigComponent implements OnInit {
     .setValue('');
     }
     
+  }
+
+  /**
+   * Resets validators for all possible options for a Main Menu action.
+   */
+  private resetAllActionOptionValidators(): void {
+    this.appBuilderForm.get('mainMenuFG.markdownFile').clearValidators();
+    this.appBuilderForm.get('mainMenuFG.markdownFile').updateValueAndValidity();
+    this.appBuilderForm.get('mainMenuFG.dashboardFile').clearValidators();
+    this.appBuilderForm.get('mainMenuFG.dashboardFile').updateValueAndValidity();
+    this.appBuilderForm.get('mainMenuFG.mapProject').clearValidators();
+    this.appBuilderForm.get('mainMenuFG.mapProject').updateValueAndValidity();
+    this.appBuilderForm.get('mainMenuFG.storyFile').clearValidators();
+    this.appBuilderForm.get('mainMenuFG.storyFile').updateValueAndValidity();
+    this.appBuilderForm.get('mainMenuFG.url').clearValidators();
+    this.appBuilderForm.get('mainMenuFG.url').updateValueAndValidity();
   }
 
   /**

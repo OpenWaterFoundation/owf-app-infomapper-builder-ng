@@ -94,7 +94,7 @@
           <mat-form-field appearance="outline">
 
             <div class="input-container">
-              <input matInput placeholder="Path or URL" [value]="fileSourcePath"
+              <input matInput placeholder="Path or URL"
               formControlName="{{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'property' }}">
 
               <fa-icon [icon]="faFolderOpen" size="lg" class="browse-folder-icon"
@@ -129,7 +129,7 @@
 
         <mat-card class="form-description">
           Whether or not the Main Menu is enabled. Disabled menus will be greyed
-          out and won't be selectable.
+          out and will not be selectable.
         </mat-card>
       </div>
 

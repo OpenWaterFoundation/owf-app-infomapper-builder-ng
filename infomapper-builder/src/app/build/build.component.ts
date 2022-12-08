@@ -179,15 +179,20 @@ export class BuildComponent implements OnInit, OnDestroy {
    * Open up and display the files accessible to this user from an AWS bucket.
    */
   browseS3Files(): void {
+    const dialogData = {
+      type: 'content'
+    }
+
     var fileExplorerDialogRef: MatDialogRef<BrowseDialogComponent, any> = this.dialog.open(
-      BrowseDialogComponent, this.createDialogConfig()
+      BrowseDialogComponent, this.createDialogConfig(dialogData)
     );
 
     // To run when the opened dialog is closed.
     fileExplorerDialogRef.afterClosed().pipe(first()).subscribe((fileSourcePath: string) => {
       if (fileSourcePath) {
-        console.log('Build component fileSourcePath:', fileSourcePath);
-        this.openBuiltConfigFromFile(fileSourcePath);
+        // Change param to `results`.
+        console.log('Build component results:', fileSourcePath);
+        // this.openBuiltConfigFromFile(fileSourcePath);
       }
     });
   }
@@ -198,12 +203,12 @@ export class BuildComponent implements OnInit, OnDestroy {
   * @returns An object to be used for creating a dialog with its initial, min, and max
   * height and width conditionally.
   */
-  private createDialogConfig(dialogConfigData?: any): MatDialogConfig {
+  private createDialogConfig(dialogData?: any): MatDialogConfig {
 
     var isMobile = this.screenSizeService.isMobile;
 
     return {
-      data: dialogConfigData ? dialogConfigData : null,
+      data: dialogData ? dialogData : null,
       disableClose: true,
       panelClass: ['custom-dialog-container', 'mat-elevation-z24'],
       height: isMobile ? "100vh" : "850px",

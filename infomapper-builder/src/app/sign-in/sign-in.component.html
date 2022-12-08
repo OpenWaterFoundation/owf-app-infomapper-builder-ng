@@ -8,7 +8,18 @@
 
           <span class="log-in-title">InfoMapper Builder Login</span>
 
+          <div class="sign-in-title">InfoMapper Account Type</div>
+
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="accountType" (selectionChange)="setUserPoolId($event)">
+              <ng-container *ngFor="let account of testAccountArray">
+                <mat-option [value]="account.name"></mat-option>
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+
           <div class="sign-in-title">Username or Email</div>
+
           <mat-form-field appearance="outline">
             
             <input matInput formControlName="user" attr.data-cy="TODO">
@@ -21,6 +32,7 @@
           </mat-form-field>
     
           <div class="sign-in-title">Password</div>
+
           <mat-form-field appearance="outline">
             
             <div class="input-container">

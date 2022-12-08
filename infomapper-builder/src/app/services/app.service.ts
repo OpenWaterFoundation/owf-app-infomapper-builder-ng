@@ -303,7 +303,7 @@ export class AppService {
     }
     return this.http.post('http://localhost:5000/api/save', data, httpOptions)
     .pipe(first()).subscribe((response: any) => {
-      // console.log('response:', response);
+
     });
   }
 

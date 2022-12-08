@@ -1,18 +1,18 @@
 import { Component,
+          Inject,
           OnDestroy,
-          OnInit }      from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+          OnInit }          from '@angular/core';
+import { MatDialogRef,
+          MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { faLeftLong,
-          faXmark }     from '@fortawesome/free-solid-svg-icons';
+          faXmark }         from '@fortawesome/free-solid-svg-icons';
 
-import { Observable }   from 'rxjs';
-import { first }        from 'rxjs/internal/operators/first';
+import { Observable }       from 'rxjs';
+import { first }            from 'rxjs/internal/operators/first';
 
-import * as IM          from '@OpenWaterFoundation/common/services';
-
-import { AuthService }  from 'src/app/services/auth.service';
-import { FileService }  from 'src/app/services/file.service';
+import { AuthService }      from 'src/app/services/auth.service';
+import { FileService }      from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-browse-dialog',
@@ -21,13 +21,17 @@ import { FileService }  from 'src/app/services/file.service';
 })
 export class BrowseDialogComponent implements OnInit, OnDestroy {
 
+  /**
+   * 
+   */
+  dialogData: any;
   /** All used FontAwesome icons in the ConfigDialogComponent. */
   faLeftLong = faLeftLong;
   faXmark = faXmark;
   /**
    * 
    */
-  private fileSourcePath: string;
+  private selectedFileResults: any;
 
 
   /**
@@ -37,7 +41,10 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
    * @param fileService 
    */
   constructor(private authService: AuthService, private dialogRef: MatDialogRef<BrowseDialogComponent>,
-  private fileService: FileService) { }
+  private fileService: FileService, @Inject(MAT_DIALOG_DATA) dialogData: any) {
+
+    this.dialogData = dialogData;
+  }
 
   
   /**
@@ -94,7 +101,6 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
    * 
    */
   navigateUp(): void {
-    console.log('Back button is being clicked.');
     this.fileService.selectedFile = '';
     this.fileService.navigateUp();
   }
@@ -121,22 +127,25 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   * Called when the Open button is clicked. Can only be clicked when a file has
+   * been selected.
    */
   openFileAndCloseDialog(): void {
-    this.dialogRef.close(this.fileSourcePath ? this.fileSourcePath : undefined);
+    this.dialogRef.close(this.selectedFileResults ? this.selectedFileResults : undefined);
   }
 
   /**
-   * 
-   * @param $event 
+   * Invoked when a file is selected. An Event Emitter is sent from the FileBrowser
+   * component as @Output.
+   * @param $event The event object passed from the File Browser. The `results` property
+   * will be set with the appropriate data.
    */
-  updateFileSourcePath($event: any): void {
-    this.fileSourcePath = $event.sourcePath;
+  getSelectedFileResults($event: any): void {
+    this.selectedFileResults = $event.results;
 
-    if ($event.isDblClick) {
-      this.openFileAndCloseDialog();
-    }
+    // if ($event.isDblClick) {
+    //   this.openFileAndCloseDialog();
+    // }
   }
 
 }
