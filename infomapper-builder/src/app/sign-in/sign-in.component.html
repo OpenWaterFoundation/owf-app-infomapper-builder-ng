@@ -8,13 +8,23 @@
 
           <span class="log-in-title">InfoMapper Builder Login</span>
 
-          <div class="sign-in-title">InfoMapper Account Type</div>
+          <div class="sign-in-title">InfoMapper Account</div>
 
           <mat-form-field appearance="outline">
-            <mat-select formControlName="accountType" (selectionChange)="setUserPoolId($event)">
-              <mat-option *ngFor="let account of testAccountArray" [value]="account.slug">
-                {{ account.name }}
-              </mat-option>
+
+            <mat-select name="account-selection" (openedChange)="openSelectChange($event)">
+              <cdk-virtual-scroll-viewport [itemSize]="48" [minBufferPx]="540"
+              [maxBufferPx]="540" [style.height.px]="240">
+
+                <input matInput placeholder="Search accounts" class="input-search"
+                (keyup)="searchForAccount($event)"/>
+                <mat-option *cdkVirtualFor="let account of displayAccounts"
+                (click)="setUserPoolId(account)" [value]="account.name"
+                [style.height.px]="48">
+                  {{ account.name }}
+                </mat-option>
+
+              </cdk-virtual-scroll-viewport>
             </mat-select>
           </mat-form-field>
 
@@ -37,7 +47,7 @@
             
             <div class="pw-input-container">
               <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="password"
-              attr.data-cy="TODO">
+              attr.data-cy="TODO"/>
               <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
               (click)="togglePasswordVisibility()" class="visibility-icon">
               </fa-icon>

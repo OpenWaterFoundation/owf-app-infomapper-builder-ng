@@ -1,5 +1,6 @@
 import { Component,
-          OnInit }                      from '@angular/core';
+          OnInit, 
+          ViewChild }                   from '@angular/core';
 import { AbstractControl,
           FormControl,
           FormGroup,
@@ -17,6 +18,7 @@ import { delay,
           Subject }                     from 'rxjs';
 import { AuthService }                  from '../services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js'
+import { CdkVirtualScrollViewport }     from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -25,6 +27,11 @@ import { CognitoUser }                  from 'amazon-cognito-identity-js'
 })
 export class SignInComponent implements OnInit {
 
+  /** The reference to the virtual scroll viewport in the template file by using
+   * the @ViewChild decorator. The change detector looks for the first element or
+   * directive matching the selector in the view DOM, and if it changes, the property
+   * is updated. */
+  @ViewChild(CdkVirtualScrollViewport, { static: false }) virtualScroll: CdkVirtualScrollViewport;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
   /** All used FontAwesome icons in the SignInComponent. */
@@ -50,7 +57,7 @@ export class SignInComponent implements OnInit {
   * the screen. */
   snackbarVerticalPos: MatSnackBarVerticalPosition = 'top';
 
-  readonly testAccountArray = [
+  readonly accounts = [
     { slug: '', name: '' },
     { slug: 'owf', name: 'Open Water Foundation' },
     { slug: 'cwcb', name: 'CWCB' },
@@ -60,7 +67,9 @@ export class SignInComponent implements OnInit {
     { slug: 'justice-league', name: 'The Justice League' },
     { slug: 'cap-jack-sparrow', name: 'Captain Jack Sparrow' },
     { slug: 'google', name: 'Google' }
-  ]
+  ];
+
+  displayAccounts = [{ slug: '', name: '' }];
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -108,6 +117,8 @@ export class SignInComponent implements OnInit {
    */
   ngOnInit(): void {
     this.isLoggedIn();
+
+    
   }
 
   /**
@@ -131,11 +142,48 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * 
-   * @param accountType 
+   * Whenever the mat-select field is clicked, check if the event exists and use the
+   * @ViewChild decorated class variable to check the size of the viewport and scroll
+   * to the first element; this way, the viewport will always start there.
    */
-  setUserPoolId(accountType: string): void {
-    console.log('Account type:', accountType);
+  openSelectChange($event: any): void {
+    if ($event) {
+      this.virtualScroll.scrollToIndex(0);
+      this.virtualScroll.checkViewportSize();
+    }
+  }
+
+  /**
+   * 
+   * @param $event 
+   */
+  searchForAccount($event: KeyboardEvent): any {
+
+    const input = (<HTMLInputElement>$event.target).value.toLowerCase();
+
+    // If the value in the search bar is empty, then all dates can be shown.
+    if (input === '') {
+      this.displayAccounts = [{ slug: '', name: '' }];
+      return;
+    }
+
+    if ($event.key.toLowerCase() === 'backspace') {
+      this.displayAccounts = this.accounts.filter((option: { name: string, slug: string }) => {
+        return option.name.toLowerCase().includes(input) || option.slug.toLowerCase().includes(input);
+      });
+    } else {
+      this.displayAccounts = this.accounts.filter((option: { name: string, slug: string }) => {
+        return option.name.toLowerCase().includes(input) || option.slug.toLowerCase().includes(input);
+      });
+    }
+  }
+
+  /**
+   * 
+   * @param account
+   */
+  setUserPoolId(account: { name: string, slug: string }): void {
+    console.log('Account type:', account);
   }
 
   /**
