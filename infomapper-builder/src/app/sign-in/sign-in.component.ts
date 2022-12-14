@@ -44,7 +44,7 @@ export class SignInComponent implements OnInit {
    * 
    */
   signInFG = new FormGroup({
-    // accountType: new FormControl('', Validators.required),
+    accountType: new FormControl('', Validators.required),
     user: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   });
@@ -195,24 +195,12 @@ export class SignInComponent implements OnInit {
     const usernameOrEmail = this.signInFG.get('user').value;
     const pw = this.signInFG.get('password').value;
 
-    // this.authService.signIn(usernameOrEmail, pw).pipe(first())
-    // .subscribe({
-    //   next: (user: CognitoUser) => {
-    //     this.authService.initLogin(user);
-    //   },
-    //   error: (error: any) => {
-    //     this.openErrorSnackBar();
-    //   }
-    // });
-
-    this.authService.signInAWSv3(usernameOrEmail, pw).pipe(first())
+    this.authService.signIn(usernameOrEmail, pw).pipe(first())
     .subscribe({
-      next: (response: any) => {
-        console.log('Successful AWS response:', response);
-        this.authService.successfulLoginSetup();
+      next: (user: CognitoUser) => {
+        this.authService.successfulLoginSetup(user);
       },
       error: (error: any) => {
-        console.log('Error from AWS SDK:', error);
         this.openErrorSnackBar();
       }
     });

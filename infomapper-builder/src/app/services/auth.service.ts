@@ -11,13 +11,6 @@ import { CognitoUser,
 import { ICredentials }          from 'node_modules/aws-amplify/src/Common/types/types';
 
 import { Router }                from '@angular/router';
-import {
-  AuthFlowType,
-  CognitoIdentityProviderClient,
-  CognitoIdentityProviderClientConfig,
-  InitiateAuthCommand,
-} from '@aws-sdk/client-cognito-identity-provider';
-
 
 @Injectable({
   providedIn: 'root'
@@ -39,14 +32,13 @@ export class AuthService {
    * 
    */
   private _cognitoUser: CognitoUser;
-
-  client: CognitoIdentityProviderClient;
   /**
    * This is required, as Amazon will add the default 'public/', 'protected/',
    * or 'private/' prefixes in the URL. Since OWF is not using those folder names
    * in any S3 bucket, a custom empty string must be used as the prefix 
    */
   readonly storageOptions = {
+    pageSize: 100,
     customPrefix: {
       public: '',
       protected: '',
@@ -60,8 +52,6 @@ export class AuthService {
    * User Pool Id and the User Pool web client Id.
    */
   constructor(private router: Router) {
-
-    this.client = new CognitoIdentityProviderClient({ region: 'us-west-2' });
 
     this._amplify = Amplify.configure({
       Auth: {
@@ -80,24 +70,30 @@ export class AuthService {
     });
 
     // Determine if the user has already been logged in.
-    // from(Auth.currentAuthenticatedUser()).pipe(first()).subscribe({
-    //   next: (user: CognitoUser) => {
-    //     this._cognitoUser = user;
-    //   }
-    // });
+    from(Auth.currentAuthenticatedUser()).pipe(first()).subscribe({
+      next: (user: CognitoUser) => {
+        this._cognitoUser = user;
+      }
+    });
   }
 
+  /**
+   * 
+   */
   get amplify(): any {
     return this._amplify;
   }
 
+  /**
+   * 
+   */
   get authUsername$(): Observable<string> {
     return this._authUsername.asObservable();
   }
 
   /**
-     * 
-     */
+   * 
+   */
   get cognitoUser(): CognitoUser {
     return this._cognitoUser;
   }
@@ -166,23 +162,6 @@ export class AuthService {
 
   /**
    * 
-   * @param cognitoUser 
-   */
-  successfulLoginSetup(cognitoUser?: CognitoUser): void {
-
-    // if (!cognitoUser) {
-    //   this._authUsername.next(this._cognitoUser.getUsername());
-    // } else {
-    //   this._authUsername.next(cognitoUser.getUsername());
-    //   this.cognitoUser = cognitoUser;
-    // }
-
-    this.userAuthenticated = true;
-    this.router.navigate(['/content-page/home']);
-  }
-
-  /**
-   * 
    * @returns 
    */
   listAllBucketFiles(): Observable<any> {
@@ -204,27 +183,6 @@ export class AuthService {
   }
 
   /**
-   * 
-   * @param username 
-   * @param password 
-   * @param appClientId 
-   * @returns 
-   */
-  signInAWSv3(usernameOrEmail: string, password: string): Observable<any> {
-    const clientId = '2nd68j4v2dp114bp72e2vs9cv4';
-    const command = new InitiateAuthCommand({ 
-      AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
-      AuthParameters: {
-        USERNAME: usernameOrEmail,
-        PASSWORD: password
-      },
-      ClientId: clientId
-     });
-
-     return from(this.client.send(command));
-  }
-
-  /**
    * Signs the user out of the session.
    * @returns An observable of the response from Cognito upon sign out.
    */
@@ -234,6 +192,23 @@ export class AuthService {
       this._userAuthenticated.next(false);
       this.router.navigate(['']);
     });
+  }
+
+  /**
+   * 
+   * @param cognitoUser 
+   */
+  successfulLoginSetup(cognitoUser?: CognitoUser): void {
+
+    if (!cognitoUser) {
+      this._authUsername.next(this._cognitoUser.getUsername());
+    } else {
+      this._authUsername.next(cognitoUser.getUsername());
+      this.cognitoUser = cognitoUser;
+    }
+
+    this.userAuthenticated = true;
+    this.router.navigate(['/content-page/home']);
   }
   
 }

@@ -85,8 +85,11 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
       this.fileService.setToLoading(true);
     }
 
-    this.authService.listAllBucketFiles().pipe(first()).subscribe((allFiles: any) => {
-      this.fileService.setAllFiles(this.fileService.processStorageList(allFiles));
+    this.authService.listAllBucketFiles().pipe(first()).subscribe(({hasNextToken, nextToken, results}) => {
+      console.log('Has next token:', hasNextToken);
+      console.log('Next token:', nextToken);
+      console.log('Results:', results);
+      // this.fileService.setAllFiles(this.fileService.processStorageList(allFiles));
     });
   }
 
