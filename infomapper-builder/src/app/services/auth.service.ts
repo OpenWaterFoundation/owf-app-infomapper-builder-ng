@@ -6,9 +6,9 @@ import { BehaviorSubject,
           first,
           from,
           Observable }           from 'rxjs';
-import { CognitoUser,
-          CognitoUserSession }   from 'amazon-cognito-identity-js';
-import { ICredentials }          from 'node_modules/aws-amplify/src/Common/types/types';
+import { CognitoUser }           from 'amazon-cognito-identity-js';
+
+import { S3ProviderListConfig }  from '@aws-amplify/storage/lib-esm/types';
 
 import { Router }                from '@angular/router';
 
@@ -37,8 +37,8 @@ export class AuthService {
    * or 'private/' prefixes in the URL. Since OWF is not using those folder names
    * in any S3 bucket, a custom empty string must be used as the prefix 
    */
-  readonly storageOptions = {
-    pageSize: 100,
+  private storageOptions: S3ProviderListConfig = {
+    pageSize: 'ALL',
     customPrefix: {
       public: '',
       protected: '',
@@ -66,6 +66,15 @@ export class AuthService {
           region: 'us-west-2',
           level: 'public'
         }
+      }
+    });
+
+    from(Auth.currentCredentials()).pipe(first()).subscribe({
+      next: (response: any) => {
+        console.log('Anon user success:', response);
+      },
+      error: (error: any) => {
+        console.log('Anon user error:', error);
       }
     });
 
@@ -143,6 +152,19 @@ export class AuthService {
 
   /**
    * 
+   * @returns 
+   */
+  getAllBucketFiles(): Observable<any> {
+  
+    return from(
+      Storage.list('', this.storageOptions)
+      .then((result: any) => { return result; })
+      .catch((err: any) => { return err; })
+    );
+  }
+
+  /**
+   * 
    * @param filePath 
    * @returns 
    */
@@ -155,18 +177,6 @@ export class AuthService {
           private: ''
         }
       })
-      .then((result: any) => { return result; })
-      .catch((err: any) => { return err; })
-    );
-  }
-
-  /**
-   * 
-   * @returns 
-   */
-  listAllBucketFiles(): Observable<any> {
-    return from(
-      Storage.list('', this.storageOptions)
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     );

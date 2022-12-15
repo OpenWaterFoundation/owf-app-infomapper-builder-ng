@@ -1,4 +1,5 @@
 import { Component,
+          ElementRef,
           OnInit, 
           ViewChild }                   from '@angular/core';
 import { AbstractControl,
@@ -27,11 +28,10 @@ import { CdkVirtualScrollViewport }     from '@angular/cdk/scrolling';
 })
 export class SignInComponent implements OnInit {
 
-  /** The reference to the virtual scroll viewport in the template file by using
-   * the @ViewChild decorator. The change detector looks for the first element or
-   * directive matching the selector in the view DOM, and if it changes, the property
-   * is updated. */
-  @ViewChild(CdkVirtualScrollViewport, { static: false }) virtualScroll: CdkVirtualScrollViewport;
+  /**
+   * 
+   */
+  @ViewChild("searchInput") private _searchInputElement: ElementRef;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
   /** All used FontAwesome icons in the SignInComponent. */
@@ -118,13 +118,12 @@ export class SignInComponent implements OnInit {
   ngOnInit(): void {
     this.isLoggedIn();
 
-    
   }
 
   /**
   * Called once right before this component is destroyed.
   */
-   ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.destroyed.next();
     this.destroyed.complete();
   }
@@ -142,15 +141,11 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * Whenever the mat-select field is clicked, check if the event exists and use the
-   * @ViewChild decorated class variable to check the size of the viewport and scroll
-   * to the first element; this way, the viewport will always start there.
+   * Whenever the mat-select field is clicked, focus on the input field so users
+   * can immediately start typing.
    */
-  openSelectChange($event: any): void {
-    if ($event) {
-      this.virtualScroll.scrollToIndex(0);
-      this.virtualScroll.checkViewportSize();
-    }
+  openSelectChange(): void {
+    this._searchInputElement.nativeElement.focus();
   }
 
   /**

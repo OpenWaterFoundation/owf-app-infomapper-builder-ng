@@ -14,6 +14,7 @@ import { first }            from 'rxjs/internal/operators/first';
 import { AuthService }      from 'src/app/services/auth.service';
 import { FileService }      from 'src/app/services/file.service';
 
+
 @Component({
   selector: 'app-browse-dialog',
   templateUrl: './browse-dialog.component.html',
@@ -85,11 +86,9 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
       this.fileService.setToLoading(true);
     }
 
-    this.authService.listAllBucketFiles().pipe(first()).subscribe(({hasNextToken, nextToken, results}) => {
-      console.log('Has next token:', hasNextToken);
-      console.log('Next token:', nextToken);
-      console.log('Results:', results);
-      // this.fileService.setAllFiles(this.fileService.processStorageList(allFiles));
+    this.authService.getAllBucketFiles().pipe(first())
+    .subscribe((response: any ) => {
+      this.fileService.setAllFiles(this.fileService.processStorageList(response.results));
     });
   }
 

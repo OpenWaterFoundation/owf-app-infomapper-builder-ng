@@ -12,12 +12,13 @@
 
           <mat-form-field appearance="outline">
 
-            <mat-select name="account-selection" (openedChange)="openSelectChange($event)">
+            <mat-select name="account-selection" (openedChange)="openSelectChange()">
               <cdk-virtual-scroll-viewport [itemSize]="48" [minBufferPx]="540"
               [maxBufferPx]="540" [style.height.px]="240">
 
-                <input matInput placeholder="Search accounts" class="input-search"
-                (keyup)="searchForAccount($event)"/>
+                <input matInput formControlName="accountType" placeholder="Search accounts"
+                class="input-search" (keyup)="searchForAccount($event)" #searchInput/>
+
                 <mat-option *cdkVirtualFor="let account of displayAccounts"
                 (click)="setUserPoolId(account)" [value]="account.name"
                 [style.height.px]="48">
