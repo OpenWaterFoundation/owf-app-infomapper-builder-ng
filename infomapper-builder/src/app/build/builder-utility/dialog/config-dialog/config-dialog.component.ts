@@ -27,7 +27,7 @@ export class ConfigDialogComponent implements OnInit {
 
 
   /**
-   * 
+   * The constructor for the ConfigDialogComponent.
    * @param dialogData 
    * @param dialogRef 
    */

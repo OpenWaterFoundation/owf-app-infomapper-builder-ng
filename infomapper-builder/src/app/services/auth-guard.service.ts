@@ -16,7 +16,7 @@ import { AuthService }                  from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuardService implements CanActivate {
 
   /**
    * 
@@ -38,8 +38,9 @@ export class AuthGuard implements CanActivate {
    * @param router A service that provides navigation among views and URL manipulation
    * capabilities.
    */
-  constructor(private authService: AuthService, private router: Router,
-  private snackBar: MatSnackBar) { }
+  constructor(private authService: AuthService, private router: Router, private snackBar: MatSnackBar) {
+    
+  }
 
   
   /**
@@ -50,7 +51,8 @@ export class AuthGuard implements CanActivate {
    * @returns An observable of type boolean if the user is authenticated.
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.authService.userAuthenticated$.pipe(
+
+    return this.authService.isUserLoggedIn().pipe(
       map((authenticated: boolean) => {
 
         if (authenticated) {
@@ -60,7 +62,7 @@ export class AuthGuard implements CanActivate {
             this.openErrorSnackBar();
           }
           ++this.activateCheckCounter;
-          this.router.navigate(['']);
+          this.router.navigate(['/login']);
         }
       }),
       first()

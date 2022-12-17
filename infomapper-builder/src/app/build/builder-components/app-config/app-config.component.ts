@@ -27,7 +27,7 @@ export class AppConfigComponent implements OnInit {
   formErrorMessages = {
     required: 'Required'
   }
-  /** The application Tree Node. */
+  /** The currently edited application Tree Node. */
   @Input('node') node: IM.TreeNodeData;
   /** EventEmitter that alerts the ConfigDialogComponent (parent) that an update
    * has happened, and sends the basin name. */

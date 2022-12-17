@@ -1,16 +1,19 @@
-import { Injectable }            from '@angular/core';
+import { Injectable }           from '@angular/core';
+import { Router }               from '@angular/router';
 import { Amplify,
           Auth,
-          Storage }              from 'aws-amplify';
+          Storage }             from 'aws-amplify';
+
 import { BehaviorSubject,
           first,
           from,
-          Observable }           from 'rxjs';
-import { CognitoUser }           from 'amazon-cognito-identity-js';
+          map,
+          Observable }          from 'rxjs';
+import { CognitoUser }          from 'amazon-cognito-identity-js';
 
-import { S3ProviderListConfig }  from '@aws-amplify/storage/lib-esm/types';
+import { S3ProviderListConfig } from '@aws-amplify/storage/lib-esm/types';
 
-import { Router }                from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +24,9 @@ export class AuthService {
    * 
    */
   private _authUsername = new BehaviorSubject<string>('');
-
+  /**
+   * 
+   */
   private _amplify: any;
   /**
    * Used for determining whether the current user is authenticated from the
@@ -69,21 +74,6 @@ export class AuthService {
       }
     });
 
-    from(Auth.currentCredentials()).pipe(first()).subscribe({
-      next: (response: any) => {
-        console.log('Anon user success:', response);
-      },
-      error: (error: any) => {
-        console.log('Anon user error:', error);
-      }
-    });
-
-    // Determine if the user has already been logged in.
-    from(Auth.currentAuthenticatedUser()).pipe(first()).subscribe({
-      next: (user: CognitoUser) => {
-        this._cognitoUser = user;
-      }
-    });
   }
 
   /**
@@ -130,27 +120,6 @@ export class AuthService {
   }
 
   /**
-   * Determines if the user has already provided valid credentials.
-   * @returns An observable with a boolean that represents whether the user has previously
-   * logged in to the IM Builder.
-   */
-  alreadyLoggedIn(): Observable<boolean> {
-    return from(
-      Auth.currentAuthenticatedUser()
-      .then((user: CognitoUser) => {
-        if (user) {
-          return true;
-        } else {
-          return false
-        }
-      })
-      .catch((err: any) => {
-        return false;
-      })
-    );
-  }
-
-  /**
    * 
    * @returns 
    */
@@ -183,6 +152,24 @@ export class AuthService {
   }
 
   /**
+   * 
+   * @returns 
+   */
+  isUserLoggedIn(): Observable<boolean> {
+    return from(Auth.currentAuthenticatedUser()).pipe(
+      map((user: CognitoUser) => {
+        if (user) {
+          this.successfulAuthCheckSetup(user);
+          return true;
+        } else {
+          return false;
+        }
+      }),
+      first()
+      );
+  }
+
+  /**
    * Attempts to sign-in the user with the provided credentials, and........
    * @param userNameOrEmail The username or email entered by the user.
    * @param password The password to be entered.
@@ -200,22 +187,28 @@ export class AuthService {
     from(Auth.signOut()).pipe(first()).subscribe(() => {
       this._authUsername.next('');
       this._userAuthenticated.next(false);
-      this.router.navigate(['']);
+      this.router.navigate(['/login']);
     });
   }
 
   /**
    * 
+   */
+  successfulAuthCheckSetup(cognitoUser: CognitoUser): void {
+    this._cognitoUser = cognitoUser;
+    this._authUsername.next(this._cognitoUser.getUsername());
+    this.userAuthenticated = true;
+  }
+
+  /**
+   * Sets
    * @param cognitoUser 
    */
-  successfulLoginSetup(cognitoUser?: CognitoUser): void {
+  successfulLoginSetup(cognitoUser: CognitoUser): void {
 
-    if (!cognitoUser) {
-      this._authUsername.next(this._cognitoUser.getUsername());
-    } else {
-      this._authUsername.next(cognitoUser.getUsername());
-      this.cognitoUser = cognitoUser;
-    }
+    this._authUsername.next(cognitoUser.getUsername());
+    this._cognitoUser = cognitoUser;
+
 
     this.userAuthenticated = true;
     this.router.navigate(['/content-page/home']);

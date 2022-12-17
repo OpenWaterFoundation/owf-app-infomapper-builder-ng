@@ -6,7 +6,6 @@ import { AbstractControl,
           FormControl,
           FormGroup,
           Validators }                  from '@angular/forms';
-import { Router }                       from '@angular/router';
 
 import { MatSnackBar,
           MatSnackBarHorizontalPosition,
@@ -14,12 +13,10 @@ import { MatSnackBar,
 
 import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
-import { delay,
-          first,
+import { first,
           Subject }                     from 'rxjs';
 import { AuthService }                  from '../services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js'
-import { CdkVirtualScrollViewport }     from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -81,8 +78,7 @@ export class SignInComponent implements OnInit {
   /**
    * 
    */
-  constructor(private authService: AuthService, private router: Router,
-  private snackBar: MatSnackBar) {
+  constructor(private authService: AuthService, private snackBar: MatSnackBar) {
 
   }
 
@@ -97,27 +93,11 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * If the user is already authenticated, navigate to the home page.
-   */
-  private isLoggedIn(): void {
-
-    this.authService.alreadyLoggedIn().pipe(first(), delay(1000)).subscribe({
-      next: (isLoggedIn: boolean) => {
-        if (isLoggedIn) {
-          this.authService.successfulLoginSetup();
-        }
-      },
-      error: (err: any) => {}
-    });
-  }
-
-  /**
    * Lifecycle hook that is called after Angular has initialized all data-bound
    * properties of a directive.
    */
   ngOnInit(): void {
-    this.isLoggedIn();
-
+    
   }
 
   /**
@@ -183,19 +163,20 @@ export class SignInComponent implements OnInit {
 
   /**
    * Utilizes the Cognito service to attempt to sign the user in with the provided
-   * credentials. Shows the home page is successful, and an error snackbar
+   * credentials when the Sign In button is clicked. Shows the home page is successful,
+   * and an error snackbar if not.
    */
   signInUser(): void {
 
-    const usernameOrEmail = this.signInFG.get('user').value;
-    const pw = this.signInFG.get('password').value;
+    const user = this.signInFG.get('user').value;
+    const password = this.signInFG.get('password').value;
 
-    this.authService.signIn(usernameOrEmail, pw).pipe(first())
+    this.authService.signIn(user, password).pipe(first())
     .subscribe({
       next: (user: CognitoUser) => {
         this.authService.successfulLoginSetup(user);
       },
-      error: (error: any) => {
+      error: () => {
         this.openErrorSnackBar();
       }
     });

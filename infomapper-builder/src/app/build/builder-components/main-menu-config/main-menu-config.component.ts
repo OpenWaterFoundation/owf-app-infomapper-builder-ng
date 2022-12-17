@@ -241,7 +241,7 @@ export class MainMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('mainMenuFG.mapProject').setValue('');
       this.appBuilderForm.get('mainMenuFG.url').setValue('');
     }
-    // Optional
+    // Optional properties.
     if (builderJSON.mainMenu[nodeIndex].enabled) {
       this.appBuilderForm.get('mainMenuFG.enabled')
       .setValue(builderJSON.mainMenu[nodeIndex].enabled);
@@ -249,7 +249,7 @@ export class MainMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('mainMenuFG.enabled')
       .setValue('');
     }
-    // Optional.
+
     if (builderJSON.mainMenu[nodeIndex].visible) {
       this.appBuilderForm.get('mainMenuFG.visible')
       .setValue(builderJSON.mainMenu[nodeIndex].visible);

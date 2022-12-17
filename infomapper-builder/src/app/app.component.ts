@@ -18,16 +18,29 @@ import { AuthService }    from './services/auth.service';
 export class AppComponent implements OnInit {
 
 
+  /**
+   * 
+   * @param titleService 
+   * @param appService 
+   * @param authService 
+   * @param document 
+   */
   constructor(private titleService: Title, private appService: AppService,
   private authService: AuthService, @Inject(DOCUMENT) private document: Document) {}
 
 
+  /**
+   * The application configuration object from the `app-config.json` file.
+   */
   get appConfig(): IM.AppConfig { return this.appService.appConfigObj; }
-
-  get userVerified(): Observable<boolean> { return this.authService.userAuthenticated$ }
+  /**
+   * Uses the AuthService to check if current user is logged in to the app.
+   */
+  get isLoggedIn(): Observable<boolean> { return this.authService.userAuthenticated$ }
 
   /**
-   * 
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
    */
   ngOnInit(): void {
     this.setWebsiteTitle();

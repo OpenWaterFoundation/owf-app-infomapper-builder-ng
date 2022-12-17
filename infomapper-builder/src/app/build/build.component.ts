@@ -14,7 +14,6 @@ import { MatSnackBar,
           MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MatTreeFlatDataSource,
           MatTreeFlattener }            from '@angular/material/tree';
-import { Breakpoints }                  from '@angular/cdk/layout';
 import { SelectionModel }               from '@angular/cdk/collections';
 import { CdkDragDrop }                  from '@angular/cdk/drag-drop';
 import { FlatTreeControl }              from '@angular/cdk/tree';

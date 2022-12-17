@@ -36,13 +36,13 @@ export class BrowseDialogComponent implements OnInit, OnDestroy {
 
 
   /**
-   * 
+   * The constructor for the BrowseDialogComponent.
    * @param authService 
    * @param dialogRef 
    * @param fileService 
    */
-  constructor(private authService: AuthService, private dialogRef: MatDialogRef<BrowseDialogComponent>,
-  private fileService: FileService, @Inject(MAT_DIALOG_DATA) dialogData: any) {
+  constructor(private authService: AuthService, @Inject(MAT_DIALOG_DATA) dialogData: any,
+  private dialogRef: MatDialogRef<BrowseDialogComponent>, private fileService: FileService, ) {
 
     this.dialogData = dialogData;
   }

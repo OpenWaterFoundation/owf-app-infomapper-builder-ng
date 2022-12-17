@@ -166,35 +166,36 @@ export class SubMenuConfigComponent implements OnInit {
       this.appBuilderForm.get('subMenuFG.mapProject').setValue('');
       this.appBuilderForm.get('subMenuFG.url').setValue('');
     }
-    // Optional.
+
+    // Optional properties.
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled) {
       this.appBuilderForm.get('subMenuFG.enabled')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].enabled);
     } else {
       this.appBuilderForm.get('subMenuFG.enabled').setValue('');
     }
-    // Optional.
+
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore) {
       this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].doubleSeparatorBefore);
     } else {
       this.appBuilderForm.get('subMenuFG.doubleSeparatorBefore').setValue('');
     }
-    // Optional.
+
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore) {
       this.appBuilderForm.get('subMenuFG.separatorBefore')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].separatorBefore);
     } else {
       this.appBuilderForm.get('subMenuFG.separatorBefore').setValue('');
     }
-    // Optional.
+
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].tooltip) {
       this.appBuilderForm.get('subMenuFG.tooltip')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].tooltip);
     } else {
       this.appBuilderForm.get('subMenuFG.tooltip').setValue('');
     }
-    // Optional.
+
     if (builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible) {
       this.appBuilderForm.get('subMenuFG.visible')
       .setValue(builderJSON.mainMenu[parentIndex].menus[nodeIndex].visible);

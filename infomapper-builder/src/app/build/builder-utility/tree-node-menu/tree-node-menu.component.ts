@@ -30,7 +30,7 @@ export class NodeMenuComponent implements OnInit {
   
 
   /**
-   * 
+   * The constructor for the NodeMenuComponent.
    */
   constructor() { }
 
