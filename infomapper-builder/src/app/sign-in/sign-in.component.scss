@@ -24,7 +24,8 @@ width. */
 .main-container {
   background-color: #e3e3e3;
   height: 100%;
-  overflow: auto;
+  display: flex;
+  justify-content: center;
 }
 
 /*  */
@@ -40,7 +41,6 @@ width. */
 
 /* Main form group for signing in. */
 .sign-in-form-group-container {
-  margin-top: 8%;
   padding: 15px;
   border: 1px solid #c9c9c9;
   border-radius: 20px;
@@ -49,8 +49,9 @@ width. */
 
 /* Container holding all main sign in elements. */
 .sign-in-main-container {
-  height: 600px;
+  height: 560px;
   width: 100%;
+  margin-top: 35px;
   display: flex;
   justify-content: center;
 }

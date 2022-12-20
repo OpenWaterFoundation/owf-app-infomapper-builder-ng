@@ -13,17 +13,17 @@ import { first,
           Observable }                  from 'rxjs';
 import { AuthService }                  from './auth.service';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate {
 
-  /**
-   * 
-   */
-  activateCheckCounter = 0;
+  /** Whether the Guard has performed a follow up check to the original on the first
+   * application page display. */
+  followUpAuthenticationCheck = false;
   /** How many milliseconds the error snackbar will be displayed for. */
-  snackBarDuration = 5000;
+  snackBarDuration = 3000;
   /** Sets the horizontal position of the error snackbar to display on the right
    * side of the screen. */
   snackBarHorizontalPos: MatSnackBarHorizontalPosition = 'end';
@@ -51,17 +51,16 @@ export class AuthGuardService implements CanActivate {
    * @returns An observable of type boolean if the user is authenticated.
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-
     return this.authService.isUserLoggedIn().pipe(
       map((authenticated: boolean) => {
 
         if (authenticated) {
           return true;
         } else {
-          if (this.activateCheckCounter !== 0) {
+          if (this.followUpAuthenticationCheck) {
             this.openErrorSnackBar();
           }
-          ++this.activateCheckCounter;
+          this.followUpAuthenticationCheck = true;
           this.router.navigate(['/login']);
         }
       }),

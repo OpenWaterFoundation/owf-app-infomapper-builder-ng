@@ -5,10 +5,13 @@ import { Amplify,
           Storage }             from 'aws-amplify';
 
 import { BehaviorSubject,
+          catchError,
           first,
           from,
           map,
-          Observable }          from 'rxjs';
+          Observable, 
+          of, 
+          throwError}          from 'rxjs';
 import { CognitoUser }          from 'amazon-cognito-identity-js';
 
 import { S3ProviderListConfig } from '@aws-amplify/storage/lib-esm/types';
@@ -152,11 +155,17 @@ export class AuthService {
   }
 
   /**
-   * 
-   * @returns 
+   * Uses the AuthClass currentAuthenticatedUser to check if the current user has
+   * an active session.
+   * @returns An observable true if the user is authenticated, and false if not.
    */
   isUserLoggedIn(): Observable<boolean> {
-    return from(Auth.currentAuthenticatedUser()).pipe(
+    return from(Auth.currentAuthenticatedUser().catch(() => {
+      // User is unauthenticated. The currentAuthenticatedUser promise throws an
+      // error, so catch it here and return undefined so the observable can perform
+      // the correct action.
+      return undefined;
+    })).pipe(
       map((user: CognitoUser) => {
         if (user) {
           this.successfulAuthCheckSetup(user);

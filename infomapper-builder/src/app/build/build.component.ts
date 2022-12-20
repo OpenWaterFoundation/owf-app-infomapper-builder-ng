@@ -92,7 +92,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     visible: new FormControl('True'),
   });
   /** How many milliseconds the error snackbar will be displayed for. */
-  snackBarDuration = 4000;
+  snackBarDuration = 3000;
   /** Sets the horizontal position of the error snackbar to display on the right
    * side of the screen. */
   snackBarHPosition: MatSnackBarHorizontalPosition = 'center';

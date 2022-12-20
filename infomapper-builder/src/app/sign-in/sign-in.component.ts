@@ -46,7 +46,7 @@ export class SignInComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
   /** How many milliseconds the error snackbar will be displayed for. */
-  snackBarDuration = 5000;
+  snackBarDuration = 3000;
   /** Sets the horizontal position of the error snackbar to display on the right
    * side of the screen. */
   snackBarHorizontalPos: MatSnackBarHorizontalPosition = 'end';
@@ -112,7 +112,9 @@ export class SignInComponent implements OnInit {
   * Displays the self-closing error message so users know what went wrong.
   */
   openErrorSnackBar() {
-    this.snackBar.open('Incorrect username/email or password. ', null, {
+    const message = 'Incorrect username/email or password. Please try again.';
+
+    this.snackBar.open(message, null, {
       duration: this.snackBarDuration,
       panelClass: 'snackbar-error',
       horizontalPosition: this.snackBarHorizontalPos,

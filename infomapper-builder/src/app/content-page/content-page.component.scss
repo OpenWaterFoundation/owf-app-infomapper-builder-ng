@@ -4,15 +4,41 @@ a {
   color: #9db66b;
 }
 
-/* The inner container that displays the Content Page contents based on browser
-width. */
-.display-container {
-  height: 100%;
-  margin: 0px 10px;
-}
-
 /* The overarching container for a Content Page. */
 .main-container {
-  height: calc(100% - 15px);
+  height: 100%;
   overflow: auto;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 959px) {
+
+  .display-container {
+    @include display-container('100%');
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1919px) {
+
+  .display-container {
+    @include display-container('50%');
+  }
+}
+
+@media (min-width: 1920px) {
+
+  .display-container {
+    @include display-container('30%');
+  }
+}
+
+/* Mixins */
+
+/* The inner container that displays the Content Page contents based on browser
+width. */
+@mixin display-container($width) {
+  height: 100%;
+  width: $width;
+  padding: 0 10px;
 }
