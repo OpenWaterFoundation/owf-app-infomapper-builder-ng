@@ -2,7 +2,7 @@
 
   <div class="toolbar-main-container">
     <div class="toolbar-left-container">
-      <div fxHide.gt-md>
+      <div class="side-nav-toggle-container">
         <button mat-icon-button (click)="onToggleSidenav()"
         data-cy="side-nav-toggle-button">
           <fa-icon [icon]="faBars" size="lg"></fa-icon>
@@ -13,14 +13,14 @@
         {{title}}
       </button>
     
-      <div fxFlex fxLayout fxLayoutAlign="start" fxHide.lt-lg>
-        <ul fxLayout fxLayoutGap="1px" class="main-menu-buttons">
+      <div class="main-menu-option-container">
+        <ul class="main-menu-buttons">
     
-          <div *ngFor="let mainMenu of appConfig.mainMenu">
-            <div *ngIf="mainMenu | checkElement : 'mainMenuIsVisible'">
+          <ng-container *ngFor="let mainMenu of appConfig.mainMenu">
+            <ng-container *ngIf="mainMenu | checkElement : 'mainMenuIsVisible'">
               <nav-bar-menu [mainMenu]="mainMenu"></nav-bar-menu>
-            </div>
-          </div>
+            </ng-container>
+          </ng-container>
     
         </ul>
       </div>

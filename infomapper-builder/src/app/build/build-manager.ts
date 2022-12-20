@@ -219,21 +219,17 @@ export class BuildManager {
   }
 
   /**
-   * 
-   */
-  addSavedNode(saved: boolean) {
-    this.validAppSaveState.next(saved);
-  }
-
-  /**
-   * 
+   * Retrieves the id assigned to this node. Will resemble the following: `x/x/../x/x`.
+   * The last number will be the index for this node (node.id.length - 1).
    */
   getNodeIndex(node: IM.TreeFlatNode | IM.TreeNodeData): number {
     return +node.id.charAt(node.id.length - 1);
   }
 
   /**
-   * 
+   * Retrieves the id assigned to this node's parent. Will resemble the following:
+   * `x/x/../x/x`. The second to last number will be the index for this node's parent
+   * (node.id.length - 3).
    */
   getNodeParentIndex(node: IM.TreeFlatNode | IM.TreeNodeData): number {
     return +node.id.charAt(node.id.length - 3);

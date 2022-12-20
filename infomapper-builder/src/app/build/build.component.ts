@@ -190,8 +190,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     fileExplorerDialogRef.afterClosed().pipe(first()).subscribe((fileSourcePath: string) => {
       if (fileSourcePath) {
         // Change param to `results`.
-        console.log('Build component results:', fileSourcePath);
-        // this.openBuiltConfigFromFile(fileSourcePath);
+        this.openBuiltConfigFromFile(fileSourcePath);
       }
     });
   }
@@ -338,6 +337,9 @@ export class BuildComponent implements OnInit, OnDestroy {
    */
   openBuiltConfigFromFile(sourcePath: string): void {
 
+    this.appService.getJSONData(sourcePath).pipe(first()).subscribe((appConfig: IM.AppConfig) => {
+      console.log('App config file contents from S3:', appConfig);
+    });
   }
 
   /**
@@ -374,7 +376,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   /**
   * Determines what menu choice was selected from a node's kebab menu and calls
   * the necessary function.
-  * @param choice 
+  * @param choice Object that holds properties for (1) what choice was chosen from
+  * the tree node menu, and (2) the TreeFlatNode object.
   */
   receiveMenuChoice(choice: IM.MenuChoice): void {
 

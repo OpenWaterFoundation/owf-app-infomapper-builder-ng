@@ -35,10 +35,6 @@ export class FileService {
    * 
    */
   private allFiles: any;
-  /**
-   * 
-   */
-  private idCount = -1;
 
 
   /**

@@ -68,7 +68,7 @@
               <div aria-label="Tree node name, level, node menu, & exclamation icon.">
                 <span class="node-name-no-children"><b>{{ node.level }}:</b> {{ node.name }}</span>
   
-                <tree-node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></tree-node-menu>
+                <tree-node-menu [node]="node" (sendMenuChoice)="receiveMenuChoice($event)"></tree-node-menu>
   
                 <ng-container *ngIf="!node.saved">
                   <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
@@ -98,7 +98,7 @@
         </mat-tree-node>
       
         <!-- Tree node template for expandable nodes (has children). -->
-        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding
         cdkDrag [cdkDragData]="node" [cdkDragDisabled]="node | checkTreeNode"
         [attr.data-cy]="node.id + '-tree-node-with-children'">
   
@@ -117,7 +117,7 @@
                   <b>{{ node.level }}:</b> {{ node.name }}
                 </span>
   
-                <tree-node-menu [node]="node" (menuChoice)="receiveMenuChoice($event)"></tree-node-menu>
+                <tree-node-menu [node]="node" (sendMenuChoice)="receiveMenuChoice($event)"></tree-node-menu>
     
                 <ng-container *ngIf="!node.saved">
                   <fa-icon [icon]="faTriangleExclamation" size="xl" class="tree-node-warning-icon"
