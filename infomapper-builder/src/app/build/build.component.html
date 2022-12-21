@@ -1,7 +1,7 @@
 <ng-container *ngIf="validBuildID === true;">
 
   <nav class="build-nav">
-    <div fxHide.gt-md class="mobile-build-nav-container">
+    <div class="mobile-build-nav-container">
 
       <button mat-raised-button [matMenuTriggerFor]="nodeMenu" class="mobile-build-nav-button"
       data-cy="NEEDS-TO-BE-UPDATED">
@@ -35,27 +35,25 @@
 
     </div>
   
-    <div fxFlex fxLayout fxLayoutAlign="start" fxHide.lt-lg>
-      <div fxLayout fxLayoutGap="1px" class="build-nav-container">
-  
-        <mat-nav-list class="build-mat-nav-list">
-          <button mat-flat-button (click)="saveToLocalFile()">
-            Save to Local File
-          </button>
-          <button mat-flat-button (click)="browseS3Files()">
-            Open Builder from File
-          </button>
-          <button mat-flat-button>Publish to GitHub</button>
-          <button mat-flat-button>Publish to Preview</button>
-          <button mat-flat-button (click)="publishToAWS()">Publish to AWS</button>
-        </mat-nav-list>
-  
-      </div>
+    <div class="build-nav-container">
+
+      <mat-nav-list class="build-mat-nav-list">
+        <button mat-flat-button (click)="saveToLocalFile()">
+          Save to Local File
+        </button>
+        <button mat-flat-button (click)="browseS3Files()">
+          Open Builder from File
+        </button>
+        <button mat-flat-button>Publish to GitHub</button>
+        <button mat-flat-button>Publish to Preview</button>
+        <button mat-flat-button (click)="publishToAWS()">Publish to AWS</button>
+      </mat-nav-list>
+
     </div>
   </nav>
 
-  <div fxLayout="row" fxLayoutAlign="center" class="main-container">
-    <div fxFlex="75%" fxFlex.lt-md="100%" fxFlex.gt-lg="50%" class="build-container">
+  <div class="main-container">
+    <div class="build-container">
   
       <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" cdkDropList
       (cdkDropListDropped)="treeNodeDrop($event)">
