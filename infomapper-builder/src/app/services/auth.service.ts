@@ -135,6 +135,14 @@ export class AuthService {
     );
   }
 
+  getCurrentCredentials(): Observable<any> {
+    return from(
+      Auth.currentCredentials()
+      .then((result: any) => { return result; })
+      .catch((err: any) => { return err; })
+    )
+  }
+
   /**
    * 
    * @param filePath 
