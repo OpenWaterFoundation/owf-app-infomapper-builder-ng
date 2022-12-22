@@ -1,5 +1,6 @@
 /* CLASSES */
 
+/*  */
 a {
   color: #9db66b;
 }
@@ -12,8 +13,10 @@ a {
   justify-content: center;
 }
 
+/*  */
 @media (max-width: 959px) {
 
+  /*  */
   .display-container {
     // @include display-container(100px);
     height: 100%;
@@ -22,8 +25,10 @@ a {
   }
 }
 
+/*  */
 @media (min-width: 960px) and (max-width: 1919px) {
 
+  /*  */
   .display-container {
     // @include display-container(50px);
     height: 100%;
@@ -32,8 +37,10 @@ a {
   }
 }
 
+/*  */
 @media (min-width: 1920px) {
 
+  /*  */
   .display-container {
     // @include display-container(30px);
     height: 100%;

@@ -4,7 +4,6 @@ import { BrowserModule }            from '@angular/platform-browser';
 import { BrowserAnimationsModule }  from '@angular/platform-browser/animations';
 import { HttpClient,
           HttpClientModule }        from '@angular/common/http';
-import { FlexLayoutModule }         from '@angular/flex-layout';
 import { FormsModule,
           ReactiveFormsModule }     from '@angular/forms';
 
@@ -34,6 +33,7 @@ import { MainMenuConfigComponent }  from './build/builder-components/main-menu-c
 import { NavBarComponent }          from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { NodeMenuComponent }        from './build/builder-utility/tree-node-menu/tree-node-menu.component';
+import { NotFoundComponent }        from './not-found/not-found.component';
 import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
 import { SignInComponent }          from './sign-in/sign-in.component';
 import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
@@ -100,6 +100,7 @@ function appInit(appService: AppService): () => Observable<any> {
     NavBarComponent,
     NavBarMenuComponent,
     NodeMenuComponent,
+    NotFoundComponent,
     SideNavComponent,
     SignInComponent,
     SubMenuConfigComponent,
@@ -117,7 +118,6 @@ function appInit(appService: AppService): () => Observable<any> {
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-    FlexLayoutModule,
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
