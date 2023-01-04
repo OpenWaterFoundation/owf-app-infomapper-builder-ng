@@ -14,14 +14,14 @@ import { MatSnackBar,
 import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
 import { first,
-          Observable,
           Subject }                     from 'rxjs';
 import { AuthService }                  from '../services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js';
 
-import { LambdaClient, InvokeCommand, Lambda } from "@aws-sdk/client-lambda";
-import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
-import { ICredentials } from '@aws-amplify/core';
+import { SSMClient,
+          DescribeParametersCommand,
+          GetParametersCommand }        from "@aws-sdk/client-ssm";
+import { ICredentials }                 from '@aws-amplify/core';
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -102,50 +102,52 @@ export class SignInComponent implements OnInit {
    * properties of a directive.
    */
   ngOnInit(): void {
-    // this.signServiceAccountIn();
-    this.getAnonymousUser();
+    this.signServiceAccountIn();
+    // this.getAnonymousUser();
   }
 
-  getAnonymousUser(): void {
-    this.authService.getCurrentCredentials().pipe(first())
-    .subscribe((credentials: ICredentials) => {
-      console.log('Current credentials:', credentials);
-      this.getParameterStoreParams(credentials);
-    });
-  }
-
-  // signServiceAccountIn() {
-  //   this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
-  //   .subscribe((user: CognitoUser) => {
-      
-  //     this.authService.getCurrentCredentials().pipe(first())
-  //     .subscribe((credentials: ICredentials) => {
-  //       console.log('Current credentials:', credentials);
-  //       this.getParameterStoreParams(credentials);
-  //     });
-      
+  // getAnonymousUser(): void {
+  //   this.authService.getCurrentCredentials().pipe(first())
+  //   .subscribe((credentials: ICredentials) => {
+  //     console.log('Current credentials:', credentials);
+  //     this.getParameterStoreParams(credentials);
   //   });
   // }
 
+  /**
+   * 
+   */
+  signServiceAccountIn() {
+    this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
+    .subscribe((user: CognitoUser) => {
+      
+      this.authService.getCurrentCredentials().pipe(first())
+      .subscribe((credentials: ICredentials) => {
+        this.getParameterStoreParams(credentials);
+      });
+      
+    });
+  }
+
+  /**
+   * 
+   * @param cred 
+   */
   async getParameterStoreParams(cred: ICredentials) {
-    const client = new SSMClient({ region: "us-west-2", credentials: {
-      accessKeyId: cred.accessKeyId,
-      secretAccessKey: cred.secretAccessKey,
-      sessionToken: cred.sessionToken,
-      expiration: cred.expiration
-    } });
-    const command = new GetParametersCommand({Names: ['/user-pool/']});
+    const client = new SSMClient({
+      region: "us-west-2",
+      credentials: {
+        accessKeyId: cred.accessKeyId,
+        secretAccessKey: cred.secretAccessKey,
+        sessionToken: cred.sessionToken,
+        expiration: cred.expiration
+      }
+    });
+    // const command = new GetParametersCommand({ Names: ['/user-pool/owf'] });
+    const command = new DescribeParametersCommand({});
     const response = await client.send(command);
     console.log('Final response:', response);
   }
-
-  // async invokeLambda(user: CognitoUser) {
-  //   user.getSignInUserSession()
-  //   const client = new LambdaClient({ region: 'us-west-2' });
-  //   const command = new InvokeCommand({FunctionName: 'arn:aws:lambda:us-east-1:479241133991:function:test_function'});
-  //   const response = await client.send(command);
-  //   console.log('Invoked Lambda function:', response);
-  // }
 
   /**
   * Called once right before this component is destroyed.
