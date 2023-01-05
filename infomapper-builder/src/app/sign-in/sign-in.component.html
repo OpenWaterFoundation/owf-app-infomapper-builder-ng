@@ -11,18 +11,19 @@
           <div class="sign-in-title">InfoMapper Account</div>
 
           <mat-form-field appearance="outline">
-
             <mat-select name="account-selection" (openedChange)="openSelectChange()">
               <cdk-virtual-scroll-viewport [itemSize]="48" [minBufferPx]="540"
               [maxBufferPx]="540" [style.height.px]="240">
 
+                <!-- Prevent a user pressed space key from acting as a selection option. -->
                 <input matInput formControlName="accountType" placeholder="Search accounts"
-                class="input-search" (keyup)="searchForAccount($event)" #searchInput/>
+                (keydown)="$event.stopPropagation()" class="input-search"
+                (keyup)="searchForAccount($event)" #searchInput/>
 
                 <mat-option *cdkVirtualFor="let account of displayAccounts"
-                (click)="setUserPoolId(account)" [value]="account.name"
-                [style.height.px]="48">
-                  {{ account.name }}
+                (onSelectionChange)="paramAccountSelected($event, account)"
+                [value]="account.values.name" [style.height.px]="48">
+                  {{ account.values.name }}
                 </mat-option>
 
               </cdk-virtual-scroll-viewport>

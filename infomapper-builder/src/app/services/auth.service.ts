@@ -5,13 +5,10 @@ import { Amplify,
           Storage }             from 'aws-amplify';
 
 import { BehaviorSubject,
-          catchError,
           first,
           from,
           map,
-          Observable, 
-          of, 
-          throwError}          from 'rxjs';
+          Observable }          from 'rxjs';
 import { CognitoUser }          from 'amazon-cognito-identity-js';
 
 import { S3ProviderListConfig } from '@aws-amplify/storage/lib-esm/types';
@@ -31,20 +28,16 @@ export class AuthService {
    * 
    */
   private _amplify: any;
-  /**
-   * Used for determining whether the current user is authenticated from the
-   * Cognito User Pool.
-   */
+  /** Used for determining whether the current user is authenticated from the
+   * Cognito User Pool. */
   private _userAuthenticated = new BehaviorSubject<boolean>(false);
   /**
    * 
    */
   private _cognitoUser: CognitoUser;
-  /**
-   * This is required, as Amazon will add the default 'public/', 'protected/',
+  /** This is required, as Amazon will add the default 'public/', 'protected/',
    * or 'private/' prefixes in the URL. Since OWF is not using those folder names
-   * in any S3 bucket, a custom empty string must be used as the prefix 
-   */
+   * in any S3 bucket, a custom empty string must be used as the prefix. */
   private storageOptions: S3ProviderListConfig = {
     pageSize: 'ALL',
     customPrefix: {
@@ -135,6 +128,10 @@ export class AuthService {
     );
   }
 
+  /**
+   * 
+   * @returns 
+   */
   getCurrentCredentials(): Observable<any> {
     return from(
       Auth.currentCredentials()
@@ -187,7 +184,8 @@ export class AuthService {
   }
 
   /**
-   * Attempts to sign-in the user with the provided credentials, and........
+   * Attempts to sign-in the user with the provided credentials, and returns the
+   * response as a Promise converted to an Observable.
    * @param userNameOrEmail The username or email entered by the user.
    * @param password The password to be entered.
    * @returns An observable response to the authentication request.
@@ -200,16 +198,20 @@ export class AuthService {
    * Signs the user out of the session.
    * @returns An observable of the response from Cognito upon sign out.
    */
-  signOut(): void {
+  signOut(serviceAccount?: boolean): void {
     from(Auth.signOut()).pipe(first()).subscribe(() => {
-      this._authUsername.next('');
-      this._userAuthenticated.next(false);
-      this.router.navigate(['/login']);
+      // Logging out of a service account does not need to do anything else.
+      if (!serviceAccount) {
+        this._authUsername.next('');
+        this._userAuthenticated.next(false);
+        this.router.navigate(['/login']);
+      }
     });
   }
 
   /**
-   * 
+   * Called every page navigation and page refresh if the user is still logged in.
+   * @param cognitoUser The user object returned when successfully signed in.
    */
   successfulAuthCheckSetup(cognitoUser: CognitoUser): void {
     this._cognitoUser = cognitoUser;
@@ -218,14 +220,13 @@ export class AuthService {
   }
 
   /**
-   * Sets
-   * @param cognitoUser 
+   * Sets necessary attributes upon successful user login on the sign in page.
+   * @param cognitoUser The user object returned when successfully signed in.
    */
   successfulLoginSetup(cognitoUser: CognitoUser): void {
 
     this._authUsername.next(cognitoUser.getUsername());
     this._cognitoUser = cognitoUser;
-
 
     this.userAuthenticated = true;
     this.router.navigate(['/content-page/home']);

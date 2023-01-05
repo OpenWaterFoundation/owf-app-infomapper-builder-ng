@@ -19,9 +19,28 @@ import { AuthService }                  from '../services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js';
 
 import { SSMClient,
-          DescribeParametersCommand,
-          GetParametersCommand }        from "@aws-sdk/client-ssm";
+          GetParametersByPathCommand,
+          GetParametersByPathCommandOutput,
+          Parameter }                   from "@aws-sdk/client-ssm";
 import { ICredentials }                 from '@aws-amplify/core';
+
+
+/**
+ * 
+ */
+interface ParamAccountValues {
+  name?: string;
+  region?: string;
+  userPoolId?: string;
+}
+
+/**
+ * 
+ */
+interface ParamAccount {
+  slug?: string;
+  values?: ParamAccountValues;
+}
 
 @Component({
   selector: 'im-builder-sign-in',
@@ -30,21 +49,19 @@ import { ICredentials }                 from '@aws-amplify/core';
 })
 export class SignInComponent implements OnInit {
 
-  /**
-   * 
-   */
+  /**  The InfoMapper Account search input element. Used to focus on after creation
+   * by using TypeScript. */
   @ViewChild("searchInput") private _searchInputElement: ElementRef;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
-  /** All used FontAwesome icons in the SignInComponent. */
+  /** All used FontAwesome icons in the SignInComponent (exception: visibilityIcon).  */
   
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
   }
-  /**
-   * 
-   */
+  /** The Angular Form Group used by the sign in component to obtain user input and
+   * validation. */
   signInFG = new FormGroup({
     accountType: new FormControl('', Validators.required),
     user: new FormControl('', Validators.required),
@@ -58,20 +75,10 @@ export class SignInComponent implements OnInit {
   /** Sets the vertical position of the error snackbar to display at the top of
   * the screen. */
   snackbarVerticalPos: MatSnackBarVerticalPosition = 'top';
-
-  readonly accounts = [
-    { slug: '', name: '' },
-    { slug: 'owf', name: 'Open Water Foundation' },
-    { slug: 'cwcb', name: 'CWCB' },
-    { slug: 'city-of-denver', name: 'City of Denver' },
-    { slug: 'orson-welles', name: 'Orson Welles' },
-    { slug: 'scott-pilgrim', name: 'Scott Pilgrim' },
-    { slug: 'justice-league', name: 'The Justice League' },
-    { slug: 'cap-jack-sparrow', name: 'Captain Jack Sparrow' },
-    { slug: 'google', name: 'Google' }
-  ];
-
-  displayAccounts = [{ slug: '', name: '' }];
+  /** Array of all found Parameters from the AWS SSM using a service account. */
+  private accounts: ParamAccount[] = [];
+  /** The array of accounts for all currently created AWS Cognito User Pools. */
+  displayAccounts: ParamAccount[] = [{ slug: '', values: { name: '' } }];
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -81,7 +88,10 @@ export class SignInComponent implements OnInit {
   
 
   /**
-   * 
+   * The constructor for the SignInComponent.
+   * @param authService Service for using AWS Amplify to authenticate and authorize
+   * different users using the IM Builder.
+   * @param snackBar Service to dispatch Angular Material snack bar messages.
    */
   constructor(private authService: AuthService, private snackBar: MatSnackBar) {
 
@@ -89,7 +99,6 @@ export class SignInComponent implements OnInit {
 
 
   /**
-   * 
    * @param control The FormControl that will be checked for errors.
    * @returns An array with all errors for the control, or an empty array of no errors.
    */
@@ -98,42 +107,13 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * Lifecycle hook that is called after Angular has initialized all data-bound
-   * properties of a directive.
+   * Use the currently signed-in service account (and its credentials) to utilize
+   * the AWS JavaScript SDK and retrieve all Parameter objects stored in the AWS
+   * Systems Manager Parameter store.
+   * @param cred The credentials obtained by the AWS Amplify Auth class from the
+   * service account.
    */
-  ngOnInit(): void {
-    this.signServiceAccountIn();
-    // this.getAnonymousUser();
-  }
-
-  // getAnonymousUser(): void {
-  //   this.authService.getCurrentCredentials().pipe(first())
-  //   .subscribe((credentials: ICredentials) => {
-  //     console.log('Current credentials:', credentials);
-  //     this.getParameterStoreParams(credentials);
-  //   });
-  // }
-
-  /**
-   * 
-   */
-  signServiceAccountIn() {
-    this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
-    .subscribe((user: CognitoUser) => {
-      
-      this.authService.getCurrentCredentials().pipe(first())
-      .subscribe((credentials: ICredentials) => {
-        this.getParameterStoreParams(credentials);
-      });
-      
-    });
-  }
-
-  /**
-   * 
-   * @param cred 
-   */
-  async getParameterStoreParams(cred: ICredentials) {
+  private async getParameterStoreParams(cred: ICredentials) {
     const client = new SSMClient({
       region: "us-west-2",
       credentials: {
@@ -143,10 +123,19 @@ export class SignInComponent implements OnInit {
         expiration: cred.expiration
       }
     });
-    // const command = new GetParametersCommand({ Names: ['/user-pool/owf'] });
-    const command = new DescribeParametersCommand({});
-    const response = await client.send(command);
-    console.log('Final response:', response);
+
+    const command = new GetParametersByPathCommand({ Path: '/user-pool/', Recursive: true });
+    const response: GetParametersByPathCommandOutput = await client.send(command);
+
+    this.populateAccounts(response.Parameters);
+  }
+
+  /**
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
+   */
+  ngOnInit(): void {
+    this.signServiceAccountIn();
   }
 
   /**
@@ -180,8 +169,44 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * 
-   * @param $event 
+   * Iterates over all returned Parameter Store Parameters, and assigns each one
+   * to the more accessible InfoMapper created ParamAccount.
+   * @param allParameters All Parameter object returned from the service account
+   * using the AWS SDK to retrieve all current Parameters.
+   */
+  private populateAccounts(allParameters: Parameter[]): void {
+
+    for (let param of allParameters) {
+      let option: ParamAccount = {
+        slug: param.Name,
+        values: JSON.parse(param.Value)
+      };
+      this.accounts.push(option);
+    }
+    console.log('All accounts:', this.accounts);
+    // Once all accounts have been set, the service account can be signed out.
+    this.authService.signOut(true);
+  }
+
+  /**
+   * Called on any detected change on the mat option menu. Obtains the AWS SSM Parameter
+   * object so the correct User Pool is used to sign a user in.
+   * @param $event The Event from the template file when an InfoMapper Account has
+   * been selected from the drop down option menu.
+   * @param paramAccount The AWS SSM Parameter object associated with the chosen
+   * account.
+   */
+  paramAccountSelected($event: any, paramAccount: ParamAccount) {
+
+    if ($event.source.selected) {
+      console.log('Account chosen:', paramAccount);
+    }
+  }
+
+  /**
+   * Called after each keyup when searching for an InfoMapper Account in its search
+   * field.
+   * @param $event The event passed in from the template.
    */
   searchForAccount($event: KeyboardEvent): any {
 
@@ -189,27 +214,23 @@ export class SignInComponent implements OnInit {
 
     // If the value in the search bar is empty, then all dates can be shown.
     if (input === '') {
-      this.displayAccounts = [{ slug: '', name: '' }];
+      this.displayAccounts = [{ slug: '', values: { name: '' } }];
       return;
     }
 
     if ($event.key.toLowerCase() === 'backspace') {
-      this.displayAccounts = this.accounts.filter((option: { name: string, slug: string }) => {
-        return option.name.toLowerCase().includes(input) || option.slug.toLowerCase().includes(input);
+      this.displayAccounts = this.accounts.filter((param: ParamAccount) => {
+        // Human readable name or slug name.
+        return param.values.name.toLowerCase().includes(input) ||
+        param.slug.toLowerCase().includes(input);
       });
     } else {
-      this.displayAccounts = this.accounts.filter((option: { name: string, slug: string }) => {
-        return option.name.toLowerCase().includes(input) || option.slug.toLowerCase().includes(input);
+      this.displayAccounts = this.accounts.filter((param: ParamAccount) => {
+        // Human readable name or slug name.
+        return param.values.name.toLowerCase().includes(input) ||
+        param.slug.toLowerCase().includes(input);
       });
     }
-  }
-
-  /**
-   * 
-   * @param account
-   */
-  setUserPoolId(account: { name: string, slug: string }): void {
-    console.log('Account type:', account);
   }
 
   /**
@@ -234,6 +255,22 @@ export class SignInComponent implements OnInit {
   }
 
   /**
+   * Asynchronously sign in as the service account and get its credentials.
+   */
+  private signServiceAccountIn() {
+    this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
+    .subscribe((user: CognitoUser) => {
+      console.log('Signed in service account:', user);
+      this.authService.getCurrentCredentials().pipe(first())
+      .subscribe((credentials: ICredentials) => {
+        console.log('Signed in service account credentials:', credentials);
+        this.getParameterStoreParams(credentials);
+      });
+      
+    });
+  }
+
+  /**
    * Toggles the password field's icon and tooltip message.
    */
   togglePasswordVisibility(): void {
@@ -249,6 +286,18 @@ export class SignInComponent implements OnInit {
     } else {
       this.visibilityMessage = 'Show password';
     }
+  }
+
+  /**
+   * Uses an anonymous Cognito account to retrieve all Parameters from the SSM Parameter
+   * store. Currently unused.
+   */
+  x_getAnonymousUser(): void {
+    this.authService.getCurrentCredentials().pipe(first())
+    .subscribe((credentials: ICredentials) => {
+      console.log('Current credentials:', credentials);
+      this.getParameterStoreParams(credentials);
+    });
   }
 
 }
