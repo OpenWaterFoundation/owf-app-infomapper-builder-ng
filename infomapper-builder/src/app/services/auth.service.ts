@@ -120,9 +120,10 @@ export class AuthService {
    * @returns 
    */
   getAllBucketFiles(): Observable<any> {
-  
+    // TODO: jpkeahey - Make this dynamic. Using something like 'latest/assets/'
+    // will only let the user see those folders and not others.
     return from(
-      Storage.list('', this.storageOptions)
+      Storage.list('latest/assets/', this.storageOptions)
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     );
