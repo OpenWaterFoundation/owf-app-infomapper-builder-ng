@@ -23,6 +23,8 @@ import { SSMClient,
           GetParametersByPathCommandOutput,
           Parameter }                   from "@aws-sdk/client-ssm";
 import { ICredentials }                 from '@aws-amplify/core';
+import { LoaderService } from '../services/loader.service';
+import { CdkOverlayOrigin } from '@angular/cdk/overlay';
 
 
 /**
@@ -93,7 +95,8 @@ export class SignInComponent implements OnInit {
    * different users using the IM Builder.
    * @param snackBar Service to dispatch Angular Material snack bar messages.
    */
-  constructor(private authService: AuthService, private snackBar: MatSnackBar) {
+  constructor(private authService: AuthService, private loaderService: LoaderService,
+  private snackBar: MatSnackBar) {
 
   }
 
@@ -135,7 +138,10 @@ export class SignInComponent implements OnInit {
    * properties of a directive.
    */
   ngOnInit(): void {
-    this.signServiceAccountIn();
+    // TODO.
+    this.loaderService.showLoader();
+    this.serviceAccountSignIn();
+    // this.x_anonymousUserSignIn();
   }
 
   /**
@@ -186,6 +192,8 @@ export class SignInComponent implements OnInit {
     console.log('All accounts:', this.accounts);
     // Once all accounts have been set, the service account can be signed out.
     this.authService.signOut(true);
+    // TODO.
+    this.loaderService.hideLoader();
   }
 
   /**
@@ -257,7 +265,7 @@ export class SignInComponent implements OnInit {
   /**
    * Asynchronously sign in as the service account and get its credentials.
    */
-  private signServiceAccountIn() {
+  private serviceAccountSignIn() {
     this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
     .subscribe((user: CognitoUser) => {
       console.log('Signed in service account:', user);
@@ -292,10 +300,10 @@ export class SignInComponent implements OnInit {
    * Uses an anonymous Cognito account to retrieve all Parameters from the SSM Parameter
    * store. Currently unused.
    */
-  x_getAnonymousUser(): void {
+  x_anonymousUserSignIn(): void {
     this.authService.getCurrentCredentials().pipe(first())
     .subscribe((credentials: ICredentials) => {
-      console.log('Current credentials:', credentials);
+      console.log('Unauthorized service account credentials:', credentials);
       this.getParameterStoreParams(credentials);
     });
   }

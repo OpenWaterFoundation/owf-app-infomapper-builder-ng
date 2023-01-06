@@ -29,6 +29,7 @@ import { ConfigDialogComponent }    from './build/builder-utility/dialog/config-
 import { ContentPageComponent }     from './content-page/content-page.component';
 import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
 import { FileBrowserComponent }     from './file-browser/file-browser/file-browser.component';
+import { LoaderComponent }          from './build/builder-utility/loader/loader.component';
 import { MainMenuConfigComponent }  from './build/builder-components/main-menu-config/main-menu-config.component';
 import { NavBarComponent }          from './navigation/nav-bar/nav-bar.component';
 import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
@@ -45,7 +46,7 @@ import { ConvertFormNamePipe }      from './pipes/convert-form-name.pipe';
 import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
 import { IsFolderPipe }             from './pipes/is-folder.pipe';
 
-import { CustomSpinnerDirective }   from './directives/custom-spinner.directive';
+import { OverlayLoadingDirective }  from './directives/overlay-loading.directive';
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown                from 'showdown';
@@ -96,6 +97,7 @@ function appInit(appService: AppService): () => Observable<any> {
     ConfigDialogComponent,
     ContentPageComponent,
     DatastoreConfigComponent,
+    LoaderComponent,
     MainMenuConfigComponent,
     NavBarComponent,
     NavBarMenuComponent,
@@ -110,7 +112,7 @@ function appInit(appService: AppService): () => Observable<any> {
     ConvertFormNamePipe,
     FileBrowserComponent,
     IsFolderPipe,
-    CustomSpinnerDirective
+    OverlayLoadingDirective
   ],
   imports: [
     AngularFullpageModule,

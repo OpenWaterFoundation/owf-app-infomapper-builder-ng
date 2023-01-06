@@ -86,3 +86,11 @@ and recompile, the component should be rendered correctly (or as the created).
 This seems to be an issue where web pack, or something else, 'forgets' about the
 component's existence in the application. Making a change to the component's
 TypeScript file helps it remember again.
+
+**UPDATE:** According to
+[this Stack Overflow question](https://stackoverflow.com/questions/71896562/angular-error-typeerror-cannot-read-properties-of-undefined-reading-ondestroy),
+deleting the `.angular/` folder and rerunning `ng serve` will resolve this issue.
+It indeed worked, and should be done to resolve this issue. I will update this again
+if necessary if this did not solve the issue for good, but for now, it better than
+making tiny changes to many components in the app. The cause for this is still unfortunately
+unknown.

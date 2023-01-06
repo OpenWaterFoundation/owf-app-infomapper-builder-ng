@@ -4,6 +4,7 @@ import { CdkStepperModule }         from '@angular/cdk/stepper';
 import { CdkTableModule }           from '@angular/cdk/table';
 import { CdkTreeModule }            from '@angular/cdk/tree';
 import { DragDropModule }           from '@angular/cdk/drag-drop';
+import { OverlayModule }            from '@angular/cdk/overlay';
 import { PortalModule }             from '@angular/cdk/portal';
 import { ScrollingModule }          from '@angular/cdk/scrolling';
 
@@ -31,6 +32,7 @@ import { MatTreeModule }            from '@angular/material/tree';
       CdkTableModule,
       CdkTreeModule,
       DragDropModule,
+      OverlayModule,
       PortalModule,
       ScrollingModule,
   

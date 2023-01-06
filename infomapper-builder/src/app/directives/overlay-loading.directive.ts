@@ -2,9 +2,9 @@ import { Directive,
           ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[appCustomSpinner]'
+  selector: '[overlayLoading]'
 })
-export class CustomSpinnerDirective {
+export class OverlayLoadingDirective {
 
 
   constructor(private el: ElementRef) {
