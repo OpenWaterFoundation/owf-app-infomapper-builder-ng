@@ -128,7 +128,7 @@ scriptFolder=$(cd "$(dirname "$0")" && pwd)
 # Change to the folder where the script is since other actions below are relative to that.
 cd "${scriptFolder}" || exit
 
-cd ../mkdocs-project || exit
+cd ../doc-dev-mkdocs-project || exit
 
 # Write some code to check for open port?
 port=8000

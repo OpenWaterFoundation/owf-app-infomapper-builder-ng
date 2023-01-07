@@ -1,6 +1,10 @@
 site_name: My Docs
 nav:
 - Home: index.md
+- Workflow:
+  - Application workflow: workflow/workflow.md
+  - Adding a new user: workflow/add-user.md
+
 # ------- configuration properties ---------------
 copyright:  Copyright Open Water Foundation
 # Don't indicate the repo because Edit will be shown on every page (don't want that in deployed mode):

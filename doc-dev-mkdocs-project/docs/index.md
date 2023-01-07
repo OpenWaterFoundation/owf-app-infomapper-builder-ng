@@ -1,4 +1,4 @@
-# InfoMapper Builder
+# InfoMapper Builder Documentation #
 
 This is the user documentation for the Open Water Foundation (OWF) InfoMapper Builder
 software. User documentation describes how to configure, deploy, and use the software.

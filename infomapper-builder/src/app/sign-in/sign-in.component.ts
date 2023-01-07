@@ -23,14 +23,14 @@ import { SSMClient,
           GetParametersByPathCommandOutput,
           Parameter }                   from "@aws-sdk/client-ssm";
 import { ICredentials }                 from '@aws-amplify/core';
-import { LoaderService } from '../services/loader.service';
-import { CdkOverlayOrigin } from '@angular/cdk/overlay';
+import { LoaderService }                from '../services/loader.service';
 
 
 /**
  * 
  */
-interface ParamAccountValues {
+export interface ParamAccountValues {
+  accountPath?: string;
   name?: string;
   region?: string;
   userPoolId?: string;
@@ -39,7 +39,7 @@ interface ParamAccountValues {
 /**
  * 
  */
-interface ParamAccount {
+export interface ParamAccount {
   slug?: string;
   values?: ParamAccountValues;
 }
@@ -208,6 +208,7 @@ export class SignInComponent implements OnInit {
 
     if ($event.source.selected) {
       console.log('Account chosen:', paramAccount);
+      this.authService.currentUserParamAccount = paramAccount;
     }
   }
 

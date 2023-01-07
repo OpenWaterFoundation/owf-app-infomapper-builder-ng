@@ -1,0 +1,59 @@
+<!-- Use for keeping the entire dialog in the app window. cdkDragBoundary=".cdk-overlay-container" -->
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+class="cdk-drag" data-cy="main-dialog-container">
+  <div mat-dialog-title class="drag-header-main" cdkDragHandle
+  data-cy="dialog-drag-header-main">
+
+    <div class="header">
+      <p class="header-title">
+        Signed in as <span class="username-text-logged-in">{{ authUsername | async }}</span>
+      </p>
+    </div>
+
+    <button mat-button (click)="closeDialog()" class="upper-dialog-close-button"
+    attr.data-cy="dialog-upper-close-NEEDS-TO-BE-CHANGED">
+      <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    
+    <mat-tab-group animationDuration="0ms" style="height: 100%;">
+      <mat-tab *ngFor="let tabName of accountTabs; let index = index" [label]="tabName"
+      >
+
+        <div class="tabs-container">
+
+          <div *ngIf="tabName === 'General'">
+
+            <h2>Account Information</h2>
+
+          </div>
+  
+          <div *ngIf="tabName === 'Security'">
+
+            <h2>Change password</h2>
+
+
+            
+          </div>
+
+        </div>
+        
+        
+
+      </mat-tab>
+    </mat-tab-group>
+    
+  </div>
+
+  <div class="dialog-utility-container">
+
+    <button mat-raised-button (click)="closeDialog()" class="dialog-cancel-button"
+    attr.data-cy="dialog-lower-cancel-NEEDS-TO-BE-CHANGED">
+      Close
+    </button>
+
+  </div>
+
+</div>

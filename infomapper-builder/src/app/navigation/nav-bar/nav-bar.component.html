@@ -5,7 +5,7 @@
       <div class="side-nav-toggle-container">
         <button mat-icon-button (click)="onToggleSidenav()"
         data-cy="side-nav-toggle-button">
-          <fa-icon [icon]="faBars" size="lg"></fa-icon>
+          <fa-icon [icon]="faBars" size="xl"></fa-icon>
         </button>
       </div>
     
@@ -27,17 +27,17 @@
     </div>
 
     <div *ngIf="isLoggedIn | async" class="toolbar-right-container">
-      <button mat-stroked-button matRipple [matMenuTriggerFor]="menu" >
-        <span>Account</span>
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="user-icon-button">
+        <fa-icon [icon]="faUser" size="xl"></fa-icon>
       </button>
       <mat-menu #menu="matMenu">
 
-        <button mat-menu-item disabled>
-          <span class="user-text">
-            User: <span class="username-text-logged-in">{{ authUsername | async }}</span>
-          </span>
+        <button mat-menu-item (click)="openUserAccountDialog()">
+          My Account
         </button>
-        <mat-divider></mat-divider>
+
+        <mat-divider class="user-logout-divider"></mat-divider>
+
         <button mat-menu-item (click)="logoutUser()">
           <span>Logout</span>
         </button>

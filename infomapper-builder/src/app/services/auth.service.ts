@@ -12,7 +12,7 @@ import { BehaviorSubject,
 import { CognitoUser }          from 'amazon-cognito-identity-js';
 
 import { S3ProviderListConfig } from '@aws-amplify/storage/lib-esm/types';
-
+import { ParamAccount }         from '../sign-in/sign-in.component';
 
 
 @Injectable({
@@ -35,6 +35,10 @@ export class AuthService {
    * 
    */
   private _cognitoUser: CognitoUser;
+  /**
+   * 
+   */
+  private _currentUserParam: ParamAccount;
   /** This is required, as Amazon will add the default 'public/', 'protected/',
    * or 'private/' prefixes in the URL. Since OWF is not using those folder names
    * in any S3 bucket, a custom empty string must be used as the prefix. */
@@ -115,15 +119,25 @@ export class AuthService {
     this._userAuthenticated.next(verified);
   }
 
+  get currentUserParamAccount(): ParamAccount {
+    return this._currentUserParam;
+  }
+
+  set currentUserParamAccount(paramAccount: ParamAccount) {
+    this._currentUserParam = paramAccount;
+  }
+
   /**
-   * 
-   * @returns 
+   * Use the AWS Amplify 'Storage' class to list the files under the provided path
+   * given from the user's Parameter from the Systems Manager Parameter store.
+   * @returns A Promise converted to an Observable for subscription to obtain the
+   * necessary S3 files and folders.
    */
   getAllBucketFiles(): Observable<any> {
     // TODO: jpkeahey - Make this dynamic. Using something like 'latest/assets/'
     // will only let the user see those folders and not others.
     return from(
-      Storage.list('latest/assets/', this.storageOptions)
+      Storage.list(this._currentUserParam.values.accountPath, this.storageOptions)
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     );
@@ -234,3 +248,12 @@ export class AuthService {
   }
   
 }
+
+// ,
+// "Condition": {
+//     "StringLike": {
+//         "s3:prefix": [
+//             "test/*"
+//         ]
+//     }
+// }

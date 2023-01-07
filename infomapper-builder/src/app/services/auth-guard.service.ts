@@ -72,7 +72,7 @@ export class AuthGuardService implements CanActivate {
   * Displays the self-closing error message so users know what went wrong.
   */
   openErrorSnackBar() {
-    this.snackBar.open('Log in to use InfoMapper Builder functionality. ', null, {
+    this.snackBar.open('Log in to use the InfoMapper Builder. ', null, {
       duration: this.snackBarDuration,
       panelClass: 'snackbar-warning',
       horizontalPosition: this.snackBarHorizontalPos,

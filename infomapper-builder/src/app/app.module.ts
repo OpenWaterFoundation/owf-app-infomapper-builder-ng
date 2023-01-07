@@ -38,6 +38,7 @@ import { NotFoundComponent }        from './not-found/not-found.component';
 import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
 import { SignInComponent }          from './sign-in/sign-in.component';
 import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
+import { UserAccountComponent }     from './build/builder-utility/dialog/user-account/user-account.component';
 
 import { AppService }               from './services/app.service';
 
@@ -106,6 +107,7 @@ function appInit(appService: AppService): () => Observable<any> {
     SideNavComponent,
     SignInComponent,
     SubMenuConfigComponent,
+    UserAccountComponent,
 
     CheckElementPipe,
     CheckTreeNodePipe,

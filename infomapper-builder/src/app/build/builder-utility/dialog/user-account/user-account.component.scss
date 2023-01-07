@@ -12,14 +12,7 @@
 
 /* The main dialog content to display. */
 .dialog-content {
-  height: calc(100% - 130px);
-  padding: 0px 15px 10px 15px;
-  overflow: auto;
-}
-
-/* The lower left Save button. */
-.dialog-save-button {
-  background-color: #9db66b;
+  height: calc(100% - 120px);
 }
 
 /* Container for all dialog utility buttons. */
@@ -27,7 +20,7 @@
   background-color: #e6e6e6;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   height: 80px;
 }
 
@@ -64,6 +57,11 @@ itself from the dialog content */
   margin: 0;
 }
 
+/*  */
+.tabs-container {
+  padding: 10px;
+}
+
 /* The class for the upper-right close button in a dialog. The inline-block display
 makes it so that it will share with the title header div, rendering them side-by-side. */
 .upper-dialog-close-button {
@@ -72,4 +70,10 @@ makes it so that it will share with the title header div, rendering them side-by
   width: 80px;
   float: right;
   outline: none;
+}
+
+/* Inline styling for the printed Username under the Account dropdown. */
+.username-text-logged-in {
+  color: darkblue;
+  font-weight: bold;
 }
