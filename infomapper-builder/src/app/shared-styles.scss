@@ -1,7 +1,7 @@
 /* CLASSES */
 
 /* Highlights text to resemble a code block. */
-.code-block {
+.shared-code-block {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 0 5px 1px;
@@ -9,62 +9,53 @@
 }
 
 /* Container holding all form fields & inputs in the app-config. */
-.config-form-fields-container {
+.shared-form-field-container {
   display: flex;
   flex-direction: column;
 }
 
 /* Better display for each <li> tag in each dialog's description box. */
-.description-list {
+.shared-description-list {
   margin: 5px 0;
 }
 
 /* Override for the padding of <ul> tags in each dialog's description box. */
-.description-ul {
+.shared-description-ul {
   padding-left: 25px;
 }
 
 /* Container of all form sections in the dialog row. */
-.form-container {
+.shared-form-container {
   display: flex;
   align-items: center;
 }
 
 /* The description container for each form field in the dialog. */
-.form-description {
+.shared-form-description {
   font-size: 13px;
-  margin: 0px 0px 54px 20px;
+  margin: 0px 0px 20px 20px;
   user-select: none;
   width: 300px;
 }
 
 /* The name of each dialog property in the dialog. */
-.form-title {
+.shared-form-title {
   font-size: 18px;
-  margin: 0px 20px 48px 0px;
+  margin: 0px 20px 22px 0px;
   text-align: end;
   user-select: none;
   width: 150px;
 }
 
 /* Sentence shown at the top of each dialog. */
-.help-string {
+.shared-top-dialog-string {
   font-size: small;
   margin: 0;
   padding: 10px 0px;
 }
 
 /* Styles asterisks shown by each form-title. */
-.required-asterisk {
+.shared-required-asterisk {
   font-size: 18px;
   font-weight: 600;
-}
-
-/* TAGS */
-
-/* Each form field input/textarea in the dialog. */
-mat-form-field {
-  font-size: 14px;
-  min-height: 110px;
-  width: 300px;
 }

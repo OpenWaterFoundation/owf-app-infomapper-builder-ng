@@ -51,6 +51,8 @@ import { OverlayLoadingDirective }  from './directives/overlay-loading.directive
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown                from 'showdown';
+import { GeneralTabComponent } from './user-account/account-tabs/general-tab/general-tab.component';
+import { SecurityTabComponent } from './user-account/account-tabs/security-tab/security-tab.component';
 
 
 
@@ -114,7 +116,9 @@ function appInit(appService: AppService): () => Observable<any> {
     ConvertFormNamePipe,
     FileBrowserComponent,
     IsFolderPipe,
-    OverlayLoadingDirective
+    OverlayLoadingDirective,
+    GeneralTabComponent,
+    SecurityTabComponent
   ],
   imports: [
     AngularFullpageModule,

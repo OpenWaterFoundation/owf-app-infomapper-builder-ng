@@ -1,0 +1,46 @@
+/* CLASSES */
+
+/* Container around  */
+.change-password-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+/*  */
+.config-form-field {
+  font-size: 14px;
+  width: 400px;
+}
+
+/*  */
+.security-element-divider {
+  margin: 20px 0;
+}
+
+/*  */
+.update-password-button {
+  background-color: #e3e3e3;
+}
+
+/*  */
+.update-password-error {
+  margin-bottom: 20px;
+  color: #f44336;
+}
+
+/*  */
+.update-password-utility {
+  display: flex;
+  flex-direction: column;
+}
+
+/*  */
+.update-password-utility-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

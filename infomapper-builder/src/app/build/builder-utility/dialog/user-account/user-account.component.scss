@@ -56,9 +56,14 @@ itself from the dialog content */
   margin: 0;
 }
 
-/*  */
-.tabs-container {
+/* Container around each Mat Tab's content. */
+.tab-container {
   padding: 10px;
+}
+
+/* Text in each Mat Tab header as a label. */
+.tab-text {
+  margin-left: 12px;
 }
 
 /* The class for the upper-right close button in a dialog. The inline-block display
@@ -74,5 +79,6 @@ makes it so that it will share with the title header div, rendering them side-by
 /* Inline styling for the printed Username under the Account dropdown. */
 .username-text-logged-in {
   color: darkblue;
+  // color: #9db66b;
   font-weight: bold;
 }

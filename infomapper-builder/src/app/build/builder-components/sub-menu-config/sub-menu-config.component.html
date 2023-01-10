@@ -1,17 +1,17 @@
-<p class="help-string">
-  All fields marked with an asterisk ( <span class="required-asterisk">*</span> ) are required.
+<p class="shared-top-dialog-string">
+  All fields marked with an asterisk ( <span class="shared-required-asterisk">*</span> ) are required.
 </p>
             
 <form [formGroup]="appBuilderForm">
 
   <div formGroupName="subMenuFG">
-    <div class="config-form-fields-container">
+    <div class="shared-form-field-container">
 
-      <div class="form-container">
-        <div class="form-title">
-          ID<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          ID<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="id" placeholder="about-the-project"
           [attr.data-cy]="node.id + '-subMenu-config-id'">
 
@@ -22,16 +22,16 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Unique internal identifier used in the URL.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
-          Name<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Name<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="name" placeholder="About the Project"
           (keyup)="titleInput()" [attr.data-cy]="node.id + '-subMenu-config-name'">
 
@@ -42,16 +42,16 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Unique name to be used internally and displayed on the menu.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
-          Description<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Description<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <textarea matInput formControlName="description" placeholder="This menu is used for..."
           [attr.data-cy]="node.id + '-subMenu-config-description'">
           </textarea>
@@ -63,14 +63,14 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           A simple explanation of what this SubMenu does in the application.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">Action</div>
-        <mat-form-field appearance="outline">
+      <div class="shared-form-container">
+        <div class="shared-form-title">Action</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="action" (selectionChange)="handleActionControlChoice($event)"
           [attr.data-cy]="node.id + '-subMenu-config-action'">
             <mat-option value=""></mat-option>
@@ -82,17 +82,17 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           The action to take when the SubMenu item is clicked.
         </mat-card>
       </div>
 
       <ng-container *ngIf="appBuilderForm.get('subMenuFG.action').value !== ''">
-        <div class="form-container">
-          <div class="form-title">
-            {{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'title' }}<span class="required-asterisk">*</span>
+        <div class="shared-form-container">
+          <div class="shared-form-title">
+            {{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'title' }}<span class="shared-required-asterisk">*</span>
           </div>
-          <mat-form-field appearance="outline">
+          <mat-form-field class="config-form-field" appearance="outline">
             <input matInput
             formControlName="{{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'property' }}"
             placeholder="{{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'placeholder' }}"
@@ -105,16 +105,16 @@
             </mat-error>
           </mat-form-field>
   
-          <mat-card class="form-description">
+          <mat-card class="shared-form-description">
             {{ appBuilderForm.get('subMenuFG.action').value | convertFormName : 'description' }}
           </mat-card>
         </div>
       </ng-container>
       
 
-      <div class="form-container">
-        <div class="form-title">Enabled</div>
-        <mat-form-field appearance="outline">
+      <div class="shared-form-container">
+        <div class="shared-form-title">Enabled</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="enabled">
             <mat-option value=""></mat-option>
             <mat-option value="True">True</mat-option>
@@ -122,15 +122,15 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Whether or not the Main Menu is enabled. Disabled menus will be greyed
           out and won't be selectable.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">Double separator before menu</div>
-        <mat-form-field appearance="outline">
+      <div class="shared-form-container">
+        <div class="shared-form-title">Double separator before menu</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="doubleSeparatorBefore">
             <mat-option value=""></mat-option>
             <mat-option value="True">True</mat-option>
@@ -138,15 +138,15 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Whether or not double separator lines (2 lines) should be drawn above
           the SubMenu item to group SubMenu items.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">Separator before menu</div>
-        <mat-form-field appearance="outline">
+      <div class="shared-form-container">
+        <div class="shared-form-title">Separator before menu</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="separatorBefore">
             <mat-option value=""></mat-option>
             <mat-option value="True">True</mat-option>
@@ -154,17 +154,17 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Whether or not a separator line should be drawn above the SubMenu item
           to group SubMenu items.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
+      <div class="shared-form-container">
+        <div class="shared-form-title">
           Tooltip
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <textarea matInput formControlName="tooltip" placeholder="Display a page..."
           [attr.data-cy]="node.id + '-subMenu-config-tooltip'">
           </textarea>
@@ -176,16 +176,16 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           A simple explanation of what this SubMenu does to be shown on the menu
           as a tooltip.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">Visible</div>
+      <div class="shared-form-container">
+        <div class="shared-form-title">Visible</div>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="visible">
             <mat-option value=""></mat-option>
             <mat-option value="True">True</mat-option>
@@ -193,7 +193,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Whether or not the Main Menu is visible. Non-visible menus will not be
           created and shown in the navbar.
         </mat-card>

@@ -1,17 +1,17 @@
-<p class="help-string">
-  All fields marked with an asterisk ( <span class="required-asterisk">*</span> ) are required.
+<p class="shared-top-dialog-string">
+  All fields marked with an asterisk ( <span class="shared-required-asterisk">*</span> ) are required.
 </p>
             
 <form [formGroup]="appBuilderForm">
 
   <div formGroupName="datastoreFG">
-    <div class="config-form-fields-container">
+    <div class="shared-form-field-container">
 
-      <div class="form-container">
-        <div class="form-title">
-          Name<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Name<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="name" placeholder="StateModGitHub"
           [attr.data-cy]="node.id + '-datastore-config-name'">
 
@@ -22,37 +22,37 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Unique name of the datastore. Cannot be one of the following built-in
           names or their aliases:
-          <ul class="description-ul">
-            <li class="description-list">
-              <span class="code-block">Delimited</span>
-              <ul class="description-ul">
-                <li class="description-list"><span class="code-block">CSV</span></li>
+          <ul class="shared-description-ul">
+            <li class="shared-description-list">
+              <span class="shared-code-block">Delimited</span>
+              <ul class="shared-description-ul">
+                <li class="shared-description-list"><span class="shared-code-block">CSV</span></li>
               </ul>
             </li>
-            <li class="description-list">
-              <span class="code-block">Datevalue</span>
-              <ul class="description-ul">
-                <li class="description-list"><span class="code-block">DV</span></li>
+            <li class="shared-description-list">
+              <span class="shared-code-block">Datevalue</span>
+              <ul class="shared-description-ul">
+                <li class="shared-description-list"><span class="shared-code-block">DV</span></li>
               </ul>
             </li>
-            <li class="description-list">
-              <span class="code-block">StateMod</span>
-              <ul class="description-ul">
-                <li class="description-list"><span class="code-block">STM</span></li>
+            <li class="shared-description-list">
+              <span class="shared-code-block">StateMod</span>
+              <ul class="shared-description-ul">
+                <li class="shared-description-list"><span class="shared-code-block">STM</span></li>
               </ul>
             </li>
           </ul>
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
-          Type<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Type<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="type" placeholder="owf.datastore.statemod"
           (keyup)="titleInput()" [attr.data-cy]="node.id + '-datastore-config-type'">
 
@@ -63,22 +63,28 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           The type of Datastore being used. The supported datastores for InfoMapper
           applications are:
-          <ul class="description-ul">
-            <li class="description-list"><span class="code-block">owf.datastore.delimited</span></li>
-            <li class="description-list"><span class="code-block">owf.datastore.datevalue</span></li>
-            <li class="description-list"><span class="code-block">owf.datastore.statemod</span></li>
+          <ul class="shared-description-ul">
+            <li class="shared-description-list">
+              <span class="shared-code-block">owf.datastore.delimited</span>
+            </li>
+            <li class="shared-description-list">
+              <span class="shared-code-block">owf.datastore.datevalue</span>
+            </li>
+            <li class="shared-description-list">
+              <span class="shared-code-block">owf.datastore.statemod</span>
+            </li>
           </ul>
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
-          Root URL<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Root URL<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="rootUrl" placeholder="https://raw.githubusercontent/path"
           [attr.data-cy]="node.id + '-datastore-config-rootUrl'">
 
@@ -89,15 +95,15 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           The root URL for this datastore. A file path from a TSID will be appended
           to this URL if the Datastore is provided in the TSID.
         </mat-card>
       </div>
 
-      <!-- <div class="form-container">
-        <div class="form-title">Aliases</div>
-        <mat-form-field appearance="outline">
+      <!-- <div class="shared-form-container">
+        <div class="shared-form-title">Aliases</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="aliases" placeholder="TODO">
 
           <mat-error>
@@ -107,15 +113,15 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           TODO: Fill me out.
         </mat-card>
       </div> -->
 
-      <div class="form-container">
-        <div class="form-title">API Key</div>
+      <div class="shared-form-container">
+        <div class="shared-form-title">API Key</div>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="apiKey" placeholder="1zc8/3kd83y6rhd4iod93u4kf0zzc"
           [attr.data-cy]="node.id + '-datastore-config-apiKey'">
 
@@ -126,7 +132,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           The API key of this Datastore if it is required or necessary for a easier
           consuming experience of its data.
         </mat-card>

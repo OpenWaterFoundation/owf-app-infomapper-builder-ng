@@ -1,18 +1,23 @@
-import { Injectable }           from '@angular/core';
-import { Router }               from '@angular/router';
+import { Injectable }             from '@angular/core';
+import { Router }                 from '@angular/router';
+import { CognitoIdentityProviderClient,
+          ChangePasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { ICredentials }           from '@aws-amplify/core';
 import { Amplify,
           Auth,
-          Storage }             from 'aws-amplify';
+          Storage }               from 'aws-amplify';
 
 import { BehaviorSubject,
           first,
+          forkJoin,
           from,
           map,
-          Observable }          from 'rxjs';
-import { CognitoUser }          from 'amazon-cognito-identity-js';
+          Observable }            from 'rxjs';
+import { CognitoUser,
+          CognitoUserSession }    from 'amazon-cognito-identity-js';
 
-import { S3ProviderListConfig } from '@aws-amplify/storage/lib-esm/types';
-import { ParamAccount }         from '../sign-in/sign-in.component';
+import { S3ProviderListConfig }   from '@aws-amplify/storage/lib-esm/types';
+import { ParamAccount }           from '../sign-in/sign-in.component';
 
 
 @Injectable({
@@ -128,6 +133,20 @@ export class AuthService {
   }
 
   /**
+   * 
+   * @param currentPassword 
+   * @param newPassword 
+   */
+  getAllCredentials(): Observable<any> {
+
+    return forkJoin({
+      session: this.getCurrentSession(),
+      credentials: this.getCurrentCredentials()
+    });
+
+  }
+
+  /**
    * Use the AWS Amplify 'Storage' class to list the files under the provided path
    * given from the user's Parameter from the Systems Manager Parameter store.
    * @returns A Promise converted to an Observable for subscription to obtain the
@@ -147,9 +166,21 @@ export class AuthService {
    * 
    * @returns 
    */
-  getCurrentCredentials(): Observable<any> {
+  getCurrentCredentials(): Observable<ICredentials> {
     return from(
       Auth.currentCredentials()
+      .then((result: any) => { return result; })
+      .catch((err: any) => { return err; })
+    )
+  }
+
+  /**
+   * 
+   * @returns 
+   */
+  getCurrentSession(): Observable<CognitoUserSession> {
+    return from(
+      Auth.currentSession()
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     )
@@ -248,12 +279,3 @@ export class AuthService {
   }
   
 }
-
-// ,
-// "Condition": {
-//     "StringLike": {
-//         "s3:prefix": [
-//             "test/*"
-//         ]
-//     }
-// }

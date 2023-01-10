@@ -1,0 +1,59 @@
+<h2>Change password</h2>
+
+<div class="change-password-container">
+
+  <form [formGroup]="securityTabFG" class="shared-form-field-container">
+
+    <span>Current password</span>
+    <mat-form-field class="config-form-field" appearance="outline">
+      <input matInput formControlName="currentPassword" attr.data-cy="TBD">
+  
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(securityTabFG.get('currentPassword'))">
+          {{ formErrorMessages[error] }}<br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+  
+    <span>New password</span>
+    <mat-form-field class="config-form-field" appearance="outline">
+      <input matInput formControlName="newPassword" attr.data-cy="TBD">
+  
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(securityTabFG.get('newPassword'))">
+          {{ formErrorMessages[error] }}<br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+  
+    <span>Confirm new password</span>
+    <mat-form-field class="config-form-field" appearance="outline">
+      <input matInput formControlName="confirmNewPassword" attr.data-cy="TBD">
+  
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(securityTabFG.get('confirmNewPassword'))">
+          {{ formErrorMessages[error] }}<br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+  
+  </form>
+
+  <div class="update-password-utility-container">
+
+    <div class="update-password-utility">
+      <span *ngIf="!arePasswordsEqual()" class="update-password-error">
+        Passwords do not match
+      </span>
+
+      <button mat-raised-button class="update-password-button" (click)="createUpdatePasswordRequest()"
+      [disabled]="isUpdatePasswordDisabled()">
+        Update password
+      </button>
+    </div>
+    
+  </div>
+  
+</div>
+
+<mat-divider class="security-element-divider"></mat-divider>

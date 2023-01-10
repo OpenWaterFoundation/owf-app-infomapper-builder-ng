@@ -1,17 +1,17 @@
-<p class="help-string">
-  All fields marked with an asterisk ( <span class="required-asterisk">*</span> ) are required.
+<p class="shared-top-dialog-string">
+  All fields marked with an asterisk ( <span class="shared-required-asterisk">*</span> ) are required.
 </p>
             
 <form [formGroup]="appBuilderForm">
 
   <div formGroupName="mainMenuFG">
-    <div class="config-form-fields-container">
+    <div class="shared-form-field-container">
 
-      <div class="form-container">
-        <div class="form-title">
-          ID<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          ID<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="id" placeholder="about-the-project"
           [attr.data-cy]="node.id + '-main-menu-config-id'">
 
@@ -22,16 +22,16 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Unique internal identifier used in the URL.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
-          Name<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Name<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <input matInput formControlName="name" placeholder="About the Project"
           (keyup)="titleInput()" [attr.data-cy]="node.id + '-main-menu-config-name'">
 
@@ -42,16 +42,16 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Unique name to be used internally and displayed on the menu.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">
-          Description<span class="required-asterisk">*</span>
+      <div class="shared-form-container">
+        <div class="shared-form-title">
+          Description<span class="shared-required-asterisk">*</span>
         </div>
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <textarea matInput formControlName="description" placeholder="This menu is used for..."
           [attr.data-cy]="node.id + '-main-menu-config-description'">
           </textarea>
@@ -63,14 +63,14 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           A simple explanation of what this Main Menu does in the application.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">Action</div>
-        <mat-form-field appearance="outline">
+      <div class="shared-form-container">
+        <div class="shared-form-title">Action</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="action" (selectionChange)="handleActionControlChoice($event)">
             <mat-option value=""></mat-option>
             <mat-option value="contentPage">contentPage</mat-option>
@@ -80,18 +80,18 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           The action to take when the Main Menu item is clicked.
         </mat-card>
       </div>
 
       <ng-container *ngIf="appBuilderForm.get('mainMenuFG.action').value !== ''">
-        <div class="form-container">
-          <div class="form-title">
+        <div class="shared-form-container">
+          <div class="shared-form-title">
             {{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'title' }}
-            <span class="required-asterisk">*</span>
+            <span class="shared-required-asterisk">*</span>
           </div>
-          <mat-form-field appearance="outline">
+          <mat-form-field class="config-form-field" appearance="outline">
 
             <div class="input-container">
               <input matInput placeholder="Path or URL"
@@ -110,16 +110,16 @@
             </mat-error>
           </mat-form-field>
   
-          <mat-card class="form-description">
+          <mat-card class="shared-form-description">
             {{ appBuilderForm.get('mainMenuFG.action').value | convertFormName : 'description' }}
           </mat-card>
         </div>
       </ng-container>
       
 
-      <div class="form-container">
-        <div class="form-title">Enabled</div>
-        <mat-form-field appearance="outline">
+      <div class="shared-form-container">
+        <div class="shared-form-title">Enabled</div>
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="enabled">
             <mat-option value=""></mat-option>
             <mat-option value="True">True</mat-option>
@@ -127,16 +127,16 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Whether or not the Main Menu is enabled. Disabled menus will be greyed
           out and will not be selectable.
         </mat-card>
       </div>
 
-      <div class="form-container">
-        <div class="form-title">Visible</div>
+      <div class="shared-form-container">
+        <div class="shared-form-title">Visible</div>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field class="config-form-field" appearance="outline">
           <mat-select formControlName="visible">
             <mat-option value=""></mat-option>
             <mat-option value="True">True</mat-option>
@@ -144,7 +144,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-card class="form-description">
+        <mat-card class="shared-form-description">
           Whether or not the Main Menu is visible. Non-visible menus will not be
           created and shown in the navbar.
         </mat-card>

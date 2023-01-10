@@ -43,7 +43,7 @@ export class ConfigDialogComponent implements OnInit {
    * Closes the Mat Dialog popup when the Close button is clicked, and removes this
    * dialog's window ID from the windowManager.
    */
-   closeDialog(): void {
+  closeDialog(): void {
     this.dialogRef.close();
   }
   

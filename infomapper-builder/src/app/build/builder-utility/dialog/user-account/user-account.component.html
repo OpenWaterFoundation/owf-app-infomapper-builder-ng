@@ -1,8 +1,6 @@
 <!-- Use for keeping the entire dialog in the app window. cdkDragBoundary=".cdk-overlay-container" -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane"
-class="cdk-drag" data-cy="main-dialog-container">
-  <div mat-dialog-title class="drag-header-main" cdkDragHandle
-  data-cy="dialog-drag-header-main">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" class="cdk-drag" data-cy="main-dialog-container">
+  <div mat-dialog-title class="drag-header-main" cdkDragHandle data-cy="dialog-drag-header-main">
 
     <div class="header">
       <p class="header-title">
@@ -19,28 +17,31 @@ class="cdk-drag" data-cy="main-dialog-container">
   <div class="dialog-content">
     
     <mat-tab-group animationDuration="0ms" style="height: 100%;">
-      <mat-tab *ngFor="let tabName of accountTabs; let index = index" [label]="tabName"
-      >
+      <mat-tab *ngFor="let tabName of accountTabs; let index = index">
 
-        <div class="tabs-container">
+        <ng-template mat-tab-label>
+          <ng-container *ngIf="tabName === 'General'">
+            <fa-icon [icon]="faUser" size="lg"></fa-icon>
+            <span class="tab-text">General</span>
+          </ng-container>
+
+          <ng-container *ngIf="tabName === 'Security'">
+            <fa-icon [icon]="faShield" size="lg"></fa-icon>
+            <span class="tab-text">Security</span>
+          </ng-container>
+        </ng-template>
+
+        <div class="tab-container">
 
           <div *ngIf="tabName === 'General'">
-
-            <h2>Account Information</h2>
-
+            <app-general-tab></app-general-tab>
           </div>
   
           <div *ngIf="tabName === 'Security'">
-
-            <h2>Change password</h2>
-
-
-            
+            <app-security-tab></app-security-tab>
           </div>
 
         </div>
-        
-        
 
       </mat-tab>
     </mat-tab-group>

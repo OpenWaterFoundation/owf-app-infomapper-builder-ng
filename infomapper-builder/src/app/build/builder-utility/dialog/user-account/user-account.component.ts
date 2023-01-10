@@ -2,7 +2,9 @@ import { Component,
           OnInit }      from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 
-import { faXmark }      from "@fortawesome/free-solid-svg-icons";
+import { faShield,
+          faUser,
+          faXmark }     from "@fortawesome/free-solid-svg-icons";
 import { Observable }   from "rxjs";
 
 import { AuthService }  from "src/app/services/auth.service";
@@ -15,17 +17,23 @@ import { AuthService }  from "src/app/services/auth.service";
 })
 export class UserAccountComponent implements OnInit {
 
-  /**
-   * 
-   */
+  /** Array of tabs to be displayed as user account options in the dialog. */
   readonly accountTabs = [
     'General',
     'Security'
   ];
-  /** All used FontAwesome icons in the UserAccountComponent.  */
+  /** All used FontAwesome icons in the UserAccountComponent. */
+  faShield = faShield;
+  faUser = faUser;
   faXmark = faXmark;
+ 
 
 
+  /**
+   * 
+   * @param authService 
+   * @param dialogRef 
+   */
   constructor(private authService: AuthService, private dialogRef: MatDialogRef<UserAccountComponent>) {}
 
 
