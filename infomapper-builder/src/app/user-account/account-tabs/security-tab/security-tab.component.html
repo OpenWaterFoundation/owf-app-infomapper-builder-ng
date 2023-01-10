@@ -6,7 +6,14 @@
 
     <span>Current password</span>
     <mat-form-field class="config-form-field" appearance="outline">
-      <input matInput formControlName="currentPassword" attr.data-cy="TBD">
+
+      <div class="pw-input-container">
+        <input matInput [type]="visibleInputCP ? 'text' : 'password'" formControlName="currentPassword"
+        attr.data-cy="TBD"/>
+        <fa-icon [icon]="visibilityIconCP" size="lg" [matTooltip]="visibilityMessageCP"
+        (click)="toggleIconVisibility('CP')" class="visibility-icon">
+        </fa-icon>
+      </div>
   
       <mat-error>
         <ng-container *ngFor="let error of formErrors(securityTabFG.get('currentPassword'))">
@@ -17,7 +24,14 @@
   
     <span>New password</span>
     <mat-form-field class="config-form-field" appearance="outline">
-      <input matInput formControlName="newPassword" attr.data-cy="TBD">
+
+      <div class="pw-input-container">
+        <input matInput [type]="visibleInputNP ? 'text' : 'password'" formControlName="newPassword"
+        attr.data-cy="TBD"/>
+        <fa-icon [icon]="visibilityIconNP" size="lg" [matTooltip]="visibilityMessageNP"
+        (click)="toggleIconVisibility('NP')" class="visibility-icon">
+        </fa-icon>
+      </div>
   
       <mat-error>
         <ng-container *ngFor="let error of formErrors(securityTabFG.get('newPassword'))">
@@ -28,7 +42,14 @@
   
     <span>Confirm new password</span>
     <mat-form-field class="config-form-field" appearance="outline">
-      <input matInput formControlName="confirmNewPassword" attr.data-cy="TBD">
+
+      <div class="pw-input-container">
+        <input matInput [type]="visibleInputCNP ? 'text' : 'password'" formControlName="confirmNewPassword"
+        attr.data-cy="TBD"/>
+        <fa-icon [icon]="visibilityIconCNP" size="lg" [matTooltip]="visibilityMessageCNP"
+        (click)="toggleIconVisibility('CNP')" class="visibility-icon">
+        </fa-icon>
+      </div>
   
       <mat-error>
         <ng-container *ngFor="let error of formErrors(securityTabFG.get('confirmNewPassword'))">

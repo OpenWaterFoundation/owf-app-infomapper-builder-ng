@@ -1,15 +1,22 @@
 import { Component,
-          OnInit }                from '@angular/core';
+          OnInit }                      from '@angular/core';
 import { AbstractControl,
           FormControl,
           FormGroup, 
-          Validators }            from '@angular/forms';
-import { ICredentials }           from '@aws-amplify/core';
+          Validators }                  from '@angular/forms';
+import { MatSnackBar,
+          MatSnackBarHorizontalPosition,
+          MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+
+import { ICredentials }                 from '@aws-amplify/core';
 import { CognitoIdentityProviderClient,
-          ChangePasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
-import { CognitoUserSession }     from 'amazon-cognito-identity-js';
-import { first }                  from 'rxjs';
-import { AuthService }            from 'src/app/services/auth.service';
+          ChangePasswordCommand }       from "@aws-sdk/client-cognito-identity-provider";
+import { faEye,
+          faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
+
+import { CognitoUserSession }           from 'amazon-cognito-identity-js';
+import { first }                        from 'rxjs';
+import { AuthService }                  from 'src/app/services/auth.service';
 
 
 @Component({
@@ -23,18 +30,41 @@ export class SecurityTabComponent implements OnInit {
   formErrorMessages = {
     required: 'Required'
   };
+  /** Sets the horizontal position of the error snackbar to display on the right
+   * side of the screen. */
+  snackBarHPos: MatSnackBarHorizontalPosition = 'center';
+  /** Sets the vertical position of the error snackbar to display at the top of
+  * the screen. */
+  snackBarVPos: MatSnackBarVerticalPosition = 'top';
   /** FormGroup used by the SecurityTabComponent for changing a user password. */
   securityTabFG = new FormGroup({
     currentPassword: new FormControl('', Validators.required),
     newPassword: new FormControl('', Validators.required),
     confirmNewPassword: new FormControl('', Validators.required)
   });
+  /** How many milliseconds the error snackbar will be displayed for. */
+  snackBarDuration = 3000;
+  /** Font Awesome icon used to display at the end of each password input field.
+   * In the order Current Password, New Password, Confirm New Password. */
+  visibilityIconCP = faEye;
+  visibilityIconNP = faEye;
+  visibilityIconCNP = faEye;
+  /** Boolean set to whether the password input field is visible or 'hidden'. In
+   * the order Current Password, New Password, Confirm New Password.*/
+  visibleInputCP = false;
+  visibleInputNP = false;
+  visibleInputCNP = false;
+  /** Dynamic tooltip to display over the password icon on mouse hover. In the order
+   * Current Password, New Password, Confirm New Password. */
+  visibilityMessageCP = 'Show password';
+  visibilityMessageNP = 'Show password';
+  visibilityMessageCNP = 'Show password';
 
 
   /**
    * 
    */
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private snackBar: MatSnackBar) { }
   
 
   /**
@@ -43,30 +73,6 @@ export class SecurityTabComponent implements OnInit {
    */
   arePasswordsEqual(): boolean {
     return this.securityTabFG.get('newPassword').value === this.securityTabFG.get('confirmNewPassword').value
-  }
-
-  /**
-   * @param control The FormControl that will be checked for errors.
-   * @returns An array with all errors for the control, or an empty array of no errors.
-   */
-  formErrors(control: AbstractControl): string[] {
-    return control.errors ? Object.keys(control.errors) : [];
-  }
-
-  /**
-   * Determines if the securityTab FormGroup is invalid or the `new` and `confirm new`
-   * passwords fields are not equal.
-   * @returns A boolean of whether the Update Password button is disabled.
-   */
-  isUpdatePasswordDisabled(): boolean {
-    return ((this.securityTabFG.invalid) || (!this.arePasswordsEqual()))
-  }
-
-  /**
-   * Lifecycle hook that is called after Angular has initialized all data-bound
-   * properties of a directive.
-   */
-  ngOnInit(): void {
   }
 
   /**
@@ -103,13 +109,130 @@ export class SecurityTabComponent implements OnInit {
   }
 
   /**
+   * @param control The FormControl that will be checked for errors.
+   * @returns An array with all errors for the control, or an empty array of no errors.
+   */
+  formErrors(control: AbstractControl): string[] {
+    return control.errors ? Object.keys(control.errors) : [];
+  }
+
+  /**
+   * Determines if the securityTab FormGroup is invalid or the `new` and `confirm new`
+   * passwords fields are not equal.
+   * @returns A boolean of whether the Update Password button is disabled.
+   */
+  isUpdatePasswordDisabled(): boolean {
+    return ((this.securityTabFG.invalid) || (!this.arePasswordsEqual()))
+  }
+
+  /**
+   * Lifecycle hook that is called after Angular has initialized all data-bound
+   * properties of a directive.
+   */
+  ngOnInit(): void {
+  }
+
+  /**
+  * Displays the self-closing error message so users know what went wrong.
+  */
+  openErrorSnackBar() {
+    this.snackBar.open('Current password incorrect.', null, {
+      duration: this.snackBarDuration,
+      panelClass: 'snackbar-error',
+      horizontalPosition: this.snackBarHPos,
+      verticalPosition: this.snackBarVPos
+    });
+  }
+
+  /**
+  * Displays the self-closing error message so users know what went wrong.
+  */
+  openSuccessSnackBar() {
+    this.snackBar.open('New password successfully saved.', null, {
+      duration: this.snackBarDuration,
+      panelClass: 'snackbar-success',
+      horizontalPosition: this.snackBarHPos,
+      verticalPosition: this.snackBarVPos
+    });
+  }
+
+  /**
+   * 
+   */
+  passwordChangeSuccessful(): void {
+    // 1. Reset each password input field to an empty string.
+    this.securityTabFG.get('currentPassword').reset('');
+    this.securityTabFG.get('newPassword').reset('');
+    this.securityTabFG.get('confirmNewPassword').reset('');
+    // 2. Open the successful 
+    this.openSuccessSnackBar();
+  }
+
+  /**
+   * Toggles the password field's icon and tooltip message.
+   */
+  toggleIconVisibility(inputType: string): void {
+
+    if (inputType === 'CP') {
+      this.visibleInputCP = !this.visibleInputCP;
+
+      if (this.visibilityIconCP === faEye) {
+        this.visibilityIconCP = faEyeSlash
+      } else {
+        this.visibilityIconCP = faEye;
+      }
+      if (this.visibilityMessageCP === 'Show password') {
+        this.visibilityMessageCP = 'Hide password';
+      } else {
+        this.visibilityMessageCP = 'Show password';
+      }
+    }
+    else if (inputType === 'NP') {
+      this.visibleInputNP = !this.visibleInputNP;
+
+      if (this.visibilityIconNP === faEye) {
+        this.visibilityIconNP = faEyeSlash
+      } else {
+        this.visibilityIconNP = faEye;
+      }
+      if (this.visibilityMessageNP === 'Show password') {
+        this.visibilityMessageNP = 'Hide password';
+      } else {
+        this.visibilityMessageNP = 'Show password';
+      }
+    }
+    else if (inputType === 'CNP') {
+      this.visibleInputCNP = !this.visibleInputCNP;
+
+      if (this.visibilityIconCNP === faEye) {
+        this.visibilityIconCNP = faEyeSlash
+      } else {
+        this.visibilityIconCNP = faEye;
+      }
+      if (this.visibilityMessageCNP === 'Show password') {
+        this.visibilityMessageCNP = 'Hide password';
+      } else {
+        this.visibilityMessageCNP = 'Show password';
+      }
+    }
+  }
+
+  /**
    * 
    * @param client 
    * @param command 
    */
   private async updatePassword(client: CognitoIdentityProviderClient, command: ChangePasswordCommand) {
     const response = client.send(command);
-    console.log('Password change response:', response);
+
+    response.then(
+      result => {
+        this.passwordChangeSuccessful();
+      },
+      error => {
+        this.openErrorSnackBar();
+      }
+    )
   }
 
 }

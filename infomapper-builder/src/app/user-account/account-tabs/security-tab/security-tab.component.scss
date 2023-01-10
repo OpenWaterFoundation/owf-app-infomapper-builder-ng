@@ -14,6 +14,11 @@
   width: 400px;
 }
 
+/* Container for the elements in the password form. */
+.pw-input-container {
+  display: flex;
+}
+
 /*  */
 .security-element-divider {
   margin: 20px 0;
@@ -43,4 +48,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* The Font Awesome eye icon. */
+.visibility-icon {
+  padding-bottom: 2px;
+  cursor: pointer;
 }
