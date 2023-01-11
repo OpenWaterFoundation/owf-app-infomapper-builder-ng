@@ -1,2 +1,15 @@
 <h2>Account Information</h2>
 
+<mat-list role="list">
+  <mat-list-item *ngFor="let property of accountProperties" role="listitem">
+    <div class="property-container">
+      <span class="user-property-name">{{ property.name }}</span>
+
+      <hr class="property-name-value-connector"/>
+
+      <span class="user-property-value" [ngClass]="{ 'shared-code-block': property.name === 'Account path' }">
+        {{ property.value }}
+      </span>
+    </div>
+  </mat-list-item>
+</mat-list>

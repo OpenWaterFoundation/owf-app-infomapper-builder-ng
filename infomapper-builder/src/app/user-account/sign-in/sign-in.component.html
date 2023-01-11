@@ -1,0 +1,94 @@
+<div class="main-container">
+  <div class="display-container">
+    <!-- cdkOverlayOrigin #trigger="cdkOverlayOrigin" -->
+    <div class="sign-in-main-container" >
+
+      <!-- <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="true" [cdkConnectedOverlayHasBackdrop]="true">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </ng-template> -->
+
+      <form [formGroup]="signInFG" class="sign-in-form-group-container">
+
+        <div class="mat-form-fields-container">
+
+          <div class="mat-form-fields-upper-container">
+
+            <span class="log-in-title">InfoMapper Builder Login</span>
+
+            <div class="sign-in-title">InfoMapper Account</div>
+
+            <mat-form-field appearance="outline">
+              <mat-select name="account-selection" (openedChange)="openSelectChange()">
+                <cdk-virtual-scroll-viewport [itemSize]="48" [minBufferPx]="540"
+                [maxBufferPx]="540" [style.height.px]="240">
+
+                  <!-- Prevent a user pressed space key from acting as a selection option. -->
+                  <input matInput formControlName="accountType" placeholder="Search accounts"
+                  (keydown)="$event.stopPropagation()" class="input-search"
+                  (keyup)="searchForAccount($event)" #searchInput/>
+
+                  <mat-option *cdkVirtualFor="let account of displayAccounts"
+                  (onSelectionChange)="paramAccountSelected($event, account)"
+                  [value]="account.values.name" [style.height.px]="48">
+                    {{ account.values.name }}
+                  </mat-option>
+
+                </cdk-virtual-scroll-viewport>
+              </mat-select>
+            </mat-form-field>
+
+            <div class="sign-in-title">Username or Email</div>
+
+            <mat-form-field appearance="outline">
+              
+              <input matInput formControlName="user" attr.data-cy="TODO">
+        
+              <mat-error>
+                <ng-container *ngFor="let error of formErrors(signInFG.get('user'))">
+                  {{ formErrorMessages[error] }} <br>
+                </ng-container>
+              </mat-error>
+            </mat-form-field>
+      
+            <div class="sign-in-title">
+              <span>Password</span>
+              <a [routerLink]="['/forgot']" class="account-link">Forgot password?</a>
+            </div>
+
+            <mat-form-field appearance="outline">
+              
+              <div class="pw-input-container">
+                <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="password"
+                attr.data-cy="TODO"/>
+                <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+                (click)="togglePasswordVisibility()" class="visibility-icon">
+                </fa-icon>
+              </div>
+
+              <mat-error>
+                <ng-container *ngFor="let error of formErrors(signInFG.get('password'))">
+                  {{ formErrorMessages[error] }} <br>
+                </ng-container>
+              </mat-error>
+            </mat-form-field>
+
+            <button mat-stroked-button (click)="signInUser()" [disabled]="signInFG.invalid"
+            class="sign-in-button">
+              Sign In
+            </button>
+
+          </div>
+
+          <div class="sign-up-link-container">
+            <a [routerLink]="['/signup']" class="account-link">Create account</a>
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>

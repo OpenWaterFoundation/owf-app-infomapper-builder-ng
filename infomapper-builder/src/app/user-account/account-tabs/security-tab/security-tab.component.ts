@@ -10,7 +10,10 @@ import { MatSnackBar,
 
 import { ICredentials }                 from '@aws-amplify/core';
 import { CognitoIdentityProviderClient,
-          ChangePasswordCommand }       from "@aws-sdk/client-cognito-identity-provider";
+          ChangePasswordCommand, 
+          ChangePasswordCommandOutput,
+          NotAuthorizedException, 
+          InvalidPasswordException}      from "@aws-sdk/client-cognito-identity-provider";
 import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
 
@@ -135,8 +138,8 @@ export class SecurityTabComponent implements OnInit {
   /**
   * Displays the self-closing error message so users know what went wrong.
   */
-  openErrorSnackBar() {
-    this.snackBar.open('Current password incorrect.', null, {
+  openErrorSnackBar(errorMessage: string) {
+    this.snackBar.open(errorMessage, null, {
       duration: this.snackBarDuration,
       panelClass: 'snackbar-error',
       horizontalPosition: this.snackBarHPos,
@@ -226,11 +229,24 @@ export class SecurityTabComponent implements OnInit {
     const response = client.send(command);
 
     response.then(
-      result => {
+      (result: ChangePasswordCommandOutput) => {
         this.passwordChangeSuccessful();
       },
-      error => {
-        this.openErrorSnackBar();
+      (error: any) => {
+        var errorMessage = 'Password update error. Contact OWF.';
+
+        if (error instanceof NotAuthorizedException) {
+          errorMessage = 'Current password incorrect. Please try again.';
+        } else if (error instanceof InvalidPasswordException) {
+          console.log('Message:', error.message);
+          if (error.message.includes('Password not long enough')) {
+            errorMessage = 'New password must be at least 8 characters.';
+          }
+        } else {
+          console.log(error);
+        }
+
+        this.openErrorSnackBar(errorMessage);
       }
     )
   }

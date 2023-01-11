@@ -1,0 +1,26 @@
+/* CLASSES */
+
+/* Container around each property name and value in each mat-list-item element. */
+.property-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* <hr> tag as a separator between the account property name and value. */
+.property-name-value-connector {
+  border: none;
+  border-top: 2px dotted #e1e1e1;
+  flex-grow: 1;
+}
+
+/* The user account property name to be displayed. */
+.user-property-name {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* The user account property value to be displayed. */
+.user-property-value {
+  margin-left: 10px;
+}

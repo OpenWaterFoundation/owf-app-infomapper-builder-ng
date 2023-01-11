@@ -10,44 +10,28 @@ import { AbstractControl,
 import { MatSnackBar,
           MatSnackBarHorizontalPosition,
           MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-
-import { faEye,
-          faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
-import { first,
-          Subject }                     from 'rxjs';
-import { AuthService }                  from '../services/auth.service';
-import { CognitoUser }                  from 'amazon-cognito-identity-js';
-
 import { SSMClient,
           GetParametersByPathCommand,
           GetParametersByPathCommandOutput,
           Parameter }                   from "@aws-sdk/client-ssm";
 import { ICredentials }                 from '@aws-amplify/core';
-import { LoaderService }                from '../services/loader.service';
 
+import { faEye,
+          faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
+import { first,
+          Subject }                     from 'rxjs';
+import { CognitoUser }                  from 'amazon-cognito-identity-js';
 
-/**
- * 
- */
-export interface ParamAccountValues {
-  accountPath?: string;
-  name?: string;
-  region?: string;
-  userPoolId?: string;
-}
+import { AuthService }                  from '../../services/auth.service';
+import { LoaderService }                from '../../services/loader.service';
+import { ParamAccount }                 from '../../infomapper-builder-types';
+import { LocalStorageService }          from '../../services/local-storage.service';
 
-/**
- * 
- */
-export interface ParamAccount {
-  slug?: string;
-  values?: ParamAccountValues;
-}
 
 @Component({
   selector: 'im-builder-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.scss', '../shared-styles.scss']
+  styleUrls: ['./sign-in.component.scss', '../../shared-styles.scss']
 })
 export class SignInComponent implements OnInit {
 
@@ -96,7 +80,7 @@ export class SignInComponent implements OnInit {
    * @param snackBar Service to dispatch Angular Material snack bar messages.
    */
   constructor(private authService: AuthService, private loaderService: LoaderService,
-  private snackBar: MatSnackBar) {
+  private storageService: LocalStorageService, private snackBar: MatSnackBar) {
 
   }
 
@@ -208,7 +192,7 @@ export class SignInComponent implements OnInit {
 
     if ($event.source.selected) {
       console.log('Account chosen:', paramAccount);
-      this.authService.currentUserParamAccount = paramAccount;
+      this.storageService.setUserParamAccount(paramAccount);
     }
   }
 
@@ -269,10 +253,10 @@ export class SignInComponent implements OnInit {
   private serviceAccountSignIn() {
     this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
     .subscribe((user: CognitoUser) => {
-      console.log('Signed in service account:', user);
+
       this.authService.getCurrentCredentials().pipe(first())
       .subscribe((credentials: ICredentials) => {
-        console.log('Signed in service account credentials:', credentials);
+
         this.getParameterStoreParams(credentials);
       });
       

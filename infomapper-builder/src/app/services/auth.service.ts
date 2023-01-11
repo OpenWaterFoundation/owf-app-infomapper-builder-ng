@@ -1,7 +1,5 @@
 import { Injectable }             from '@angular/core';
 import { Router }                 from '@angular/router';
-import { CognitoIdentityProviderClient,
-          ChangePasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
 import { ICredentials }           from '@aws-amplify/core';
 import { Amplify,
           Auth,
@@ -17,7 +15,7 @@ import { CognitoUser,
           CognitoUserSession }    from 'amazon-cognito-identity-js';
 
 import { S3ProviderListConfig }   from '@aws-amplify/storage/lib-esm/types';
-import { ParamAccount }           from '../sign-in/sign-in.component';
+import { ParamAccount }           from '../infomapper-builder-types';
 
 
 @Injectable({
@@ -113,7 +111,7 @@ export class AuthService {
    * Getter for the user authentication. Will be true if the user is authenticated.
    * @returns A BehaviorSubject of type boolean as an observable.
    */
-   get userAuthenticated$(): Observable<boolean> {
+  get userAuthenticated$(): Observable<boolean> {
     return this._userAuthenticated.asObservable();
   }
 
@@ -122,14 +120,6 @@ export class AuthService {
    */
   set userAuthenticated(verified: boolean) {
     this._userAuthenticated.next(verified);
-  }
-
-  get currentUserParamAccount(): ParamAccount {
-    return this._currentUserParam;
-  }
-
-  set currentUserParamAccount(paramAccount: ParamAccount) {
-    this._currentUserParam = paramAccount;
   }
 
   /**

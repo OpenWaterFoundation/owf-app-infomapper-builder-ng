@@ -36,7 +36,7 @@ import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-
 import { NodeMenuComponent }        from './build/builder-utility/tree-node-menu/tree-node-menu.component';
 import { NotFoundComponent }        from './not-found/not-found.component';
 import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
-import { SignInComponent }          from './sign-in/sign-in.component';
+import { SignInComponent }          from './user-account/sign-in/sign-in.component';
 import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
 import { UserAccountComponent }     from './build/builder-utility/dialog/user-account/user-account.component';
 
@@ -53,6 +53,8 @@ import { OverlayLoadingDirective }  from './directives/overlay-loading.directive
 import * as Showdown                from 'showdown';
 import { GeneralTabComponent } from './user-account/account-tabs/general-tab/general-tab.component';
 import { SecurityTabComponent } from './user-account/account-tabs/security-tab/security-tab.component';
+import { SignUpComponent } from './user-account/sign-up/sign-up.component';
+import { ForgotPasswordComponent } from './user-account/forgot-password/forgot-password.component';
 
 
 
@@ -118,7 +120,9 @@ function appInit(appService: AppService): () => Observable<any> {
     IsFolderPipe,
     OverlayLoadingDirective,
     GeneralTabComponent,
-    SecurityTabComponent
+    SecurityTabComponent,
+    SignUpComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     AngularFullpageModule,
