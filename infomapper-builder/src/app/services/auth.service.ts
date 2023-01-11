@@ -42,6 +42,8 @@ export class AuthService {
    * 
    */
   private _currentUserParam: ParamAccount;
+
+  readonly appClientId = '2nd68j4v2dp114bp72e2vs9cv4';
   /** This is required, as Amazon will add the default 'public/', 'protected/',
    * or 'private/' prefixes in the URL. Since OWF is not using those folder names
    * in any S3 bucket, a custom empty string must be used as the prefix. */
@@ -66,7 +68,7 @@ export class AuthService {
         identityPoolId: 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a',
         region: 'us-west-2',
         userPoolId: 'us-west-2_oIuEME4cI',
-        userPoolWebClientId: '2nd68j4v2dp114bp72e2vs9cv4'
+        userPoolWebClientId: this.appClientId
       },
       Storage: {
         AWSS3: {

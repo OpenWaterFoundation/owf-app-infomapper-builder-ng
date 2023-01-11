@@ -1,5 +1,6 @@
 import { Component,
           OnInit }                      from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ICredentials }                 from '@aws-amplify/core';
 
 import { CognitoIdentityProviderClient,
@@ -16,11 +17,37 @@ import { AuthService }                  from 'src/app/services/auth.service';
 })
 export class ForgotPasswordComponent implements OnInit {
 
+  /** FormGroup used by the SecurityTabComponent for changing a user password. */
+  forgotPasswordFG = new FormGroup({
+    username: new FormControl('', Validators.required)
+  });
+  /** The custom & built-in error messages to be displayed under a form with an error. */
+  formErrorMessages = {
+    required: 'Required'
+  };
+
   
   /**
    * 
    */
   constructor(private authService: AuthService) { }
+
+
+  /**
+   * @param control The FormControl that will be checked for errors.
+   * @returns An array with all errors for the control, or an empty array of no errors.
+   */
+  formErrors(control: AbstractControl): string[] {
+    return control.errors ? Object.keys(control.errors) : [];
+  }
+
+  /**
+   * 
+   * @returns 
+   */
+  isFormInvalid(): boolean {
+    return this.forgotPasswordFG.invalid;
+  }
 
   /**
    * Lifecycle hook that is called after Angular has initialized all data-bound
@@ -48,8 +75,6 @@ export class ForgotPasswordComponent implements OnInit {
         }
       });
 
-      console.log();
-      console.log();
   
       // const command = new ForgotPasswordCommand({ ClientId: '', Username: '' });
       
