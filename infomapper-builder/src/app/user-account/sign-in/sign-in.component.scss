@@ -66,16 +66,12 @@ width. */
   width: 100%;
 }
 
-/* Main form group for signing in. */
-.sign-in-form-group-container {
-  padding: 15px;
-}
-
 /* Container holding all main sign in elements. */
 .sign-in-main-container {
-  height: 600px;
-  width: 100%;
-  margin-top: 35px;
+  height: 575px;
+  width: 425px;
+  margin-top: 50px;
+  padding: 15px 15px 5px;
   display: flex;
   justify-content: center;
 

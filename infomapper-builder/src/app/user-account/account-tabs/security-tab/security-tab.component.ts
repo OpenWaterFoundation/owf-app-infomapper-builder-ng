@@ -13,7 +13,8 @@ import { CognitoIdentityProviderClient,
           ChangePasswordCommand, 
           ChangePasswordCommandOutput,
           NotAuthorizedException, 
-          InvalidPasswordException}      from "@aws-sdk/client-cognito-identity-provider";
+          InvalidPasswordException,
+          LimitExceededException }      from "@aws-sdk/client-cognito-identity-provider";
 import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
 
@@ -221,34 +222,44 @@ export class SecurityTabComponent implements OnInit {
   }
 
   /**
-   * 
-   * @param client 
-   * @param command 
+   * Uses the Cognito IdP Client to send the Change password command, and deals
+   * with the response.
+   * @param client The AWS SDK Cognito Identity Provider client reference.
+   * @param command The command to change the user password.
    */
   private async updatePassword(client: CognitoIdentityProviderClient, command: ChangePasswordCommand) {
-    const response = client.send(command);
+    
+    try {
+      const response: ChangePasswordCommandOutput = await client.send(command);
+      this.passwordChangeSuccessful();
 
-    response.then(
-      (result: ChangePasswordCommandOutput) => {
-        this.passwordChangeSuccessful();
-      },
-      (error: any) => {
-        var errorMessage = 'Password update error. Contact OWF.';
+    } catch (e) {
+      var errorMessage = 'Password update error. Contact OWF.';
 
-        if (error instanceof NotAuthorizedException) {
-          errorMessage = 'Current password incorrect. Please try again.';
-        } else if (error instanceof InvalidPasswordException) {
-          console.log('Message:', error.message);
-          if (error.message.includes('Password not long enough')) {
-            errorMessage = 'New password must be at least 8 characters.';
-          }
-        } else {
-          console.log(error);
-        }
-
-        this.openErrorSnackBar(errorMessage);
+      if (e instanceof NotAuthorizedException) {
+        errorMessage = 'Current password incorrect. Please try again.';
       }
-    )
+      else if (e instanceof InvalidPasswordException) {
+        console.log('Message:', e.message);
+        if (e.message.includes('Password not long enough')) {
+          errorMessage = 'New password must be at least 8 characters.';
+        }
+        else if (e.message.includes('uppercase characters')) {
+          errorMessage = 'New password must contain at least 1 uppercase letter.';
+        }
+        else if (e.message.includes('lowercase characters')) {
+          errorMessage = 'New password must contain at least 1 lowercase letter.';
+        }
+      }
+      else if (e instanceof LimitExceededException) {
+        errorMessage = 'Attempt limit exceeded, please try again after some time.';
+      }
+      else {
+        console.log(e);
+      }
+
+      this.openErrorSnackBar(errorMessage);
+    }
   }
 
 }
