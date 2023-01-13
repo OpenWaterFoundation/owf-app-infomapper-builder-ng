@@ -44,7 +44,7 @@ import { BuildManager }                 from '../build/build-manager';
 })
 export class BuildComponent implements OnInit, OnDestroy {
 
-  /** The main FormGroup for the entire application. */
+  /** The main FormGroup for the all Build forms. */
   appBuilderForm = new FormGroup({});
   /** FormGroup used by the AppConfigComponent. */
   appConfigFG = new FormGroup({

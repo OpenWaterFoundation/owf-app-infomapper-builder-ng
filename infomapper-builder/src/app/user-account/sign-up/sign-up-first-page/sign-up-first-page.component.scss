@@ -1,0 +1,110 @@
+/* CLASSES */
+
+/* The container around all elements separating the existing and new account selection
+form fields. */
+.account-divider-container {
+  width: 100%;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Divider between elements in the component. */
+.account-type-divider {
+  margin: 20px 0;
+  width: 400px;
+}
+
+/* Form around the Mat Forms Fields. */
+.account-type-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* The title of the component. */
+.create-account-title {
+  margin: 0 10px 40px;
+  text-align: center;
+}
+
+/* Each string describing whether a new or existing account will be created. */
+.create-account-string {
+  margin: 10px 0;
+}
+
+/* The inner container that displays the Content Page contents based on browser
+width. */
+.display-container {
+  height: 100%;
+  margin: 0px 10px;
+}
+
+/*  */
+.emphasize-word {
+  font-weight: 600;
+}
+
+/* The overarching container for a Content Page. */
+.main-container {
+  background-color: #e3e3e3;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* The container with the main content of the Sign Up First Page. */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Each button in the sign-up-utility container at the bottom of each page. */
+.navigation-button {
+  background-color: #e3e3e3;
+  width: 122px;
+}
+
+/* The mat-divider line. */
+.or-divider {
+  width: 100px;
+  margin: 0 15px;
+}
+
+/* The 'OR' string that separates existing and new account creation. */
+.or-string {
+  font-size: 20px;
+}
+
+/* Container holding all main forgot password elements. */
+.sign-up-main-container {
+  height: 500px;
+  width: 425px;
+  margin-top: 50px;
+  padding: 15px 15px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border: 1px solid #c9c9c9;
+  border-radius: 20px;
+  background-color: #f5f5f5;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Utility container at the bottom of the component. */
+.sign-up-utility {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Submit button to create a new account. */
+.submit-button {
+  background-color: #9db66b;
+  width: 122px;
+}

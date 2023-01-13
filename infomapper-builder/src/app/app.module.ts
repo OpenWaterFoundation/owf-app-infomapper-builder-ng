@@ -1,61 +1,62 @@
 import { APP_INITIALIZER,
-          NgModule }                from '@angular/core';
-import { BrowserModule }            from '@angular/platform-browser';
-import { BrowserAnimationsModule }  from '@angular/platform-browser/animations';
+          NgModule }                 from '@angular/core';
+import { BrowserModule }             from '@angular/platform-browser';
+import { BrowserAnimationsModule }   from '@angular/platform-browser/animations';
 import { HttpClient,
-          HttpClientModule }        from '@angular/common/http';
+          HttpClientModule }         from '@angular/common/http';
 import { FormsModule,
-          ReactiveFormsModule }     from '@angular/forms';
+          ReactiveFormsModule }      from '@angular/forms';
 
-import { FontAwesomeModule }        from '@fortawesome/angular-fontawesome';
-import { AngularFullpageModule }    from '@fullpage/angular-fullpage';
+import { FontAwesomeModule }         from '@fortawesome/angular-fontawesome';
+import { AngularFullpageModule }     from '@fullpage/angular-fullpage';
 
-import { MaterialModule }           from './material.module';
+import { MaterialModule }            from './material.module';
 
-import { CookieModule }             from 'ngx-cookie';
+import { CookieModule }              from 'ngx-cookie';
 import { LoggerModule,
-          NgxLoggerLevel }          from 'ngx-logger';
-import { ShowdownModule }           from 'ngx-showdown';
+          NgxLoggerLevel }           from 'ngx-logger';
+import { ShowdownModule }            from 'ngx-showdown';
 
-import { Observable }               from 'rxjs/internal/Observable';
+import { Observable }                from 'rxjs/internal/Observable';
 
-import { AppRoutingModule }         from './app-routing.module';
+import { AppRoutingModule }          from './app-routing.module';
 
-import { AppComponent }             from './app.component';
-import { AppConfigComponent }       from './build/builder-components/app-config/app-config.component';
-import { BuildComponent }           from './build/build.component';
-import { BrowseDialogComponent }    from './build/builder-utility/dialog/browse-dialog/browse-dialog.component';
-import { ConfigDialogComponent }    from './build/builder-utility/dialog/config-dialog/config-dialog.component';
-import { ContentPageComponent }     from './content-page/content-page.component';
-import { DatastoreConfigComponent } from './build/builder-components/datastore-config/datastore-config.component';
-import { FileBrowserComponent }     from './file-browser/file-browser/file-browser.component';
-import { LoaderComponent }          from './build/builder-utility/loader/loader.component';
-import { MainMenuConfigComponent }  from './build/builder-components/main-menu-config/main-menu-config.component';
-import { NavBarComponent }          from './navigation/nav-bar/nav-bar.component';
-import { NavBarMenuComponent }      from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
-import { NodeMenuComponent }        from './build/builder-utility/tree-node-menu/tree-node-menu.component';
-import { NotFoundComponent }        from './not-found/not-found.component';
-import { SideNavComponent }         from './navigation/side-nav/side-nav.component';
-import { SignInComponent }          from './user-account/sign-in/sign-in.component';
-import { SubMenuConfigComponent }   from './build/builder-components/sub-menu-config/sub-menu-config.component';
-import { UserAccountComponent }     from './build/builder-utility/dialog/user-account/user-account.component';
+import { AppComponent }              from './app.component';
+import { AppConfigComponent }        from './build/builder-components/app-config/app-config.component';
+import { BuildComponent }            from './build/build.component';
+import { BrowseDialogComponent }     from './build/builder-utility/dialog/browse-dialog/browse-dialog.component';
+import { ConfigDialogComponent }     from './build/builder-utility/dialog/config-dialog/config-dialog.component';
+import { ContentPageComponent }      from './content-page/content-page.component';
+import { DatastoreConfigComponent }  from './build/builder-components/datastore-config/datastore-config.component';
+import { FileBrowserComponent }      from './file-browser/file-browser/file-browser.component';
+import { ForgotPasswordComponent }   from './user-account/forgot-password/forgot-password.component';
+import { GeneralTabComponent }       from './user-account/account-tabs/general-tab/general-tab.component';
+import { LoaderComponent }           from './build/builder-utility/loader/loader.component';
+import { MainMenuConfigComponent }   from './build/builder-components/main-menu-config/main-menu-config.component';
+import { NavBarComponent }           from './navigation/nav-bar/nav-bar.component';
+import { NavBarMenuComponent }       from './navigation/nav-bar/nav-bar-menu/nav-bar-menu.component';
+import { NodeMenuComponent }         from './build/builder-utility/tree-node-menu/tree-node-menu.component';
+import { NotFoundComponent }         from './not-found/not-found.component';
+import { SecurityTabComponent }      from './user-account/account-tabs/security-tab/security-tab.component';
+import { SideNavComponent }          from './navigation/side-nav/side-nav.component';
+import { SignInComponent }           from './user-account/sign-in/sign-in.component';
+import { SignUpFirstPageComponent }  from './user-account/sign-up/sign-up-first-page/sign-up-first-page.component';
+import { SignUpSecondPageComponent } from './user-account/sign-up/sign-up-second-page/sign-up-second-page.component';
+import { SignUpThirdPageComponent }  from './user-account/sign-up/sign-up-third-page/sign-up-third-page.component';
+import { SubMenuConfigComponent }    from './build/builder-components/sub-menu-config/sub-menu-config.component';
+import { UserAccountComponent }      from './build/builder-utility/dialog/user-account/user-account.component';
 
-import { AppService }               from './services/app.service';
+import { AppService }                from './services/app.service';
 
-import { CheckElementPipe }         from './pipes/check-element.pipe';
-import { ConvertFormNamePipe }      from './pipes/convert-form-name.pipe';
-import { CheckTreeNodePipe }        from './pipes/check-tree-node.pipe';
-import { IsFolderPipe }             from './pipes/is-folder.pipe';
+import { CheckElementPipe }          from './pipes/check-element.pipe';
+import { ConvertFormNamePipe }       from './pipes/convert-form-name.pipe';
+import { CheckTreeNodePipe }         from './pipes/check-tree-node.pipe';
+import { IsFolderPipe }              from './pipes/is-folder.pipe';
 
-import { OverlayLoadingDirective }  from './directives/overlay-loading.directive';
+import { OverlayLoadingDirective }   from './directives/overlay-loading.directive';
 
 // Showdown, to convert markdown to HTML.
-import * as Showdown                from 'showdown';
-import { GeneralTabComponent } from './user-account/account-tabs/general-tab/general-tab.component';
-import { SecurityTabComponent } from './user-account/account-tabs/security-tab/security-tab.component';
-import { SignUpComponent } from './user-account/sign-up/sign-up.component';
-import { ForgotPasswordComponent } from './user-account/forgot-password/forgot-password.component';
-
+import * as Showdown                 from 'showdown';
 
 
 const classMap: any = {
@@ -121,8 +122,10 @@ function appInit(appService: AppService): () => Observable<any> {
     OverlayLoadingDirective,
     GeneralTabComponent,
     SecurityTabComponent,
-    SignUpComponent,
-    ForgotPasswordComponent
+    SignUpFirstPageComponent,
+    ForgotPasswordComponent,
+    SignUpSecondPageComponent,
+    SignUpThirdPageComponent
   ],
   imports: [
     AngularFullpageModule,

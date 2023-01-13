@@ -1,0 +1,81 @@
+<div class="main-container">
+
+  <div class="sign-up-main-container">
+
+    <div *ngIf="currentPage === 'first'" class="main-content">
+
+      <h1 class="create-account-title">Create InfoMapper Account</h1>
+
+      <form [formGroup]="accountTypeFG" class="account-type-form">
+        <span class="create-account-string">
+          Create account in <span class="emphasize-word">existing</span> organization
+        </span>
+        <mat-form-field appearance="outline">
+          <mat-label>Account type</mat-label>
+          <mat-select formControlName="existingAccountType" [disabled]="isNewSelected()">
+            <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'existing')"
+            [value]="accountType">
+              {{ accountType }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+        <div class="account-divider-container">
+          <mat-divider class="or-divider"></mat-divider>
+          <span class="or-string">OR</span>
+          <mat-divider class="or-divider"></mat-divider>
+        </div>
+    
+        <span class="create-account-string">
+          Create account in <span class="emphasize-word">new</span> organization
+        </span>
+        <mat-form-field appearance="outline">
+          <mat-label>Account type</mat-label>
+          <mat-select formControlName="newAccountType" [disabled]="isExistingSelected()">
+            <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'new')"
+            [value]="accountType">
+              {{ accountType }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+
+    </div>
+
+    <div *ngIf="currentPage === 'second'" class="main-content">
+      <app-sign-up-second-page></app-sign-up-second-page>
+    </div>
+    <div *ngIf="currentPage === 'third'" class="main-content">
+      <app-sign-up-third-page></app-sign-up-third-page>
+    </div>
+    <div *ngIf="currentPage === 'fourth'" class="main-content">
+      Fourth page
+    </div>
+    <div *ngIf="currentPage === 'last'" class="main-content">
+      Last page
+    </div>
+
+    <div class="sign-up-utility">
+      <button mat-button *ngIf="currentPage === 'last'" class="submit-button">
+        Submit
+      </button>
+
+      <button mat-button *ngIf="currentPage !== 'last'" (click)="nextPage()"
+      [disabled]="canProgress()" class="navigation-button">
+        Next page
+      </button>
+
+      <button mat-button *ngIf="currentPage !== 'first'" (click)="previousPage()"
+      class="navigation-button">
+        Previous page
+      </button>
+
+      <button mat-button *ngIf="currentPage === 'first'" [routerLink]="['/login']"
+      class="navigation-button">
+        Back to Login
+      </button>
+    </div>
+
+  </div>
+
+</div>
