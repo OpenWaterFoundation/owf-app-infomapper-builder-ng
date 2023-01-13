@@ -6,11 +6,14 @@ import { Amplify,
           Storage }               from 'aws-amplify';
 
 import { BehaviorSubject,
+          concatMap,
           first,
           forkJoin,
           from,
           map,
-          Observable }            from 'rxjs';
+          mergeMap,
+          Observable, 
+          of}            from 'rxjs';
 import { CognitoUser,
           CognitoUserSession }    from 'amazon-cognito-identity-js';
 
@@ -34,6 +37,14 @@ export class AuthService {
   /** Used for determining whether the current user is authenticated from the
    * Cognito User Pool. */
   private _userAuthenticated = new BehaviorSubject<boolean>(false);
+  /**
+   * 
+   */
+  private _cognitoCredentials: ICredentials;
+  /**
+   * 
+   */
+  private _cognitoSession: CognitoUserSession;
   /**
    * 
    */
@@ -98,15 +109,15 @@ export class AuthService {
   /**
    * 
    */
-  get cognitoUser(): CognitoUser {
-    return this._cognitoUser;
+  get cognitoCredentials(): ICredentials {
+    return this._cognitoCredentials;
   }
 
   /**
    * 
    */
-  set cognitoUser(cognitoUser: CognitoUser) {
-    this._cognitoUser = cognitoUser;
+  get cognitoUser(): CognitoUser {
+    return this._cognitoUser;
   }
 
   /**
@@ -268,6 +279,30 @@ export class AuthService {
 
     this.userAuthenticated = true;
     this.router.navigate(['/content-page/home']);
+  }
+
+  /**
+   * Attempts to sign-in the user with the provided credentials, and returns the
+   * response as a Promise converted to an Observable.
+   * @param userNameOrEmail The username or email entered by the user.
+   * @param password The password to be entered.
+   * @returns An observable response to the authentication request.
+   */
+  x_signInTest(userNameOrEmail: string, password: string): Observable<any> {
+
+    return from(Auth.signIn(userNameOrEmail, password)).pipe(
+      concatMap((cognitoUser: CognitoUser) => {
+        this._cognitoUser = cognitoUser;
+        return this.getCurrentCredentials();
+      }),
+      mergeMap((currentCredentials: ICredentials) => {
+        this._cognitoCredentials = currentCredentials;
+        return this.getCurrentSession();
+      }),
+      mergeMap((currentSession: CognitoUserSession) => {
+        this._cognitoSession = currentSession;
+        return of('Sign in success.');
+      }));
   }
   
 }

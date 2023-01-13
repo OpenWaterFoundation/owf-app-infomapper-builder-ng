@@ -174,9 +174,10 @@ export class SignInComponent implements OnInit {
       this.accounts.push(option);
     }
     console.log('All accounts:', this.accounts);
-    // Once all accounts have been set, the service account can be signed out.
+
+    // Sign out of the service account now that a user account is being logged into.
     this.authService.signOut(true);
-    // TODO.
+
     this.loaderService.hideLoader();
   }
 
@@ -259,8 +260,18 @@ export class SignInComponent implements OnInit {
 
         this.getParameterStoreParams(credentials);
       });
-      
     });
+
+    // this.authService.signInTest('owf.service', 'I%9cY!#4Hw1').pipe(first())
+    // .subscribe(({
+    //   next: (response: any) => {
+    //     console.log(response);
+    //     this.getParameterStoreParams();
+    //   },
+    //   error: (error: any) => {
+    //     console.log('Error signing in user:', error);
+    //   }
+    // }));
   }
 
   /**
@@ -288,7 +299,6 @@ export class SignInComponent implements OnInit {
   x_anonymousUserSignIn(): void {
     this.authService.getCurrentCredentials().pipe(first())
     .subscribe((credentials: ICredentials) => {
-      console.log('Unauthorized service account credentials:', credentials);
       this.getParameterStoreParams(credentials);
     });
   }

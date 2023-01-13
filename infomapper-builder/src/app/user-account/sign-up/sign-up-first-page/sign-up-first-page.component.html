@@ -13,7 +13,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Account type</mat-label>
           <mat-select formControlName="existingAccountType" [disabled]="isNewSelected()">
-            <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'existing')"
+            <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'Existing')"
             [value]="accountType">
               {{ accountType }}
             </mat-option>
@@ -32,7 +32,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Account type</mat-label>
           <mat-select formControlName="newAccountType" [disabled]="isExistingSelected()">
-            <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'new')"
+            <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'New')"
             [value]="accountType">
               {{ accountType }}
             </mat-option>
@@ -43,7 +43,7 @@
     </div>
 
     <div *ngIf="currentPage === 'second'" class="main-content">
-      <app-sign-up-second-page></app-sign-up-second-page>
+      <sign-up-second-page [accountType]="accountType"></sign-up-second-page>
     </div>
     <div *ngIf="currentPage === 'third'" class="main-content">
       <app-sign-up-third-page></app-sign-up-third-page>

@@ -10,6 +10,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class SignUpFirstPageComponent implements OnInit {
 
+  accountType: string;
   /** All InfoMapper account types. */
   readonly accountTypes = ['', 'Individual', 'Organization', 'Community'];
   /** The Form Group with both the existing and new account type Controls. Only one
@@ -28,7 +29,7 @@ export class SignUpFirstPageComponent implements OnInit {
 
 
   /**
-   * 
+   * The constructor for the SignUpFirstPageComponent.
    */
   constructor() {
 
@@ -39,15 +40,10 @@ export class SignUpFirstPageComponent implements OnInit {
   /**
    * 
    * @param accountType 
+   * @param choiceType
    */
   accountTypeChosen(accountType: string, choiceType: string): void {
-
-    if (choiceType === 'existing') {
-      console.log('Existing account type:', accountType);
-    } else if (choiceType === 'new') {
-      console.log('New account type:', accountType);
-    }
-    
+    this.accountType = choiceType + ':' + accountType;
   }
 
   /**
