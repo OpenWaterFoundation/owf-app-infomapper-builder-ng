@@ -4,7 +4,7 @@
 
     <div *ngIf="currentPage === 'first'" class="main-content">
 
-      <h1 class="create-account-title">Create InfoMapper Account</h1>
+      <h1 class="create-account-title">Create InfoMapper account</h1>
 
       <form [formGroup]="accountTypeFG" class="account-type-form">
         <span class="create-account-string">
@@ -43,20 +43,23 @@
     </div>
 
     <div *ngIf="currentPage === 'second'" class="main-content">
-      <sign-up-second-page [accountType]="accountType"></sign-up-second-page>
+      <sign-up-second-page [accountType]="accountType" [accountAddType]="accountAddType"
+      [createNewAccountFG]="createNewAccountFG">
+      </sign-up-second-page>
     </div>
     <div *ngIf="currentPage === 'third'" class="main-content">
       <app-sign-up-third-page></app-sign-up-third-page>
     </div>
     <div *ngIf="currentPage === 'fourth'" class="main-content">
-      Fourth page
+      Page 4
     </div>
     <div *ngIf="currentPage === 'last'" class="main-content">
       Last page
     </div>
 
     <div class="sign-up-utility">
-      <button mat-button *ngIf="currentPage === 'last'" class="submit-button">
+      <button mat-button *ngIf="currentPage === 'last'" (click)="submitAndExit()"
+      class="submit-button">
         Submit
       </button>
 

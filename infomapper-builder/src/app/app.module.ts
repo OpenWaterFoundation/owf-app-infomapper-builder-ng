@@ -40,7 +40,7 @@ import { NotFoundComponent }         from './not-found/not-found.component';
 import { SecurityTabComponent }      from './user-account/account-tabs/security-tab/security-tab.component';
 import { SideNavComponent }          from './navigation/side-nav/side-nav.component';
 import { SignInComponent }           from './user-account/sign-in/sign-in.component';
-import { SignUpFirstPageComponent }  from './user-account/sign-up/sign-up-first-page/sign-up-first-page.component';
+import { SignUpMainPageComponent }   from './user-account/sign-up/sign-up-main-page/sign-up-main-page.component';
 import { SignUpSecondPageComponent } from './user-account/sign-up/sign-up-second-page/sign-up-second-page.component';
 import { SignUpThirdPageComponent }  from './user-account/sign-up/sign-up-third-page/sign-up-third-page.component';
 import { SubMenuConfigComponent }    from './build/builder-components/sub-menu-config/sub-menu-config.component';
@@ -122,7 +122,7 @@ function appInit(appService: AppService): () => Observable<any> {
     OverlayLoadingDirective,
     GeneralTabComponent,
     SecurityTabComponent,
-    SignUpFirstPageComponent,
+    SignUpMainPageComponent,
     ForgotPasswordComponent,
     SignUpSecondPageComponent,
     SignUpThirdPageComponent

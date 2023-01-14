@@ -1,5 +1,19 @@
+/* CLASSES */
+
 /* The title of the component. */
 .create-account-title {
   margin: 0 10px 40px;
   text-align: center;
+}
+
+/* Form around the Mat Forms Fields. */
+.create-user-pool-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* String describing info for each a user pool form */
+.create-user-pool-string {
+  margin: 10px 0;
 }

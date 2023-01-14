@@ -1,13 +1,8 @@
 import { Component,
           Input,
-          OnInit }                from '@angular/core';
-import { ICredentials } from '@aws-amplify/core';
-import { CognitoIdentityProviderClient,
-          CreateUserPoolCommand } from "@aws-sdk/client-cognito-identity-provider";
-import { CreateActivationCommandOutput } from '@aws-sdk/client-ssm';
-import { CognitoUserSession }    from 'amazon-cognito-identity-js';
-import { first } from 'rxjs';
-import { AuthService } from 'src/app/services/auth.service';
+          OnInit }                       from '@angular/core';
+import { AbstractControl,
+          FormGroup }                    from '@angular/forms';
 
 @Component({
   selector: 'sign-up-second-page',
@@ -16,55 +11,43 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class SignUpSecondPageComponent implements OnInit {
 
+
+  @Input('accountAddType') accountAddType: string;
+  /**
+   * 
+   */
   @Input('accountType') accountType: string;
 
+  @Input('createNewAccountFG') createNewAccountFG: FormGroup;
 
-  constructor(private authService: AuthService) { }
+  /** The custom & built-in error messages to be displayed under a form with an error. */
+  formErrorMessages = {
+    required: 'Required'
+  }
 
 
-  private createUserPool(): void {
+  /**
+   * 
+   * @param authService 
+   */
+  constructor() {
 
-    this.authService.getAllCredentials().pipe(first()).subscribe({
-      next: (cred: {session: CognitoUserSession, credentials: ICredentials}) => {
+  }
 
-        const cognitoIdPClient = new CognitoIdentityProviderClient({
-          region: "us-west-2",
-          credentials: {
-            accessKeyId: cred.credentials.accessKeyId,
-            secretAccessKey: cred.credentials.secretAccessKey,
-            sessionToken: cred.credentials.sessionToken,
-            expiration: cred.credentials.expiration
-          }
-        });
 
-        const command = new CreateUserPoolCommand({
-          PoolName: 'user-pool-test'
-        });
-
-        this.sendCreateUserPool(cognitoIdPClient, command);
-      }
-    });
+  /**
+   * @param control The FormControl that will be checked for errors.
+   * @returns An array with all errors for the control, or an empty array of no errors.
+   */
+  formErrors(control: AbstractControl): string[] {
+    return control.errors ? Object.keys(control.errors) : [];
   }
 
   /**
    * 
    */
   ngOnInit(): void {
-    console.log('Account type:', this.accountType);
 
-    // Make sure to sign into service account.
-    // this.createUserPool();
-  }
-
-  async sendCreateUserPool(client: CognitoIdentityProviderClient, command: CreateUserPoolCommand) {
-
-    try {
-      const response: CreateActivationCommandOutput = await client.send(command);
-      console.log('User Pool created:', response);
-    }
-    catch (e: any) {
-      console.log('Error creating User Pool:', e);
-    }
   }
 
 }
