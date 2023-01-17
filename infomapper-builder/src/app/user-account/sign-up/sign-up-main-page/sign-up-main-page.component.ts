@@ -24,8 +24,7 @@ import { CognitoIdentityClient,
           CreateIdentityPoolCommandOutput} from "@aws-sdk/client-cognito-identity";
 
 import { first }                           from 'rxjs';
-import { CognitoUser,
-          CognitoUserSession }             from 'amazon-cognito-identity-js';
+import { CognitoUserSession }              from 'amazon-cognito-identity-js';
 import { AuthService }                     from 'src/app/services/auth.service';
 import { ParameterTier, ParameterType, PutParameterCommand,
           PutParameterCommandOutput,
@@ -122,13 +121,14 @@ export class SignUpMainPageComponent implements OnInit {
       }
     });
 
+    const userPoolName = this.createNewAccountFG.get('userPoolName').value;
     // Fill out the rest of the necessary parameter fields.
-    this.paramToAdd['accountName'] = this.createNewAccountFG.get('userPoolName');
-    this.paramToAdd['accountType'] = this.createNewAccountFG.get(this.accountType);
+    this.paramToAdd['accountName'] = userPoolName;
+    this.paramToAdd['accountType'] = this.accountType;
 
     const command = new PutParameterCommand({
-      Name: '/user-pool/',
-      Value: JSON.stringify({}),
+      Name: '/user-pool/' + userPoolName.replace(/\s+/g, ''),
+      Value: JSON.stringify(this.paramToAdd, null, 2),
       DataType: 'text',
       Tier: ParameterTier.STANDARD,
       Type: ParameterType.STRING
