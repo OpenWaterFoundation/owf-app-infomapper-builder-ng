@@ -44,14 +44,11 @@
 
     <div *ngIf="currentPage === 'second'" class="main-content">
       <sign-up-second-page [accountType]="accountType" [accountAddType]="accountAddType"
-      [createNewAccountFG]="createNewAccountFG">
+      [createNewAccountFG]="createNewAccountFG" [addToExistingAccountFG]="addToExistingAccountFG">
       </sign-up-second-page>
     </div>
     <div *ngIf="currentPage === 'third'" class="main-content">
       <app-sign-up-third-page></app-sign-up-third-page>
-    </div>
-    <div *ngIf="currentPage === 'fourth'" class="main-content">
-      Page 4
     </div>
     <div *ngIf="currentPage === 'last'" class="main-content">
       Last page

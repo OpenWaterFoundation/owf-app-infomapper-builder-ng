@@ -1,19 +1,36 @@
 /* CLASSES */
 
 /* The title of the component. */
-.create-account-title {
-  margin: 0 10px 40px;
+.account-title {
+  margin: 0 10px 30px;
   text-align: center;
 }
 
+/*  */
+.account-user-divider {
+  width: 90%;
+  margin: 20px 0;
+}
+
+/* Container for the elements in the password form. */
+.pw-input-container {
+  display: flex;
+}
+
 /* Form around the Mat Forms Fields. */
-.create-user-pool-form {
+.user-pool-form {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 /* String describing info for each a user pool form */
-.create-user-pool-string {
+.user-pool-string {
   margin: 10px 0;
+}
+
+/* The Font Awesome eye icon. */
+.visibility-icon {
+  padding-bottom: 2px;
+  cursor: pointer;
 }

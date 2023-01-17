@@ -1,9 +1,12 @@
 import { Component,
-          OnInit }                       from '@angular/core';
+          OnInit }                         from '@angular/core';
 import { FormControl,
-          FormGroup }                    from '@angular/forms';
-import { ICredentials }                  from '@aws-amplify/core';
+          FormGroup, 
+          Validators}                      from '@angular/forms';
+import { ICredentials }                    from '@aws-amplify/core';
 import { AccountRecoverySettingType,
+          AdminCreateUserCommand,
+          AdminCreateUserCommandOutput,
           CognitoIdentityProviderClient,
           CreateUserPoolCommand,
           CreateUserPoolCommandOutput,
@@ -14,12 +17,19 @@ import { AccountRecoverySettingType,
           CreateUserPoolClientCommand, 
           CreateUserPoolClientCommandOutput,
           DeletionProtectionType,
-          ExplicitAuthFlowsType}  from "@aws-sdk/client-cognito-identity-provider";
+          ExplicitAuthFlowsType, 
+          DeliveryMediumType}              from "@aws-sdk/client-cognito-identity-provider";
+import { CognitoIdentityClient,
+          CreateIdentityPoolCommand, 
+          CreateIdentityPoolCommandOutput} from "@aws-sdk/client-cognito-identity";
 
-import { first }                         from 'rxjs';
+import { first }                           from 'rxjs';
 import { CognitoUser,
-          CognitoUserSession }           from 'amazon-cognito-identity-js';
-import { AuthService }                   from 'src/app/services/auth.service';
+          CognitoUserSession }             from 'amazon-cognito-identity-js';
+import { AuthService }                     from 'src/app/services/auth.service';
+import { ParameterTier, ParameterType, PutParameterCommand,
+          PutParameterCommandOutput,
+          SSMClient }                      from '@aws-sdk/client-ssm';
 
           
 @Component({
@@ -40,24 +50,45 @@ export class SignUpMainPageComponent implements OnInit {
     existingAccountType: new FormControl(''),
     newAccountType: new FormControl('')
   });
-  
   /**
    * 
    */
+  addToExistingAccountFG = new FormGroup({
+    accountTypeName: new FormControl('')
+  });
+  /**
+   * 
+   */
+  private cognitoCred: {session: CognitoUserSession, credentials: ICredentials};
+  /**
+   * 
+   */
+  cognitoIdentityClient: CognitoIdentityClient;
+  /** The Identity Provider Client for Cognito User Pools. */
   cognitoIdPClient: CognitoIdentityProviderClient;
   /**
    * 
    */
   createNewAccountFG = new FormGroup({
-    userPoolName: new FormControl('')
+    userPoolName: new FormControl('', Validators.required),
+    userAccountEmail: new FormControl('', [Validators.required, Validators.email]),
+    userAccountUsername: new FormControl('', Validators.required)
   });
   /** Name of the current create account 'page' to be shown to the user. Will consist
    * of 'first', 'second', ... , and end with 'last'. */
   currentPage: string;
   /** The index of the current page in the signUpPages array. */
   private currentPageIndex = 0;
+  /**
+   * 
+   */
+  paramToAdd: {} = {};
   /** All 'pages' to be shown for creating a new account under the '/signup' app path. */
-  private readonly signUpPages = ['first', 'second', 'third', 'fourth', 'last'];
+  private readonly signUpPages = ['first', 'second', 'third', 'last'];
+  /**
+   * 
+   */
+  private SSMClient: SSMClient
 
 
   /**
@@ -79,6 +110,39 @@ export class SignUpMainPageComponent implements OnInit {
     this.accountAddType = accountAddType;
   }
 
+  private async addParameterToSystemsManager() {
+
+    this.SSMClient = new SSMClient({
+      region: "us-west-2",
+      credentials: {
+        accessKeyId: this.cognitoCred.credentials.accessKeyId,
+        secretAccessKey: this.cognitoCred.credentials.secretAccessKey,
+        sessionToken: this.cognitoCred.credentials.sessionToken,
+        expiration: this.cognitoCred.credentials.expiration
+      }
+    });
+
+    // Fill out the rest of the necessary parameter fields.
+    this.paramToAdd['accountName'] = this.createNewAccountFG.get('userPoolName');
+    this.paramToAdd['accountType'] = this.createNewAccountFG.get(this.accountType);
+
+    const command = new PutParameterCommand({
+      Name: '/user-pool/',
+      Value: JSON.stringify({}),
+      DataType: 'text',
+      Tier: ParameterTier.STANDARD,
+      Type: ParameterType.STRING
+    });
+
+    try {
+      const response: PutParameterCommandOutput = await this.SSMClient.send(command);
+      console.log('Successfully put parameter into Systems Manager:', response);
+    }
+    catch (e: any) {
+      console.log('Error putting parameter into Systems Manager:', e);
+    }
+  }
+
   /**
    * 
    * @returns 
@@ -88,10 +152,46 @@ export class SignUpMainPageComponent implements OnInit {
     if (this.currentPage === 'first') {
       return !(this.accountTypeFG.get('existingAccountType').value ||
       this.accountTypeFG.get('newAccountType').value);
-    } else if (this.currentPage == 'second') {
-      return !(this.createNewAccountFG.get('userPoolName').value);
+    }
+    else if (this.currentPage == 'second') {
+
+      if (this.accountAddType === 'New') {
+        return this.createNewAccountFG.invalid;
+      }
+      else if (this.accountAddType === 'Existing') {
+        return false;
+      }
+      
     }
     return false; // For now.
+  }
+
+  /**
+   * 
+   */
+  private createIdentityPool(userPoolId: string, appClientId: string): void {
+
+    this.cognitoIdentityClient = new CognitoIdentityClient({
+      region: "us-west-2",
+      credentials: {
+        accessKeyId: this.cognitoCred.credentials.accessKeyId,
+        secretAccessKey: this.cognitoCred.credentials.secretAccessKey,
+        sessionToken: this.cognitoCred.credentials.sessionToken,
+        expiration: this.cognitoCred.credentials.expiration
+      }
+    });
+
+    const command = new CreateIdentityPoolCommand({
+      AllowUnauthenticatedIdentities: false,
+      IdentityPoolName: 'infomapper-builder-pool-test-2',
+      CognitoIdentityProviders: [{
+        ClientId: appClientId,
+        ProviderName: userPoolId
+      }]
+    });
+
+    this.sendCreateIdentityPool(command);
+    
   }
 
   /**
@@ -101,6 +201,8 @@ export class SignUpMainPageComponent implements OnInit {
 
     this.authService.getAllCredentials().pipe(first()).subscribe({
       next: (cred: {session: CognitoUserSession, credentials: ICredentials}) => {
+
+        this.cognitoCred = cred;
 
         this.cognitoIdPClient = new CognitoIdentityProviderClient({
           region: "us-west-2",
@@ -143,10 +245,45 @@ export class SignUpMainPageComponent implements OnInit {
     try {
       const response: CreateUserPoolClientCommandOutput = await this.cognitoIdPClient.send(command);
       console.log('User Pool app client created:', response);
-      // Maybe add Snackbar here.
-      this.authService.signOut();
+      this.paramToAdd['userPoolClientId'] = response.UserPoolClient.ClientId;
+
+      this.createUserPoolUser(userPoolId);
+      // Don't use this here.
+      // this.createIdentityPool(userPoolId, response.UserPoolClient.ClientId);
+      
     } catch (e: any) {
       console.log('Error creating the User Pool app client:', e);
+    }
+  }
+
+  /**
+   * 
+   * @param userPoolId 
+   */
+  private async createUserPoolUser(userPoolId: string) {
+    const userEmail = this.createNewAccountFG.get('userAccountEmail').value;
+    const username = this.createNewAccountFG.get('userAccountUsername').value;
+
+    const command = new AdminCreateUserCommand({
+      Username: username,
+      UserPoolId: userPoolId,
+      DesiredDeliveryMediums: [DeliveryMediumType.EMAIL],
+      UserAttributes: [{
+        Name: 'email',
+        Value: userEmail
+      }]
+    });
+
+    try {
+      const response: AdminCreateUserCommandOutput = await this.cognitoIdPClient.send(command);
+      console.log('User Pool user created:', response);
+
+      this.addParameterToSystemsManager();
+      // Maybe add Snackbar here.
+      this.authService.signOut();
+    }
+    catch (e: any) {
+      console.log('Error creating User Pool user:', e);
     }
   }
 
@@ -216,11 +353,27 @@ export class SignUpMainPageComponent implements OnInit {
    * 
    * @param command 
    */
-  async sendCreateUserPool(command: CreateUserPoolCommand) {
+  private async sendCreateIdentityPool(command: CreateIdentityPoolCommand) {
+
+    try {
+      const response: CreateIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(command);
+      console.log('Identity Pool created:', response);
+    }
+    catch (e: any) {
+      console.log('Error creating Identity Pool:', e);
+    }
+  }
+
+  /**
+   * 
+   * @param command 
+   */
+  private async sendCreateUserPool(command: CreateUserPoolCommand) {
 
     try {
       const response: CreateUserPoolCommandOutput = await this.cognitoIdPClient.send(command);
       console.log('User Pool created:', response);
+      this.paramToAdd['userPoolId'] = response.UserPool.Id
 
       this.createUserPoolAppClient(response.UserPool.Id);
     }
@@ -234,8 +387,9 @@ export class SignUpMainPageComponent implements OnInit {
    */
   private serviceAccountSignIn() {
     this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
-    .subscribe((user: CognitoUser) => {
-      
+    .subscribe(() => {
+      // Don't need to do anything. The service is signed in at this point, and an
+      // asynchronous call to retrieve its credentials will be done later.
     });
   }
 
@@ -243,7 +397,14 @@ export class SignUpMainPageComponent implements OnInit {
    * 
    */
   submitAndExit(): void {
-    this.createUserPool();
+
+    if (this.accountAddType === 'New') {
+      this.createUserPool();
+    }
+    else if (this.accountAddType === 'Existing') {
+      console.log('Doing stuff on an exiting account.');
+    }
+    
   }
 
 }

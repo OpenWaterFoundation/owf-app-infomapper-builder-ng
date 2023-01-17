@@ -25,7 +25,7 @@ form fields. */
 
 /* The title of the component. */
 .create-account-title {
-  margin: 0 10px 40px;
+  margin: 0 10px 30px;
   text-align: center;
 }
 
@@ -52,6 +52,7 @@ width. */
   height: 100%;
   display: flex;
   justify-content: center;
+  overflow: auto;
 }
 
 /* The container with the main content of the Sign Up First Page. */
@@ -81,7 +82,7 @@ width. */
 
 /* Container holding all main forgot password elements. */
 .sign-up-main-container {
-  height: 500px;
+  height: fit-content;
   width: 425px;
   margin-top: 50px;
   padding: 15px 15px 5px;
@@ -101,10 +102,19 @@ width. */
   flex-direction: row-reverse;
   justify-content: space-between;
   width: 100%;
+  margin-top: 25px;
 }
 
 /* Submit button to create a new account. */
 .submit-button {
   background-color: #9db66b;
   width: 122px;
+}
+
+@media (max-width: 500px) {
+
+  /* Container holding all main forgot password elements. Removes the top margin. */
+  .sign-up-main-container {
+    margin-top: 0px;
+  }
 }

@@ -13,12 +13,13 @@ import { BehaviorSubject,
           map,
           mergeMap,
           Observable, 
-          of}            from 'rxjs';
+          of }                    from 'rxjs';
 import { CognitoUser,
           CognitoUserSession }    from 'amazon-cognito-identity-js';
 
 import { S3ProviderListConfig }   from '@aws-amplify/storage/lib-esm/types';
 import { ParamAccount }           from '../infomapper-builder-types';
+import { LocalStorageService }    from './local-storage.service';
 
 
 @Injectable({
@@ -72,7 +73,7 @@ export class AuthService {
    * Constructor the AuthService. Configures the Amplify class with the Cognito
    * User Pool Id and the User Pool web client Id.
    */
-  constructor(private router: Router) {
+  constructor(private router: Router, private storageService: LocalStorageService) {
 
     this._amplify = Amplify.configure({
       Auth: {
@@ -240,6 +241,7 @@ export class AuthService {
    * @returns An observable response to the authentication request.
    */
   signIn(userNameOrEmail: string, password: string): Observable<CognitoUser | any> {
+    console.log('Account params to sign in with:', this.storageService.getUserParamAccount());
     return from(Auth.signIn(userNameOrEmail, password));
   }
 

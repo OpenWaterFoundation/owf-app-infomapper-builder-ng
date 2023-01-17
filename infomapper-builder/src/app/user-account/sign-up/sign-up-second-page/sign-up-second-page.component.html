@@ -1,34 +1,73 @@
-<h1 *ngIf="accountAddType === 'New'" class="create-account-title">Create new account</h1>
-<h1 *ngIf="accountAddType === 'Existing'" class="create-account-title">Add to existing account</h1>
+<h1 *ngIf="accountAddType === 'New'" class="account-title">Create new account</h1>
+<h1 *ngIf="accountAddType === 'Existing'" class="account-title">Add to existing account</h1>
 
 <ng-container *ngIf="accountAddType === 'New'">
 
-  <form [formGroup]="createNewAccountFG" class="create-user-pool-form">
-    <span class="create-user-pool-string">
+  <form [formGroup]="createNewAccountFG" class="user-pool-form">
+    <span class="user-pool-string">
       {{ accountType }} account name
     </span>
     <mat-form-field style="width: 100%" appearance="outline">
               
       <input matInput formControlName="userPoolName" attr.data-cy="TODO">
-      <mat-hint>e.g. Open Water Foundation</mat-hint>
+      <mat-hint *ngIf="accountType === 'Individual'">e.g. Malcolm Reynolds</mat-hint>
+      <mat-hint *ngIf="accountType === 'Organization'">e.g. Open Water Foundation</mat-hint>
+      <mat-hint *ngIf="accountType === 'Community'">e.g. City of Fort Collins</mat-hint>
 
       <mat-error>
         <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userPoolName'))">
-          {{ formErrorMessages[error] }} <br>
+          {{ formErrorMessages[error] }}<br>
         </ng-container>
       </mat-error>
     </mat-form-field>
 
-    <!-- <span class="create-account-string">
-      Create account in <span class="emphasize-word">new</span> organization
+    <mat-divider class="account-user-divider"></mat-divider>
+
+    <span class="user-pool-string">
+      User account email
     </span>
-    <mat-form-field appearance="outline">
+    <mat-form-field style="width: 100%" appearance="outline">
               
-      <input matInput formControlName="user" attr.data-cy="TODO">
+      <input matInput formControlName="userAccountEmail" attr.data-cy="TODO">
 
       <mat-error>
-        <ng-container *ngFor="let error of formErrors(signInFG.get('user'))">
-          {{ formErrorMessages[error] }} <br>
+        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountEmail'))">
+          {{ formErrorMessages[error] }}<br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+
+    <span class="user-pool-string">
+      User account username
+    </span>
+    <mat-form-field style="width: 100%" appearance="outline">
+              
+      <input matInput formControlName="userAccountUsername" attr.data-cy="TODO">
+      <mat-hint>Case insensitive</mat-hint>
+
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountUsername'))">
+          {{ formErrorMessages[error] }}<br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+
+    <!-- <span class="user-pool-string">
+      User account password
+    </span>
+    <mat-form-field style="width: 100%" appearance="outline">
+              
+      <div class="pw-input-container">
+        <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="userAccountPassword"
+        attr.data-cy="TODO"/>
+        <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+        (click)="togglePasswordVisibility()" class="visibility-icon">
+        </fa-icon>
+      </div>
+
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountPassword'))">
+          {{ formErrorMessages[error] }}<br>
         </ng-container>
       </mat-error>
     </mat-form-field> -->
@@ -38,34 +77,21 @@
 
 <ng-container *ngIf="accountAddType === 'Existing'">
 
-  Existing account
-
-  <!-- <form [formGroup]="accountTypeFG" class="account-type-form">
-    <span class="create-account-string">
-      Create account in <span class="emphasize-word">existing</span> organization
+  <form [formGroup]="addToExistingAccountFG" class="user-pool-form">
+    <span class="user-pool-string">
+      Name of {{ accountType }} account 
     </span>
-    <mat-form-field appearance="outline">
-      <mat-label>Account type</mat-label>
-      <mat-select formControlName="existingAccountType" [disabled]="isNewSelected()">
-        <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'Existing')"
-        [value]="accountType">
-          {{ accountType }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <mat-form-field style="width: 100%;" appearance="outline">
 
-    <span class="create-account-string">
-      Create account in <span class="emphasize-word">new</span> organization
-    </span>
-    <mat-form-field appearance="outline">
-      <mat-label>Account type</mat-label>
-      <mat-select formControlName="newAccountType" [disabled]="isExistingSelected()">
-        <mat-option *ngFor="let accountType of accountTypes" (click)="accountTypeChosen(accountType, 'New')"
-        [value]="accountType">
-          {{ accountType }}
-        </mat-option>
-      </mat-select>
+      <input matInput formControlName="accountTypeName" attr.data-cy="TODO">
+
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(addToExistingAccountFG.get('accountTypeName'))">
+          {{ formErrorMessages[error] }}<br>
+        </ng-container>
+      </mat-error>
+
     </mat-form-field>
-  </form> -->
+  </form>
 
 </ng-container>

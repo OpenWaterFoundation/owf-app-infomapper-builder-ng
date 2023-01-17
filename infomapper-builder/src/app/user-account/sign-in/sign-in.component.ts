@@ -192,7 +192,6 @@ export class SignInComponent implements OnInit {
   paramAccountSelected($event: any, paramAccount: ParamAccount) {
 
     if ($event.source.selected) {
-      console.log('Account chosen:', paramAccount);
       this.storageService.setUserParamAccount(paramAccount);
     }
   }
