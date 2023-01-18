@@ -90,7 +90,7 @@
     </div>
 
     <div *ngIf="confirmingAccount" class="sign-in-main-container">
-      <confirm-account [username]="providedUsername"></confirm-account>
+      <confirm-account [cognitoUser]="cognitoUser"></confirm-account>
     </div>
 
 </div>

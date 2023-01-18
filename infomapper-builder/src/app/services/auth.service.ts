@@ -241,7 +241,6 @@ export class AuthService {
    */
   signIn(userNameOrEmail: string, password: string, serviceAccount?: boolean): Observable<CognitoUser | any> {
     console.log('CURRENT ACCOUNT PARAM:', this.storageService.getUserParamAccount());
-    console.log('Service Account:', serviceAccount);
 
     if (serviceAccount) {
       return from(Auth.signIn(userNameOrEmail, password));

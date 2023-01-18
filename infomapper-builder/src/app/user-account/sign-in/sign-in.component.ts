@@ -42,6 +42,10 @@ export class SignInComponent implements OnInit {
   /**
    * 
    */
+  cognitoUser: CognitoUser;
+  /**
+   * 
+   */
   confirmingAccount: boolean;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
@@ -51,10 +55,6 @@ export class SignInComponent implements OnInit {
   formErrorMessages = {
     required: 'Required'
   };
-  /**
-   * 
-   */
-  providedUsername: string;
   /** The Angular Form Group used by the sign in component to obtain user input and
    * validation. */
   signInFG = new FormGroup({
@@ -248,10 +248,8 @@ export class SignInComponent implements OnInit {
     this.authService.signIn(user, password).pipe(first()).subscribe({
       next: (user: CognitoUser) => {
 
-        console.log('Successful user sign in:', user);
-
         if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-          this.providedUsername = user.getUsername();
+          this.cognitoUser = user;
           this.confirmingAccount = true;
           return;
         }
