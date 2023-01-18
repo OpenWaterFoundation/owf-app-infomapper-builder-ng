@@ -1,14 +1,13 @@
 <div class="main-container">
-  <!-- <div class="display-container"> -->
-    <!-- cdkOverlayOrigin #trigger="cdkOverlayOrigin" -->
-    <div class="sign-in-main-container">
+  <!-- cdkOverlayOrigin #trigger="cdkOverlayOrigin" -->
+    <div *ngIf="!confirmingAccount" class="sign-in-main-container">
 
       <!-- <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
       [cdkConnectedOverlayOpen]="true" [cdkConnectedOverlayHasBackdrop]="true">
         <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
       </ng-template> -->
 
-      <form [formGroup]="signInFG" class="sign-in-form-group-container">
+      <form [formGroup]="signInFG">
 
         <div class="mat-form-fields-container">
 
@@ -30,8 +29,8 @@
 
                   <mat-option *cdkVirtualFor="let account of displayAccounts"
                   (onSelectionChange)="paramAccountSelected($event, account)"
-                  [value]="account.values.name" [style.height.px]="48">
-                    {{ account.values.name }}
+                  [value]="account.values.accountName" [style.height.px]="48">
+                    {{ account.values.accountName }}
                   </mat-option>
 
                 </cdk-virtual-scroll-viewport>
@@ -90,5 +89,8 @@
 
     </div>
 
-  <!-- </div> -->
+    <div *ngIf="confirmingAccount" class="sign-in-main-container">
+      <confirm-account [username]="providedUsername"></confirm-account>
+    </div>
+
 </div>

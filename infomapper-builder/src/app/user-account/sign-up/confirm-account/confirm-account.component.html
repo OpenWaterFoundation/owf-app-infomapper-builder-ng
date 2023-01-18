@@ -1,0 +1,52 @@
+<h1 class="reset-title">Reset Password</h1>
+
+<p>Create a new password for account confirmation.</p>
+
+<form [formGroup]="respondToAuthFG">
+
+  <div class="mat-form-fields-container">
+
+    <span>New password</span>
+
+    <mat-form-field appearance="outline">
+      
+      <div class="pw-input-container">
+        <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="newPassword"
+        attr.data-cy="TODO"/>
+        <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+        (click)="togglePasswordVisibility()" class="visibility-icon">
+        </fa-icon>
+      </div>
+
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(respondToAuthFG.get('newPassword'))">
+          {{ formErrorMessages[error] }} <br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      
+      <div class="pw-input-container">
+        <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="confirmNewPassword"
+        attr.data-cy="TODO"/>
+        <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+        (click)="togglePasswordVisibility()" class="visibility-icon">
+        </fa-icon>
+      </div>
+
+      <mat-error>
+        <ng-container *ngFor="let error of formErrors(respondToAuthFG.get('confirmNewPassword'))">
+          {{ formErrorMessages[error] }} <br>
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="resetPassword()" class="reset-button"
+    [disabled]="resetPasswordDisabled()">
+      Reset password
+    </button>
+
+  </div>
+
+</form>

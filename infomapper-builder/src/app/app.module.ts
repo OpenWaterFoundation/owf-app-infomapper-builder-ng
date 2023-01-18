@@ -57,6 +57,7 @@ import { OverlayLoadingDirective }   from './directives/overlay-loading.directiv
 
 // Showdown, to convert markdown to HTML.
 import * as Showdown                 from 'showdown';
+import { ConfirmAccountComponent } from './user-account/sign-up/confirm-account/confirm-account.component';
 
 
 const classMap: any = {
@@ -125,7 +126,8 @@ function appInit(appService: AppService): () => Observable<any> {
     SignUpMainPageComponent,
     ForgotPasswordComponent,
     SignUpSecondPageComponent,
-    SignUpThirdPageComponent
+    SignUpThirdPageComponent,
+    ConfirmAccountComponent
   ],
   imports: [
     AngularFullpageModule,

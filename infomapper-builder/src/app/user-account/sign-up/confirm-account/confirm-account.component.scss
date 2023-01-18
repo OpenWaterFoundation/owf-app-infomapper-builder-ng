@@ -1,0 +1,35 @@
+/* CLASSES */
+
+/*  */
+.mat-form-fields-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Container for the elements in the password form. */
+.pw-input-container {
+  display: flex;
+}
+
+/* Main title of the Login page. */
+.reset-title {
+  // font-size: 36px;
+  margin: 0 10px 40px;
+  text-align: center;
+}
+
+/* Main sign in button. */
+.reset-button {
+  background-color: #9db66b;
+  font-size: 22px;
+  height: 45px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* The Font Awesome eye icon. */
+.visibility-icon {
+  padding-bottom: 2px;
+  cursor: pointer;
+}

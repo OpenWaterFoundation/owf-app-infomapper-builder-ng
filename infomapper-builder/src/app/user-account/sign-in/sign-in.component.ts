@@ -6,6 +6,7 @@ import { AbstractControl,
           FormControl,
           FormGroup,
           Validators }                  from '@angular/forms';
+import { Router }                       from '@angular/router';
 
 import { MatSnackBar,
           MatSnackBarHorizontalPosition,
@@ -38,6 +39,10 @@ export class SignInComponent implements OnInit {
   /**  The InfoMapper Account search input element. Used to focus on after creation
    * by using TypeScript. */
   @ViewChild("searchInput") private _searchInputElement: ElementRef;
+  /**
+   * 
+   */
+  confirmingAccount: boolean;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
   /** All used FontAwesome icons in the SignInComponent (exception: visibilityIcon).  */
@@ -45,7 +50,11 @@ export class SignInComponent implements OnInit {
   /** The custom & built-in error messages to be displayed under a form with an error. */
   formErrorMessages = {
     required: 'Required'
-  }
+  };
+  /**
+   * 
+   */
+  providedUsername: string;
   /** The Angular Form Group used by the sign in component to obtain user input and
    * validation. */
   signInFG = new FormGroup({
@@ -64,7 +73,7 @@ export class SignInComponent implements OnInit {
   /** Array of all found Parameters from the AWS SSM using a service account. */
   private accounts: ParamAccount[] = [];
   /** The array of accounts for all currently created AWS Cognito User Pools. */
-  displayAccounts: ParamAccount[] = [{ slug: '', values: { name: '' } }];
+  displayAccounts: ParamAccount[] = [{ slug: '', values: { accountName: '' } }];
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -80,7 +89,7 @@ export class SignInComponent implements OnInit {
    * @param snackBar Service to dispatch Angular Material snack bar messages.
    */
   constructor(private authService: AuthService, private loaderService: LoaderService,
-  private storageService: LocalStorageService, private snackBar: MatSnackBar) {
+  private router: Router, private storageService: LocalStorageService, private snackBar: MatSnackBar) {
 
   }
 
@@ -159,29 +168,6 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * Iterates over all returned Parameter Store Parameters, and assigns each one
-   * to the more accessible InfoMapper created ParamAccount.
-   * @param allParameters All Parameter object returned from the service account
-   * using the AWS SDK to retrieve all current Parameters.
-   */
-  private populateAccounts(allParameters: Parameter[]): void {
-
-    for (let param of allParameters) {
-      let option: ParamAccount = {
-        slug: param.Name,
-        values: JSON.parse(param.Value)
-      };
-      this.accounts.push(option);
-    }
-    console.log('All accounts:', this.accounts);
-
-    // Sign out of the service account now that a user account is being logged into.
-    this.authService.signOut(true);
-
-    this.loaderService.hideLoader();
-  }
-
-  /**
    * Called on any detected change on the mat option menu. Obtains the AWS SSM Parameter
    * object so the correct User Pool is used to sign a user in.
    * @param $event The Event from the template file when an InfoMapper Account has
@@ -197,6 +183,29 @@ export class SignInComponent implements OnInit {
   }
 
   /**
+   * Iterates over all returned Parameter Store Parameters, and assigns each one
+   * to the more accessible InfoMapper created ParamAccount.
+   * @param allParameters All Parameter object returned from the service account
+   * using the AWS SDK to retrieve all current Parameters.
+   */
+  private populateAccounts(allParameters: Parameter[]): void {
+
+    for (let param of allParameters) {
+      let option: ParamAccount = {
+        slug: param.Name,
+        values: JSON.parse(param.Value)
+      };
+      this.accounts.push(option);
+    }
+    console.log('ALL PARAM ACCOUNTS:', this.accounts);
+
+    // Sign out of the service account now that a user account is being logged into.
+    this.authService.signOut(true);
+
+    this.loaderService.hideLoader();
+  }
+
+  /**
    * Called after each keyup when searching for an InfoMapper Account in its search
    * field.
    * @param $event The event passed in from the template.
@@ -207,20 +216,20 @@ export class SignInComponent implements OnInit {
 
     // If the value in the search bar is empty, then all dates can be shown.
     if (input === '') {
-      this.displayAccounts = [{ slug: '', values: { name: '' } }];
+      this.displayAccounts = [{ slug: '', values: { accountName: '' } }];
       return;
     }
 
     if ($event.key.toLowerCase() === 'backspace') {
       this.displayAccounts = this.accounts.filter((param: ParamAccount) => {
         // Human readable name or slug name.
-        return param.values.name.toLowerCase().includes(input) ||
+        return param.values.accountName.toLowerCase().includes(input) ||
         param.slug.toLowerCase().includes(input);
       });
     } else {
       this.displayAccounts = this.accounts.filter((param: ParamAccount) => {
         // Human readable name or slug name.
-        return param.values.name.toLowerCase().includes(input) ||
+        return param.values.accountName.toLowerCase().includes(input) ||
         param.slug.toLowerCase().includes(input);
       });
     }
@@ -236,13 +245,22 @@ export class SignInComponent implements OnInit {
     const user = this.signInFG.get('user').value;
     const password = this.signInFG.get('password').value;
 
-    this.authService.signIn(user, password).pipe(first())
-    .subscribe({
+    this.authService.signIn(user, password).pipe(first()).subscribe({
       next: (user: CognitoUser) => {
+
+        console.log('Successful user sign in:', user);
+
+        if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+          this.providedUsername = user.getUsername();
+          this.confirmingAccount = true;
+          return;
+        }
+        console.log('Successful user login:', user);
         this.authService.successfulLoginSetup(user);
       },
-      error: () => {
+      error: (e: any) => {
         this.openErrorSnackBar();
+        console.log('Error signing user in:', e);
       }
     });
   }
@@ -251,8 +269,8 @@ export class SignInComponent implements OnInit {
    * Asynchronously sign in as the service account and get its credentials.
    */
   private serviceAccountSignIn() {
-    this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
-    .subscribe((user: CognitoUser) => {
+    this.authService.signIn('owf.service', 'I%9cY!#4Hw1', true).pipe(first())
+    .subscribe(() => {
 
       this.authService.getCurrentCredentials().pipe(first())
       .subscribe((credentials: ICredentials) => {

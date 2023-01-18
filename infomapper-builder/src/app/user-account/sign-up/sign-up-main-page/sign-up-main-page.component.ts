@@ -109,6 +109,9 @@ export class SignUpMainPageComponent implements OnInit {
     this.accountAddType = accountAddType;
   }
 
+  /**
+   * 
+   */
   private async addParameterToSystemsManager() {
 
     this.SSMClient = new SSMClient({
@@ -125,9 +128,11 @@ export class SignUpMainPageComponent implements OnInit {
     // Fill out the rest of the necessary parameter fields.
     this.paramToAdd['accountName'] = userPoolName;
     this.paramToAdd['accountType'] = this.accountType;
+    // TODO: Remove the hard coded path for testing with variable.
+    this.paramToAdd['accountPath'] = 'test/';
 
     const command = new PutParameterCommand({
-      Name: '/user-pool/' + userPoolName.replace(/\s+/g, ''),
+      Name: '/user-pool/' + this.accountType + '/' + userPoolName.replace(/\s+/g, ''),
       Value: JSON.stringify(this.paramToAdd, null, 2),
       DataType: 'text',
       Tier: ParameterTier.STANDARD,
@@ -169,7 +174,9 @@ export class SignUpMainPageComponent implements OnInit {
   /**
    * 
    */
-  private createIdentityPool(userPoolId: string, appClientId: string): void {
+  private async createIdentityPool(userPoolId: string, appClientId: string) {
+
+    console.log('Current user credentials:', this.cognitoCred);
 
     this.cognitoIdentityClient = new CognitoIdentityClient({
       region: "us-west-2",
@@ -179,6 +186,7 @@ export class SignUpMainPageComponent implements OnInit {
         sessionToken: this.cognitoCred.credentials.sessionToken,
         expiration: this.cognitoCred.credentials.expiration
       }
+
     });
 
     const command = new CreateIdentityPoolCommand({
@@ -190,8 +198,14 @@ export class SignUpMainPageComponent implements OnInit {
       }]
     });
 
-    this.sendCreateIdentityPool(command);
-    
+    try {
+      const response: CreateIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(command);
+      console.log('Identity Pool created:', response);
+    }
+    catch (e: any) {
+      console.log('Parameter not added to SSM. Error creating Identity Pool:', e);
+    }
+
   }
 
   /**
@@ -217,7 +231,7 @@ export class SignUpMainPageComponent implements OnInit {
         const providedUserPoolName = this.createNewAccountFG.get('userPoolName').value.replace(/\s+/g, '');
 
         const command = new CreateUserPoolCommand({
-          PoolName: providedUserPoolName,
+          PoolName: 'InfoMapper-' + providedUserPoolName,
           AccountRecoverySetting: this.getAccountRecoverySetting(),
           AutoVerifiedAttributes: [VerifiedAttributeType.EMAIL],
           AliasAttributes: [AliasAttributeType.EMAIL, AliasAttributeType.PREFERRED_USERNAME],
@@ -244,13 +258,10 @@ export class SignUpMainPageComponent implements OnInit {
 
     try {
       const response: CreateUserPoolClientCommandOutput = await this.cognitoIdPClient.send(command);
-      console.log('User Pool app client created:', response);
+      console.log('USER POOL APP CLIENT CREATED:', response);
       this.paramToAdd['userPoolClientId'] = response.UserPoolClient.ClientId;
 
-      this.createUserPoolUser(userPoolId);
-      // Don't use this here.
-      // this.createIdentityPool(userPoolId, response.UserPoolClient.ClientId);
-      
+      this.createUserPoolUser(userPoolId, response.UserPoolClient.ClientId);
     } catch (e: any) {
       console.log('Error creating the User Pool app client:', e);
     }
@@ -260,14 +271,14 @@ export class SignUpMainPageComponent implements OnInit {
    * 
    * @param userPoolId 
    */
-  private async createUserPoolUser(userPoolId: string) {
+  private async createUserPoolUser(userPoolId: string, appClientId: string) {
     const userEmail = this.createNewAccountFG.get('userAccountEmail').value;
     const username = this.createNewAccountFG.get('userAccountUsername').value;
 
     const command = new AdminCreateUserCommand({
       Username: username,
       UserPoolId: userPoolId,
-      DesiredDeliveryMediums: [DeliveryMediumType.EMAIL],
+      DesiredDeliveryMediums: [ DeliveryMediumType.EMAIL ],
       UserAttributes: [{
         Name: 'email',
         Value: userEmail
@@ -276,8 +287,9 @@ export class SignUpMainPageComponent implements OnInit {
 
     try {
       const response: AdminCreateUserCommandOutput = await this.cognitoIdPClient.send(command);
-      console.log('User Pool user created:', response);
+      console.log('USER POOL USER CREATED:', response);
 
+      // this.createIdentityPool(userPoolId, appClientId);
       this.addParameterToSystemsManager();
       // Maybe add Snackbar here.
       this.authService.signOut();
@@ -353,26 +365,11 @@ export class SignUpMainPageComponent implements OnInit {
    * 
    * @param command 
    */
-  private async sendCreateIdentityPool(command: CreateIdentityPoolCommand) {
-
-    try {
-      const response: CreateIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(command);
-      console.log('Identity Pool created:', response);
-    }
-    catch (e: any) {
-      console.log('Error creating Identity Pool:', e);
-    }
-  }
-
-  /**
-   * 
-   * @param command 
-   */
   private async sendCreateUserPool(command: CreateUserPoolCommand) {
 
     try {
       const response: CreateUserPoolCommandOutput = await this.cognitoIdPClient.send(command);
-      console.log('User Pool created:', response);
+      console.log('USER POOL CREATED:', response);
       this.paramToAdd['userPoolId'] = response.UserPool.Id
 
       this.createUserPoolAppClient(response.UserPool.Id);
@@ -386,7 +383,7 @@ export class SignUpMainPageComponent implements OnInit {
    * Asynchronously sign in as the service account and get its credentials.
    */
   private serviceAccountSignIn() {
-    this.authService.signIn('owf.service', 'I%9cY!#4Hw1').pipe(first())
+    this.authService.signIn('owf.service', 'I%9cY!#4Hw1', true).pipe(first())
     .subscribe(() => {
       // Don't need to do anything. The service is signed in at this point, and an
       // asynchronous call to retrieve its credentials will be done later.

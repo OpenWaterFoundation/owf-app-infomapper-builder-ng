@@ -54,8 +54,14 @@ export class AuthService {
    * 
    */
   private _currentUserParam: ParamAccount;
-
-  readonly appClientId = '2nd68j4v2dp114bp72e2vs9cv4';
+  /**
+   * 
+   */
+  private readonly identityPoolId = 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a'
+  /**
+   * 
+   */
+  private readonly appClientId = '2nd68j4v2dp114bp72e2vs9cv4';
   /** This is required, as Amazon will add the default 'public/', 'protected/',
    * or 'private/' prefixes in the URL. Since OWF is not using those folder names
    * in any S3 bucket, a custom empty string must be used as the prefix. */
@@ -77,17 +83,10 @@ export class AuthService {
 
     this._amplify = Amplify.configure({
       Auth: {
-        identityPoolId: 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a',
+        identityPoolId: this.identityPoolId,
         region: 'us-west-2',
         userPoolId: 'us-west-2_oIuEME4cI',
         userPoolWebClientId: this.appClientId
-      },
-      Storage: {
-        AWSS3: {
-          bucket: 'test.openwaterfoundation.org',
-          region: 'us-west-2',
-          level: 'public'
-        }
       }
     });
 
@@ -240,8 +239,30 @@ export class AuthService {
    * @param password The password to be entered.
    * @returns An observable response to the authentication request.
    */
-  signIn(userNameOrEmail: string, password: string): Observable<CognitoUser | any> {
-    console.log('Account params to sign in with:', this.storageService.getUserParamAccount());
+  signIn(userNameOrEmail: string, password: string, serviceAccount?: boolean): Observable<CognitoUser | any> {
+    console.log('CURRENT ACCOUNT PARAM:', this.storageService.getUserParamAccount());
+    console.log('Service Account:', serviceAccount);
+
+    if (serviceAccount) {
+      return from(Auth.signIn(userNameOrEmail, password));
+    }
+
+    // Configure Amplify with the necessary data for this user.
+    Amplify.configure({
+      Auth: {
+        identityPoolId: this.identityPoolId,
+        region: 'us-west-2',
+        userPoolId: this.storageService.getUserParamAccount().values.userPoolId,
+        userPoolWebClientId: this.storageService.getUserParamAccount().values.userPoolClientId
+      },
+      Storage: {
+        AWSS3: {
+          bucket: 'test.openwaterfoundation.org',
+          region: 'us-west-2',
+          level: 'public'
+        }
+      }
+    });
     return from(Auth.signIn(userNameOrEmail, password));
   }
 

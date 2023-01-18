@@ -11,7 +11,7 @@ export class GeneralTabComponent implements OnInit {
 
   /** Array of all account properties to be shown under the Account Information section. */
   readonly accountProperties = [
-    { name: 'Name', value: this.storageService.getUserParamAccount().values.name },
+    { name: 'Name', value: this.storageService.getUserParamAccount().values.accountName },
     { name: 'Type', value: this.storageService.getUserParamAccount().values.accountType },
     { name: 'Path', value: this.storageService.getUserParamAccount().values.accountPath },
     { name: 'UserPoolId', value: this.storageService.getUserParamAccount().values.userPoolId }

@@ -4,9 +4,10 @@
 export interface ParamAccountValues {
   accountPath?: string;
   accountType?: string;
-  name?: string;
+  accountName?: string;
   region?: string;
   userPoolId?: string;
+  userPoolClientId?: string;
 }
 
 /**

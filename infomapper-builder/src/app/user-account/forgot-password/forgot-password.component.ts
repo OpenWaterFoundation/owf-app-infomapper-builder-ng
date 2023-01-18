@@ -22,6 +22,7 @@ import { faEye,
           faEyeSlash }                  from '@fortawesome/free-solid-svg-icons';
 import { first }                        from 'rxjs';
 import { AuthService }                  from 'src/app/services/auth.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 
 @Component({
@@ -66,7 +67,7 @@ export class ForgotPasswordComponent implements OnInit {
    * 
    */
   constructor(private authService: AuthService, private snackBar: MatSnackBar,
-  private router: Router) { }
+  private storageService: LocalStorageService, private router: Router) { }
 
 
   /**
@@ -79,7 +80,7 @@ export class ForgotPasswordComponent implements OnInit {
     const newPassword = this.forgotPasswordFG.get('newPassword').value;
 
     const command = new ConfirmForgotPasswordCommand({
-      ClientId: this.authService.appClientId,
+      ClientId: this.storageService.getUserParamAccount().values.userPoolClientId,
       ConfirmationCode: verificationCode,
       Password: newPassword,
       Username: username
@@ -188,7 +189,7 @@ export class ForgotPasswordComponent implements OnInit {
       const userName = this.forgotPasswordFG.get('username').value;
   
       const command = new ForgotPasswordCommand({
-        ClientId: this.authService.appClientId,
+        ClientId: this.storageService.getUserParamAccount().values.userPoolClientId,
         Username: userName
       });
       
