@@ -134,7 +134,6 @@ export class SignInComponent implements OnInit {
    * properties of a directive.
    */
   ngOnInit(): void {
-    // TODO.
     this.loaderService.showLoader();
     this.serviceAccountSignIn();
     // this.x_anonymousUserSignIn();

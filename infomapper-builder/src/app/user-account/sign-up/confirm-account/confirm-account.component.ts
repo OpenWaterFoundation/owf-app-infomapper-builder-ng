@@ -94,7 +94,6 @@ export class ConfirmAccountComponent implements OnInit {
         const command = new AdminRespondToAuthChallengeCommand({
           ChallengeName: ChallengeNameType.NEW_PASSWORD_REQUIRED,
           ClientId: this.storageService.getUserParamAccount().values.userPoolClientId,
-          // TODO: Add the challenge response.
           ChallengeResponses: {
             "USERNAME": this.cognitoUser.getUsername(),
             "NEW_PASSWORD": this.respondToAuthFG.get('newPassword').value

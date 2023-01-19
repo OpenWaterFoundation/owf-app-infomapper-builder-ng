@@ -262,6 +262,7 @@ export class AuthService {
         }
       }
     });
+    // TODO: jpkeahey - This is return a 400 error for some reason?
     return from(Auth.signIn(userNameOrEmail, password));
   }
 
@@ -270,12 +271,18 @@ export class AuthService {
    * @returns An observable of the response from Cognito upon sign out.
    */
   signOut(serviceAccount?: boolean): void {
-    from(Auth.signOut()).pipe(first()).subscribe(() => {
-      // Logging out of a service account does not need to do anything else.
-      if (!serviceAccount) {
-        this._authUsername.next('');
-        this._userAuthenticated.next(false);
-        this.router.navigate(['/login']);
+    from(Auth.signOut()).pipe(first()).subscribe({
+
+      next: () => {
+        // Logging out of a service account does not need to do anything else.
+        if (!serviceAccount) {
+          this._authUsername.next('');
+          this._userAuthenticated.next(false);
+          this.router.navigate(['/login']);
+        }
+      },
+      error: (e: any) => {
+        console.log('Error logging user out:', e);
       }
     });
   }

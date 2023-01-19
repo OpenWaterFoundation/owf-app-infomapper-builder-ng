@@ -54,11 +54,11 @@
       Last page
     </div> -->
 
-    <div class="sign-up-utility">
+    <div *ngIf="currentPage !== 'confirm'" class="sign-up-utility">
       <button mat-button *ngIf="currentPage === 'last'" [disabled]="canProgress()"
       (click)="submitNewAccountData()"
       class="submit-button">
-        Add user
+        Create account
       </button>
 
       <button mat-button *ngIf="currentPage !== 'last'" (click)="nextPage()"
