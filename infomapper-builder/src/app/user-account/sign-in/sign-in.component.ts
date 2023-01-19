@@ -15,6 +15,9 @@ import { SSMClient,
           GetParametersByPathCommand,
           GetParametersByPathCommandOutput,
           Parameter }                   from "@aws-sdk/client-ssm";
+import { AuthFlowType, CognitoIdentityProviderClient,
+          InitiateAuthCommand, 
+          InitiateAuthCommandOutput}         from "@aws-sdk/client-cognito-identity-provider";
 import { ICredentials }                 from '@aws-amplify/core';
 
 import { faEye,
@@ -240,7 +243,7 @@ export class SignInComponent implements OnInit {
    * credentials when the Sign In button is clicked. Shows the home page is successful,
    * and an error snackbar if not.
    */
-  signInUser(): void {
+  async signInUser() {
 
     const user = this.signInFG.get('user').value;
     const password = this.signInFG.get('password').value;
@@ -248,12 +251,13 @@ export class SignInComponent implements OnInit {
     this.authService.signIn(user, password).pipe(first()).subscribe({
       next: (user: CognitoUser) => {
 
+        console.log('Successful user login:', user);
         if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
           this.cognitoUser = user;
           this.confirmingAccount = true;
           return;
         }
-        console.log('Successful user login:', user);
+        
         this.authService.successfulLoginSetup(user);
       },
       error: (e: any) => {

@@ -42,22 +42,23 @@
 
     </div>
 
-    <div *ngIf="currentPage === 'second'" class="main-content">
+    <div *ngIf="currentPage === 'last'" class="main-content">
       <sign-up-second-page [accountType]="accountType" [accountAddType]="accountAddType"
       [createNewAccountFG]="createNewAccountFG" [addToExistingAccountFG]="addToExistingAccountFG">
       </sign-up-second-page>
     </div>
-    <div *ngIf="currentPage === 'third'" class="main-content">
+    <!-- <div *ngIf="currentPage === 'third'" class="main-content">
       <app-sign-up-third-page></app-sign-up-third-page>
     </div>
     <div *ngIf="currentPage === 'last'" class="main-content">
       Last page
-    </div>
+    </div> -->
 
     <div class="sign-up-utility">
-      <button mat-button *ngIf="currentPage === 'last'" (click)="submitAndExit()"
+      <button mat-button *ngIf="currentPage === 'last'" [disabled]="canProgress()"
+      (click)="submitNewAccountData()"
       class="submit-button">
-        Submit
+        Add user
       </button>
 
       <button mat-button *ngIf="currentPage !== 'last'" (click)="nextPage()"
@@ -74,6 +75,25 @@
       class="navigation-button">
         Back to Login
       </button>
+    </div>
+
+    <div *ngIf="currentPage === 'confirm'" class="main-content">
+
+      <form [formGroup]="confirmNewUserFG" class="account-type-form">
+        <span class="create-account-string">
+          Enter 6 digit confirmation code
+        </span>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirmation Code</mat-label>
+          <input matInput formControlName="confirmationCode" attr.data-cy="TODO">
+        </mat-form-field>
+      </form>
+
+      <button mat-stroked-button (click)="confirmUserSignUp()" [disabled]="confirmNewUserFG.invalid"
+      class="sign-in-button">
+        Sign In
+      </button>
+
     </div>
 
   </div>

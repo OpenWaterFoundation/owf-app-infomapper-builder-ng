@@ -240,12 +240,12 @@ export class AuthService {
    * @returns An observable response to the authentication request.
    */
   signIn(userNameOrEmail: string, password: string, serviceAccount?: boolean): Observable<CognitoUser | any> {
-    console.log('CURRENT ACCOUNT PARAM:', this.storageService.getUserParamAccount());
 
     if (serviceAccount) {
       return from(Auth.signIn(userNameOrEmail, password));
     }
 
+    console.log('CURRENT ACCOUNT PARAM:', this.storageService.getUserParamAccount());
     // Configure Amplify with the necessary data for this user.
     Amplify.configure({
       Auth: {

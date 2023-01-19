@@ -9,15 +9,16 @@ import { AbstractControl,
 import { faEye,
           faEyeSlash }                    from '@fortawesome/free-solid-svg-icons';
 
-import { ChallengeNameType, CognitoIdentityProviderClient,
-          RespondToAuthChallengeCommand, 
-          RespondToAuthChallengeCommandOutput} from "@aws-sdk/client-cognito-identity-provider";
-import { CognitoUserSession }              from 'amazon-cognito-identity-js';
+import { AdminRespondToAuthChallengeCommand,
+          AdminRespondToAuthChallengeCommandOutput,
+          ChallengeNameType,
+          CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
+import { CognitoUserSession }             from 'amazon-cognito-identity-js';
 import { AuthService } from 'src/app/services/auth.service';
 import { ICredentials } from '@aws-amplify/core';
 import { first } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { CognitoUser }                  from 'amazon-cognito-identity-js';
+
 
 @Component({
   selector: 'confirm-account',
@@ -43,7 +44,7 @@ export class ConfirmAccountComponent implements OnInit {
   /**
    * 
    */
-  @Input('cognitoUser') cognitoUser: CognitoUser;
+  @Input('cognitoUser') cognitoUser: any;
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -57,8 +58,6 @@ export class ConfirmAccountComponent implements OnInit {
    */
   constructor(private authService: AuthService, private storageService: LocalStorageService) { }
 
-
-  
 
   /**
    * @param control The FormControl that will be checked for errors.
@@ -92,15 +91,16 @@ export class ConfirmAccountComponent implements OnInit {
 
         console.log('Credentials:', cred);
 
-        const command = new RespondToAuthChallengeCommand({
+        const command = new AdminRespondToAuthChallengeCommand({
           ChallengeName: ChallengeNameType.NEW_PASSWORD_REQUIRED,
           ClientId: this.storageService.getUserParamAccount().values.userPoolClientId,
           // TODO: Add the challenge response.
           ChallengeResponses: {
             "USERNAME": this.cognitoUser.getUsername(),
             "NEW_PASSWORD": this.respondToAuthFG.get('newPassword').value
-          }
-          // Session: this.cognitoUser.getSession()
+          },
+          UserPoolId: this.storageService.getUserParamAccount().values.userPoolId,
+          Session: this.cognitoUser.Session
         });
 
         this.sendRespondToAuth(command);
@@ -124,10 +124,10 @@ export class ConfirmAccountComponent implements OnInit {
    * 
    * @param command 
    */
-  private async sendRespondToAuth(command: RespondToAuthChallengeCommand) {
+  private async sendRespondToAuth(command: AdminRespondToAuthChallengeCommand) {
 
     try {
-      const response: RespondToAuthChallengeCommandOutput = await this.cognitoIdPClient.send(command);
+      const response: AdminRespondToAuthChallengeCommandOutput = await this.cognitoIdPClient.send(command);
       console.log('RESPOND TO AUTH SUCCESSFUL:', response);
     }
     catch (e: any) {

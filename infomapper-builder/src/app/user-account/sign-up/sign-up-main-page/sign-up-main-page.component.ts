@@ -8,10 +8,14 @@ import { AccountRecoverySettingType,
           AdminCreateUserCommand,
           AdminCreateUserCommandOutput,
           CognitoIdentityProviderClient,
+          ConfirmSignUpCommand,
+          ConfirmSignUpCommandOutput,
           CreateUserPoolCommand,
           CreateUserPoolCommandOutput,
           RecoveryOptionType,
-          RecoveryOptionNameType, 
+          RecoveryOptionNameType,
+          SignUpCommand,
+          SignUpCommandOutput,
           AliasAttributeType,
           VerifiedAttributeType,
           CreateUserPoolClientCommand, 
@@ -29,6 +33,7 @@ import { AuthService }                     from 'src/app/services/auth.service';
 import { ParameterTier, ParameterType, PutParameterCommand,
           PutParameterCommandOutput,
           SSMClient }                      from '@aws-sdk/client-ssm';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
           
 @Component({
@@ -68,11 +73,22 @@ export class SignUpMainPageComponent implements OnInit {
   /**
    * 
    */
+  confirmNewUserFG = new FormGroup({
+    confirmationCode: new FormControl('', Validators.required)
+  });
+  /**
+   * 
+   */
   createNewAccountFG = new FormGroup({
     userPoolName: new FormControl('', Validators.required),
     userAccountEmail: new FormControl('', [Validators.required, Validators.email]),
-    userAccountUsername: new FormControl('', Validators.required)
+    userAccountUsername: new FormControl('', Validators.required),
+    userPassword: new FormControl('', Validators.required)
   });
+  /**
+   * 
+   */
+  currentAppClientId: string;
   /** Name of the current create account 'page' to be shown to the user. Will consist
    * of 'first', 'second', ... , and end with 'last'. */
   currentPage: string;
@@ -83,7 +99,7 @@ export class SignUpMainPageComponent implements OnInit {
    */
   paramToAdd: {} = {};
   /** All 'pages' to be shown for creating a new account under the '/signup' app path. */
-  private readonly signUpPages = ['first', 'second', 'third', 'last'];
+  private readonly signUpPages = ['first', 'last', 'confirm'];
   /**
    * 
    */
@@ -93,7 +109,7 @@ export class SignUpMainPageComponent implements OnInit {
   /**
    * The constructor for the SignUpMainPageComponent.
    */
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private storageService: LocalStorageService) {
 
     this.currentPage = this.signUpPages[this.currentPageIndex];
   }
@@ -158,7 +174,7 @@ export class SignUpMainPageComponent implements OnInit {
       return !(this.accountTypeFG.get('existingAccountType').value ||
       this.accountTypeFG.get('newAccountType').value);
     }
-    else if (this.currentPage == 'second') {
+    else if (this.currentPage == 'last') {
 
       if (this.accountAddType === 'New') {
         return this.createNewAccountFG.invalid;
@@ -169,6 +185,37 @@ export class SignUpMainPageComponent implements OnInit {
       
     }
     return false; // For now.
+  }
+
+  /**
+   * 
+   */
+  async confirmUserSignUp() {
+
+    const username = this.createNewAccountFG.get('userAccountUsername').value;
+    const confirmationCode = this.confirmNewUserFG.get('confirmationCode').value;
+
+    console.log('User Pool client id:', this.paramToAdd['userPoolClientId']);
+    console.log('Username:', username);
+
+    const command = new ConfirmSignUpCommand({
+      ClientId: this.paramToAdd['userPoolClientId'],
+      ConfirmationCode: confirmationCode,
+      Username: username
+    });
+
+    try {
+      const response: ConfirmSignUpCommandOutput = await this.cognitoIdPClient.send(command);
+      console.log('Successfully confirmed new user!', response);
+      this.addParameterToSystemsManager();
+    }
+    catch (e: any) {
+      console.log('Error confirming new user:', e);
+    }
+
+    
+    // Maybe add Snackbar here.
+    this.authService.signOut();
   }
 
   /**
@@ -261,7 +308,7 @@ export class SignUpMainPageComponent implements OnInit {
       console.log('USER POOL APP CLIENT CREATED:', response);
       this.paramToAdd['userPoolClientId'] = response.UserPoolClient.ClientId;
 
-      this.createUserPoolUser(userPoolId, response.UserPoolClient.ClientId);
+      this.signUpUser(response.UserPoolClient.ClientId);
     } catch (e: any) {
       console.log('Error creating the User Pool app client:', e);
     }
@@ -271,28 +318,55 @@ export class SignUpMainPageComponent implements OnInit {
    * 
    * @param userPoolId 
    */
-  private async createUserPoolUser(userPoolId: string, appClientId: string) {
+  private async signUpUser(appClientId: string) {
     const userEmail = this.createNewAccountFG.get('userAccountEmail').value;
     const username = this.createNewAccountFG.get('userAccountUsername').value;
+    const password = this.createNewAccountFG.get('userPassword').value;
 
-    const command = new AdminCreateUserCommand({
+    // const command = new AdminCreateUserCommand({
+    //   Username: username,
+    //   UserPoolId: userPoolId,
+    //   DesiredDeliveryMediums: [ DeliveryMediumType.EMAIL ],
+    //   UserAttributes: [{
+    //     Name: 'email',
+    //     Value: userEmail
+    //   }]
+    // });
+
+    // TODO: If SignUpCommand works, 
+    // try {
+    //   const response: AdminCreateUserCommandOutput = await this.cognitoIdPClient.send(command);
+    //   console.log('USER POOL USER CREATED:', response);
+
+    //   // this.createIdentityPool(userPoolId, appClientId);
+    //   this.addParameterToSystemsManager();
+    //   // Maybe add Snackbar here.
+    //   this.authService.signOut();
+    // }
+    // catch (e: any) {
+    //   console.log('Error creating User Pool user:', e);
+    // }
+
+    const command = new SignUpCommand({
+      ClientId: appClientId,
+      Password: password,
       Username: username,
-      UserPoolId: userPoolId,
-      DesiredDeliveryMediums: [ DeliveryMediumType.EMAIL ],
       UserAttributes: [{
         Name: 'email',
         Value: userEmail
       }]
+      // Username: username,
+      // UserPoolId: userPoolId,
+      // DesiredDeliveryMediums: [ DeliveryMediumType.EMAIL ],
+      // UserAttributes: [{
+      //   Name: 'email',
+      //   Value: userEmail
+      // }]
     });
 
     try {
-      const response: AdminCreateUserCommandOutput = await this.cognitoIdPClient.send(command);
+      const response: SignUpCommandOutput = await this.cognitoIdPClient.send(command);
       console.log('USER POOL USER CREATED:', response);
-
-      // this.createIdentityPool(userPoolId, appClientId);
-      this.addParameterToSystemsManager();
-      // Maybe add Snackbar here.
-      this.authService.signOut();
     }
     catch (e: any) {
       console.log('Error creating User Pool user:', e);
@@ -393,10 +467,11 @@ export class SignUpMainPageComponent implements OnInit {
   /**
    * 
    */
-  submitAndExit(): void {
+  submitNewAccountData(): void {
 
     if (this.accountAddType === 'New') {
       this.createUserPool();
+      this.currentPage = this.signUpPages[this.currentPageIndex += 1];
     }
     else if (this.accountAddType === 'Existing') {
       console.log('Doing stuff on an exiting account.');
