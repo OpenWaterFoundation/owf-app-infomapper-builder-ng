@@ -20,6 +20,7 @@ import { CognitoUser,
 import { S3ProviderListConfig }   from '@aws-amplify/storage/lib-esm/types';
 import { ParamAccount }           from '../infomapper-builder-types';
 import { LocalStorageService }    from './local-storage.service';
+import { GetParametersByPathCommand, GetParametersByPathCommandOutput, SSMClient } from '@aws-sdk/client-ssm';
 
 
 @Injectable({
@@ -57,7 +58,7 @@ export class AuthService {
   /**
    * 
    */
-  private readonly identityPoolId = 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a'
+  readonly identityPoolId = 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a'
   /**
    * 
    */
@@ -206,6 +207,35 @@ export class AuthService {
       .then((result: any) => { return result; })
       .catch((err: any) => { return err; })
     );
+  }
+
+  /**
+   * Use the currently signed-in service account (and its credentials) to utilize
+   * the AWS JavaScript SDK and retrieve all Parameter objects stored in the AWS
+   * Systems Manager Parameter store.
+   * @param cred The credentials obtained by the AWS Amplify Auth class from the
+   * service account.
+   */
+  getParameterStoreParams(cred: ICredentials): Promise<GetParametersByPathCommandOutput> {
+    const client = new SSMClient({
+      region: "us-west-2",
+      credentials: {
+        accessKeyId: cred.accessKeyId,
+        secretAccessKey: cred.secretAccessKey,
+        sessionToken: cred.sessionToken,
+        expiration: cred.expiration
+      }
+    });
+
+    const command = new GetParametersByPathCommand({ Path: '/user-pool/', Recursive: true });
+    return client.send(command);
+    // try {
+    //   const response: GetParametersByPathCommandOutput = await client.send(command);
+    //   console.log('Success getting all parameters:', response);
+    // }
+    // catch (e: any) {
+    //   console.log('Error getting all parameters:', e);
+    // }
   }
 
   /**

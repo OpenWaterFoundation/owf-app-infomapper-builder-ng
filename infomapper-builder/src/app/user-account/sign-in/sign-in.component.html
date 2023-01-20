@@ -23,7 +23,7 @@
                 [maxBufferPx]="540" [style.height.px]="240">
 
                   <!-- Prevent a user pressed space key from acting as a selection option. -->
-                  <input matInput formControlName="accountType" placeholder="Search accounts"
+                  <input matInput formControlName="accountName" placeholder="Search accounts"
                   (keydown)="$event.stopPropagation()" class="input-search"
                   (keyup)="searchForAccount($event)" #searchInput/>
 

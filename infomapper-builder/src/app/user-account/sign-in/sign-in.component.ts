@@ -42,6 +42,8 @@ export class SignInComponent implements OnInit {
   /**  The InfoMapper Account search input element. Used to focus on after creation
    * by using TypeScript. */
   @ViewChild("searchInput") private _searchInputElement: ElementRef;
+  /** Array of all found Parameters from the AWS SSM using a service account. */
+  accounts: ParamAccount[] = [];
   /**
    * 
    */
@@ -52,6 +54,8 @@ export class SignInComponent implements OnInit {
   confirmingAccount: boolean;
   /** Subject that is completed when this component is destroyed. */
   destroyed = new Subject<void>();
+  /** The array of accounts for all currently created AWS Cognito User Pools. */
+  displayAccounts: ParamAccount[] = [{ slug: '', values: { accountName: '' } }];
   /** All used FontAwesome icons in the SignInComponent (exception: visibilityIcon).  */
   
   /** The custom & built-in error messages to be displayed under a form with an error. */
@@ -61,7 +65,7 @@ export class SignInComponent implements OnInit {
   /** The Angular Form Group used by the sign in component to obtain user input and
    * validation. */
   signInFG = new FormGroup({
-    accountType: new FormControl('', Validators.required),
+    accountName: new FormControl('', Validators.required),
     user: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   });
@@ -73,10 +77,6 @@ export class SignInComponent implements OnInit {
   /** Sets the vertical position of the error snackbar to display at the top of
   * the screen. */
   snackbarVerticalPos: MatSnackBarVerticalPosition = 'top';
-  /** Array of all found Parameters from the AWS SSM using a service account. */
-  private accounts: ParamAccount[] = [];
-  /** The array of accounts for all currently created AWS Cognito User Pools. */
-  displayAccounts: ParamAccount[] = [{ slug: '', values: { accountName: '' } }];
   /** Font Awesome icon used to display at the end of the password input field. */
   visibilityIcon = faEye;
   /** Boolean set to whether the password input field is visible or 'hidden'. */
@@ -124,9 +124,17 @@ export class SignInComponent implements OnInit {
     });
 
     const command = new GetParametersByPathCommand({ Path: '/user-pool/', Recursive: true });
-    const response: GetParametersByPathCommandOutput = await client.send(command);
 
-    this.populateAccounts(response.Parameters);
+    try {
+      const response: GetParametersByPathCommandOutput = await client.send(command);
+      console.log('Success getting all parameters:', response);
+      this.populateAccounts(response.Parameters);
+    }
+    catch (e: any) {
+      console.log('Error getting all parameters:', e);
+    }
+
+    
   }
 
   /**
@@ -238,6 +246,32 @@ export class SignInComponent implements OnInit {
   }
 
   /**
+   * Asynchronously sign in as the service account and get its credentials.
+   */
+  private serviceAccountSignIn() {
+    this.authService.signIn('owf.service', 'I%9cY!#4Hw1', true).pipe(first())
+    .subscribe(() => {
+
+      this.authService.getCurrentCredentials().pipe(first())
+      .subscribe((credentials: ICredentials) => {
+
+        this.getParameterStoreParams(credentials);
+      });
+    });
+
+    // this.authService.signInTest('owf.service', 'I%9cY!#4Hw1').pipe(first())
+    // .subscribe(({
+    //   next: (response: any) => {
+    //     console.log(response);
+    //     this.getParameterStoreParams();
+    //   },
+    //   error: (error: any) => {
+    //     console.log('Error signing in user:', error);
+    //   }
+    // }));
+  }
+
+  /**
    * Utilizes the Cognito service to attempt to sign the user in with the provided
    * credentials when the Sign In button is clicked. Shows the home page is successful,
    * and an error snackbar if not.
@@ -264,32 +298,6 @@ export class SignInComponent implements OnInit {
         console.log('Error signing user in:', e);
       }
     });
-  }
-
-  /**
-   * Asynchronously sign in as the service account and get its credentials.
-   */
-  private serviceAccountSignIn() {
-    this.authService.signIn('owf.service', 'I%9cY!#4Hw1', true).pipe(first())
-    .subscribe(() => {
-
-      this.authService.getCurrentCredentials().pipe(first())
-      .subscribe((credentials: ICredentials) => {
-
-        this.getParameterStoreParams(credentials);
-      });
-    });
-
-    // this.authService.signInTest('owf.service', 'I%9cY!#4Hw1').pipe(first())
-    // .subscribe(({
-    //   next: (response: any) => {
-    //     console.log(response);
-    //     this.getParameterStoreParams();
-    //   },
-    //   error: (error: any) => {
-    //     console.log('Error signing in user:', error);
-    //   }
-    // }));
   }
 
   /**

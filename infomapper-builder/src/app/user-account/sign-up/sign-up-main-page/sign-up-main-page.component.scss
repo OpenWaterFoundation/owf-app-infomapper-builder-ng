@@ -34,6 +34,11 @@ form fields. */
   margin: 10px 0;
 }
 
+/* Account confirmation code string. */
+.confirm-account-string {
+  margin: 15px 0;
+}
+
 /* The inner container that displays the Content Page contents based on browser
 width. */
 .display-container {
@@ -78,6 +83,14 @@ width. */
 /* The 'OR' string that separates existing and new account creation. */
 .or-string {
   font-size: 20px;
+}
+
+/* Main sign in button. */
+.sign-in-button {
+  background-color: #9db66b;
+  font-size: 22px;
+  height: 45px;
+  width: 100%;
 }
 
 /* Container holding all main forgot password elements. */

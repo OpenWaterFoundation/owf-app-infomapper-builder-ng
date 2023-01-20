@@ -1,97 +1,101 @@
 <h1 *ngIf="accountAddType === 'New'" class="account-title">Create new account</h1>
 <h1 *ngIf="accountAddType === 'Existing'" class="account-title">Add to existing account</h1>
 
-<ng-container *ngIf="accountAddType === 'New'">
+<form [formGroup]="createNewAccountFG" class="user-pool-form">
 
-  <form [formGroup]="createNewAccountFG" class="user-pool-form">
+  <ng-container *ngIf="accountAddType === 'New'">
     <span class="user-pool-string">
       {{ accountType }} account name
     </span>
     <mat-form-field style="width: 100%" appearance="outline">
               
-      <input matInput formControlName="userPoolName" attr.data-cy="TODO">
+      <input matInput formControlName="accountName" attr.data-cy="TODO">
       <mat-hint *ngIf="accountType === 'Individual'">e.g. Malcolm Reynolds</mat-hint>
       <mat-hint *ngIf="accountType === 'Organization'">e.g. Open Water Foundation</mat-hint>
       <mat-hint *ngIf="accountType === 'Community'">e.g. City of Fort Collins</mat-hint>
 
       <mat-error>
-        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userPoolName'))">
+        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('accountName'))">
           {{ formErrorMessages[error] }}<br>
         </ng-container>
       </mat-error>
     </mat-form-field>
+  </ng-container>
 
-    <mat-divider class="account-user-divider"></mat-divider>
-
+  <ng-container *ngIf="accountAddType === 'Existing'">
     <span class="user-pool-string">
-      User account email
-    </span>
-    <mat-form-field style="width: 100%" appearance="outline">
-              
-      <input matInput formControlName="userAccountEmail" attr.data-cy="TODO">
-
-      <mat-error>
-        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountEmail'))">
-          {{ formErrorMessages[error] }}<br>
-        </ng-container>
-      </mat-error>
-    </mat-form-field>
-
-    <span class="user-pool-string">
-      User account username
-    </span>
-    <mat-form-field style="width: 100%" appearance="outline">
-              
-      <input matInput formControlName="userAccountUsername" attr.data-cy="TODO">
-      <mat-hint>Case insensitive</mat-hint>
-
-      <mat-error>
-        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountUsername'))">
-          {{ formErrorMessages[error] }}<br>
-        </ng-container>
-      </mat-error>
-    </mat-form-field>
-
-    <span class="user-pool-string">
-      User account password
-    </span>
-    <mat-form-field style="width: 100%" appearance="outline">
-              
-      <div class="pw-input-container">
-        <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="userPassword"
-        attr.data-cy="TODO"/>
-        <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
-        (click)="togglePasswordVisibility()" class="visibility-icon">
-        </fa-icon>
-      </div>
-
-      <mat-error>
-        <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userPassword'))">
-          {{ formErrorMessages[error] }}<br>
-        </ng-container>
-      </mat-error>
-    </mat-form-field>
-  </form>
-
-</ng-container>
-
-<ng-container *ngIf="accountAddType === 'Existing'">
-
-  <form [formGroup]="addToExistingAccountFG" class="user-pool-form">
-    <span class="user-pool-string">
-      Name of {{ accountType }} account 
+      {{ accountType }} to add user account to
     </span>
     <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-select name="account-selection" (openedChange)="openSelectChange()">
+        <cdk-virtual-scroll-viewport [itemSize]="48" [minBufferPx]="540"
+        [maxBufferPx]="540" [style.height.px]="240">
 
-      <input matInput formControlName="accountTypeName" attr.data-cy="TODO">
+          <!-- Prevent a user pressed space key from acting as a selection option. -->
+          <input matInput formControlName="accountName" placeholder="Search accounts"
+          (keydown)="$event.stopPropagation()" class="input-search"
+          (keyup)="searchForAccount($event)" #searchInput/>
 
-      <mat-error>
-        <ng-container *ngFor="let error of formErrors(addToExistingAccountFG.get('accountTypeName'))">
-          {{ formErrorMessages[error] }}<br>
-        </ng-container>
-      </mat-error>
+          <mat-option *cdkVirtualFor="let account of displayAccounts"
+          (onSelectionChange)="paramAccountSelected($event, account)"
+          [value]="account.values.accountName" [style.height.px]="48">
+            {{ account.values.accountName }}
+          </mat-option>
 
+        </cdk-virtual-scroll-viewport>
+      </mat-select>
     </mat-form-field>
-  </form>
+  </ng-container>
 
-</ng-container>
+
+  <mat-divider class="account-user-divider"></mat-divider>
+
+  <span class="user-pool-string">
+    User account email
+  </span>
+  <mat-form-field style="width: 100%" appearance="outline">
+            
+    <input matInput formControlName="userAccountEmail" attr.data-cy="TODO">
+
+    <mat-error>
+      <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountEmail'))">
+        {{ formErrorMessages[error] }}<br>
+      </ng-container>
+    </mat-error>
+  </mat-form-field>
+
+  <span class="user-pool-string">
+    User account username
+  </span>
+  <mat-form-field style="width: 100%" appearance="outline">
+            
+    <input matInput formControlName="userAccountUsername" attr.data-cy="TODO">
+    <mat-hint>Case insensitive</mat-hint>
+
+    <mat-error>
+      <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userAccountUsername'))">
+        {{ formErrorMessages[error] }}<br>
+      </ng-container>
+    </mat-error>
+  </mat-form-field>
+
+  <span class="user-pool-string">
+    User account password
+  </span>
+  <mat-form-field style="width: 100%" appearance="outline">
+            
+    <div class="pw-input-container">
+      <input matInput [type]="visibleInput ? 'text' : 'password'" formControlName="userPassword"
+      attr.data-cy="TODO"/>
+      <fa-icon [icon]="visibilityIcon" size="lg" [matTooltip]="visibilityMessage"
+      (click)="togglePasswordVisibility()" class="visibility-icon">
+      </fa-icon>
+    </div>
+
+    <mat-error>
+      <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('userPassword'))">
+        {{ formErrorMessages[error] }}<br>
+      </ng-container>
+    </mat-error>
+  </mat-form-field>
+</form>
