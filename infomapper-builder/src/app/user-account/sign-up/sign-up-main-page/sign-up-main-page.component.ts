@@ -19,24 +19,32 @@ import { AccountRecoverySettingType,
           CreateUserPoolClientCommand, 
           CreateUserPoolClientCommandOutput,
           DeletionProtectionType,
-          ExplicitAuthFlowsType }           from "@aws-sdk/client-cognito-identity-provider";
+          ExplicitAuthFlowsType, 
+          DescribeIdentityProviderCommand}           from "@aws-sdk/client-cognito-identity-provider";
 import { CognitoIdentityClient,
+          CognitoIdentityClientResolvedConfig,
           DescribeIdentityPoolCommand, 
           DescribeIdentityPoolCommandOutput, 
+          GetOpenIdTokenForDeveloperIdentityCommand, 
+          GetOpenIdTokenForDeveloperIdentityCommandOutput, 
           UpdateIdentityPoolCommand,
           UpdateIdentityPoolCommandOutput} from "@aws-sdk/client-cognito-identity";
 import { ParameterTier,
-            ParameterType,
-            PutParameterCommand,
-            PutParameterCommandOutput,
-            SSMClient }                     from '@aws-sdk/client-ssm';
+          ParameterType,
+          PutParameterCommand,
+          PutParameterCommandOutput,
+          SSMClient }                     from '@aws-sdk/client-ssm';
+import { fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
+import { LambdaClient }               from '@aws-sdk/client-lambda'
 
-import { delay, first }                            from 'rxjs';
+import { delay,
+          first }                            from 'rxjs';
 import { CognitoUserSession }               from 'amazon-cognito-identity-js';
 import { AuthService }                      from 'src/app/services/auth.service';
 import { CognitoUser }                  from 'amazon-cognito-identity-js';
 import { LocalStorageService } from 'src/app/services/local-storage.service'
 import { ParamAccountValues } from 'src/app/infomapper-builder-types';
+import { AwsCredentialIdentity } from '@aws-sdk/types';
 
           
 @Component({
@@ -69,13 +77,11 @@ export class SignUpMainPageComponent implements OnInit {
   /**
    * 
    */
-  cognitoCred: {session: CognitoUserSession, credentials: ICredentials};
-  /**
-   * 
-   */
-  cognitoIdentityClient: CognitoIdentityClient;
+  // cognitoIdentityClient: CognitoIdentityClient;
   /** The Identity Provider Client for Cognito User Pools. */
   cognitoIdPClient: CognitoIdentityProviderClient;
+
+  cognitoIdentityClient: CognitoIdentityClient;
   /**
    * 
    */
@@ -118,6 +124,7 @@ export class SignUpMainPageComponent implements OnInit {
   constructor(private authService: AuthService, private storageService: LocalStorageService) {
 
     this.currentPage = this.signUpPages[this.currentPageIndex];
+    this.serviceAccountSignIn();
   }
 
 
@@ -138,15 +145,6 @@ export class SignUpMainPageComponent implements OnInit {
    */
   private async addParameterToSystemsManager(username: string, password: string) {
 
-    this.SSMClient = new SSMClient({
-      region: "us-west-2",
-      credentials: {
-        accessKeyId: this.cognitoCred.credentials.accessKeyId,
-        secretAccessKey: this.cognitoCred.credentials.secretAccessKey,
-        sessionToken: this.cognitoCred.credentials.sessionToken,
-        expiration: this.cognitoCred.credentials.expiration
-      }
-    });
 
     const accountName = this.createNewAccountFG.get('accountName').value;
     // Fill out the rest of the necessary parameter fields.
@@ -265,16 +263,15 @@ export class SignUpMainPageComponent implements OnInit {
   }
 
   /**
-   * 
+   * Create all AWS SDK Clients used in new user sign up to both new and existing
+   * account types.
    */
-  private createUserPool(): void {
+  private createAWSClients(): void {
 
     this.authService.getAllCredentials().pipe(first()).subscribe({
       next: (cred: {session: CognitoUserSession, credentials: ICredentials}) => {
 
-        this.cognitoCred = cred;
-
-        this.cognitoIdPClient = new CognitoIdentityProviderClient({
+        let config = {
           region: "us-west-2",
           credentials: {
             accessKeyId: cred.credentials.accessKeyId,
@@ -282,23 +279,43 @@ export class SignUpMainPageComponent implements OnInit {
             sessionToken: cred.credentials.sessionToken,
             expiration: cred.credentials.expiration
           }
-        });
+        };
 
-        const accountName = this.createNewAccountFG.get('accountName').value.replace(/\s+/g, '');
 
-        const command = new CreateUserPoolCommand({
-          PoolName: 'InfoMapper-' + accountName,
-          AccountRecoverySetting: this.getAccountRecoverySetting(),
-          AutoVerifiedAttributes: [VerifiedAttributeType.EMAIL],
-          AliasAttributes: [AliasAttributeType.EMAIL, AliasAttributeType.PREFERRED_USERNAME],
-          DeletionProtection: DeletionProtectionType.ACTIVE,
-          UserAttributeUpdateSettings: { AttributesRequireVerificationBeforeUpdate: [VerifiedAttributeType.EMAIL] },
-          UsernameConfiguration: { CaseSensitive: false }
-        });
-
-        this.sendCreateUserPool(command);
+        this.cognitoIdPClient = new CognitoIdentityProviderClient(config);
+        // this.cognitoIdentityClient = new CognitoIdentityClient(config);
+        this.SSMClient = new SSMClient(config);
       }
     });
+  }
+
+  /**
+   * 
+   */
+  private async createUserPool() {
+
+    const accountName = this.createNewAccountFG.get('accountName').value.replace(/\s+/g, '');
+
+    const command = new CreateUserPoolCommand({
+      PoolName: 'InfoMapper-' + accountName,
+      AccountRecoverySetting: this.getAccountRecoverySetting(),
+      AutoVerifiedAttributes: [VerifiedAttributeType.EMAIL],
+      AliasAttributes: [AliasAttributeType.EMAIL, AliasAttributeType.PREFERRED_USERNAME],
+      DeletionProtection: DeletionProtectionType.ACTIVE,
+      UserAttributeUpdateSettings: { AttributesRequireVerificationBeforeUpdate: [VerifiedAttributeType.EMAIL] },
+      UsernameConfiguration: { CaseSensitive: false }
+    });
+
+    try {
+      const response: CreateUserPoolCommandOutput = await this.cognitoIdPClient.send(command);
+      console.log('USER POOL CREATED:', response);
+      this.paramToAdd.userPoolId = response.UserPool.Id
+
+      this.createUserPoolAppClient(response.UserPool.Id);
+    }
+    catch (e: any) {
+      console.log('Error creating User Pool:', e);
+    }
   }
 
   /**
@@ -376,7 +393,6 @@ export class SignUpMainPageComponent implements OnInit {
    * properties of a directive.
    */
   ngOnInit(): void {
-    this.serviceAccountSignIn();
   }
 
   /**
@@ -387,32 +403,13 @@ export class SignUpMainPageComponent implements OnInit {
   }
 
   /**
-   * 
-   * @param command 
-   */
-  private async sendCreateUserPool(command: CreateUserPoolCommand) {
-
-    try {
-      const response: CreateUserPoolCommandOutput = await this.cognitoIdPClient.send(command);
-      console.log('USER POOL CREATED:', response);
-      this.paramToAdd.userPoolId = response.UserPool.Id
-
-      this.createUserPoolAppClient(response.UserPool.Id);
-    }
-    catch (e: any) {
-      console.log('Error creating User Pool:', e);
-    }
-  }
-
-  /**
-   * Asynchronously sign in as the service account and get its credentials.
+   * Asynchronously sign in as the service account, then create each AWS Client with
+   * its credentials once the sign in process is complete.
    */
   private serviceAccountSignIn() {
-
     this.authService.signIn('owf.service', 'I%9cY!#4Hw1', true).pipe(first())
     .subscribe(() => {
-      // Don't need to do anything. The service is signed in at this point, and an
-      // asynchronous call to retrieve its credentials will be done later.
+      this.createAWSClients();
     });
   }
 
@@ -467,49 +464,55 @@ export class SignUpMainPageComponent implements OnInit {
    */
   private async updateIdentityPool(userPoolId: string, appClientId: string) {
 
-    this.cognitoIdentityClient = new CognitoIdentityClient({
-      region: "us-west-2",
-      credentials: {
-        accessKeyId: this.cognitoCred.credentials.accessKeyId,
-        secretAccessKey: this.cognitoCred.credentials.secretAccessKey,
-        sessionToken: this.cognitoCred.credentials.sessionToken,
-        expiration: this.cognitoCred.credentials.expiration
-      }
-    });
+    // const describeCommand = new DescribeIdentityPoolCommand({
+    //   IdentityPoolId: this.authService.identityPoolId
+    // });
 
-    const describeCommand = new DescribeIdentityPoolCommand({
-      IdentityPoolId: this.authService.identityPoolId
-    });
+    // try {
+    //   const response: DescribeIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(describeCommand);
+    //   console.log('Success describing Identity Pool:', response);
+    //   // Add the new provider to the Identity Pool.
+    //   var allIdentityProviders = response.CognitoIdentityProviders;
+    //   allIdentityProviders.push({
+    //     ClientId: appClientId,
+    //     ProviderName: userPoolId
+    //   });
 
-    try {
-      const response: DescribeIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(describeCommand);
-      console.log('Success describing Identity Pool:', response);
-      // Add the new provider to the Identity Pool.
-      var allIdentityProviders = response.CognitoIdentityProviders;
-      allIdentityProviders.push({
-        ClientId: appClientId,
-        ProviderName: userPoolId
-      });
-
-      const updateCommand = new UpdateIdentityPoolCommand({
-        AllowUnauthenticatedIdentities: false,
-        IdentityPoolId: this.authService.identityPoolId,
-        IdentityPoolName: 'infomapper-builder-pool-test',
-        CognitoIdentityProviders: allIdentityProviders
-      });
+    //   const updateCommand = new UpdateIdentityPoolCommand({
+    //     AllowUnauthenticatedIdentities: false,
+    //     IdentityPoolId: this.authService.identityPoolId,
+    //     IdentityPoolName: 'infomapper-builder-pool-test',
+    //     CognitoIdentityProviders: allIdentityProviders
+    //   });
   
-      try {
-        const response: UpdateIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(updateCommand);
-        console.log('Identity Pool updated:', response);
-      }
-      catch (e: any) {
-        console.log('Error updating Identity Pool:', e);
-      }
-    }
-    catch (e: any) {
-      console.log('Error describing Identity Pool:', e);
-    }
+    //   try {
+    //     const response: UpdateIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(updateCommand);
+    //     console.log('Identity Pool updated:', response);
+    //   }
+    //   catch (e: any) {
+    //     console.log('Error updating Identity Pool:', e);
+    //   }
+    // }
+    // catch (e: any) {
+    //   console.log('Error describing Identity Pool:', e);
+    // }
 
+    // const command = new GetOpenIdTokenForDeveloperIdentityCommand({
+    //   IdentityPoolId: this.authService.identityPoolId,
+    //   Logins: {
+    //     'infomapper.builder.dev': 'test'
+    //   }
+    // });
+
+    // try {
+    //   const response: GetOpenIdTokenForDeveloperIdentityCommandOutput = await this.cognitoIdentityClient.send(command);
+    //   console.log('It somehow freaking worked:', response);
+    // }
+    // catch (e: any) {
+    //   console.log('Error getting token for dev identity', e);
+    // }
+
+    
   }
 
 }

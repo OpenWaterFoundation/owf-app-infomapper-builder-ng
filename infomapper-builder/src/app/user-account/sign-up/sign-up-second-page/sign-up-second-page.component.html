@@ -1,18 +1,18 @@
-<h1 *ngIf="accountAddType === 'New'" class="account-title">Create new account</h1>
-<h1 *ngIf="accountAddType === 'Existing'" class="account-title">Add to existing account</h1>
+<h1 *ngIf="accountAddType === 'New'" class="account-title">Add user to new {{ accountType }} account</h1>
+<h1 *ngIf="accountAddType === 'Existing'" class="account-title">Add user to existing {{ accountType }} account</h1>
 
 <form [formGroup]="createNewAccountFG" class="user-pool-form">
 
   <ng-container *ngIf="accountAddType === 'New'">
     <span class="user-pool-string">
-      {{ accountType }} account name
+      New <span class="emphasize-word">{{ accountType }}</span> account name
     </span>
     <mat-form-field style="width: 100%" appearance="outline">
               
       <input matInput formControlName="accountName" attr.data-cy="TODO">
       <mat-hint *ngIf="accountType === 'Individual'">e.g. Malcolm Reynolds</mat-hint>
       <mat-hint *ngIf="accountType === 'Organization'">e.g. Open Water Foundation</mat-hint>
-      <mat-hint *ngIf="accountType === 'Community'">e.g. City of Fort Collins</mat-hint>
+      <mat-hint *ngIf="accountType === 'Community'">e.g. Poudre Runs Through It</mat-hint>
 
       <mat-error>
         <ng-container *ngFor="let error of formErrors(createNewAccountFG.get('accountName'))">
@@ -24,7 +24,7 @@
 
   <ng-container *ngIf="accountAddType === 'Existing'">
     <span class="user-pool-string">
-      {{ accountType }} to add user account to
+      <span class="emphasize-word">{{ accountType }}</span>to add user account to
     </span>
     <mat-form-field style="width: 100%;" appearance="outline">
       <mat-select name="account-selection" (openedChange)="openSelectChange()">
@@ -51,7 +51,7 @@
   <mat-divider class="account-user-divider"></mat-divider>
 
   <span class="user-pool-string">
-    User account email
+    New user email
   </span>
   <mat-form-field style="width: 100%" appearance="outline">
             
@@ -65,7 +65,7 @@
   </mat-form-field>
 
   <span class="user-pool-string">
-    User account username
+    New user username
   </span>
   <mat-form-field style="width: 100%" appearance="outline">
             
@@ -80,7 +80,7 @@
   </mat-form-field>
 
   <span class="user-pool-string">
-    User account password
+    New user password
   </span>
   <mat-form-field style="width: 100%" appearance="outline">
             

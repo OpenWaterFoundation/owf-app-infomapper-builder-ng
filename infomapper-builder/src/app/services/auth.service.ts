@@ -58,7 +58,8 @@ export class AuthService {
   /**
    * 
    */
-  readonly identityPoolId = 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a'
+  readonly identityPoolId = 'us-west-2:c02c3e7e-a265-4c35-b2ff-d2bce1e33f8a';
+  // readonly identityPoolId = 'us-west-2:d22114c7-77a5-428f-bca8-d68a8ac1304b';
   /**
    * 
    */

@@ -4,11 +4,33 @@
 
     <div *ngIf="currentPage === 'first'" class="main-content">
 
-      <h1 class="create-account-title">Create InfoMapper account</h1>
+      <h1 class="create-account-title">Create new InfoMapper user</h1>
+
+      <p class="new-account-description">
+        Add a new user account in one of two ways:
+      </p>
+      <ol style="padding-inline-start: 30px;">
+        <li>Add a new user account to an already existing Organization or Community account.
+          <ul>
+            <li>The user account will be added with regular user privileges.</li>
+          </ul>
+        </li>
+        <li>
+          Add a new user account as its own Individual account, or add it to a
+          new Organization or Community account.
+          <ul>
+            <li>
+              This will create a new Individual, Organization, or Community account,
+              and add a new user account to them with administrator privileges.
+            </li>
+          </ul>
+        </li>
+      </ol>
+
 
       <form [formGroup]="accountTypeFG" class="account-type-form">
         <span class="create-account-string">
-          Create account in <span class="emphasize-word">existing</span> organization
+          Create user in <span class="emphasize-word">existing</span> account
         </span>
         <mat-form-field appearance="outline">
           <mat-label>Account type</mat-label>
@@ -27,7 +49,7 @@
         </div>
     
         <span class="create-account-string">
-          Create account in <span class="emphasize-word">new</span> organization
+          Create user in <span class="emphasize-word">new</span> account
         </span>
         <mat-form-field appearance="outline">
           <mat-label>Account type</mat-label>
