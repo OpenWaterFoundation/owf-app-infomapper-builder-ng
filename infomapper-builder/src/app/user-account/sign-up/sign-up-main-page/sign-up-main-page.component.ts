@@ -25,6 +25,8 @@ import { CognitoIdentityClient,
           CognitoIdentityClientResolvedConfig,
           DescribeIdentityPoolCommand, 
           DescribeIdentityPoolCommandOutput, 
+          GetCredentialsForIdentityCommand,
+          GetCredentialsForIdentityCommandOutput,
           GetOpenIdTokenForDeveloperIdentityCommand, 
           GetOpenIdTokenForDeveloperIdentityCommandOutput, 
           UpdateIdentityPoolCommand,
@@ -34,8 +36,9 @@ import { ParameterTier,
           PutParameterCommand,
           PutParameterCommandOutput,
           SSMClient }                     from '@aws-sdk/client-ssm';
-import { fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
-import { LambdaClient }               from '@aws-sdk/client-lambda'
+import { fromCognitoIdentity, fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
+import { InvokeCommand, InvokeCommandOutput, LambdaClient }               from '@aws-sdk/client-lambda';
+import { fromUtf8, toUtf8 } from "@aws-sdk/util-utf8-node";
 
 import { delay,
           first }                            from 'rxjs';
@@ -106,6 +109,8 @@ export class SignUpMainPageComponent implements OnInit {
   currentPage: string;
   /** The index of the current page in the signUpPages array. */
   private currentPageIndex = 0;
+
+  lambdaClient: LambdaClient;
   /**
    * 
    */
@@ -281,9 +286,9 @@ export class SignUpMainPageComponent implements OnInit {
           }
         };
 
-
         this.cognitoIdPClient = new CognitoIdentityProviderClient(config);
-        // this.cognitoIdentityClient = new CognitoIdentityClient(config);
+        this.cognitoIdentityClient = new CognitoIdentityClient(config);
+        this.lambdaClient = new LambdaClient(config);
         this.SSMClient = new SSMClient(config);
       }
     });
@@ -464,6 +469,75 @@ export class SignUpMainPageComponent implements OnInit {
    */
   private async updateIdentityPool(userPoolId: string, appClientId: string) {
 
+    const command = new InvokeCommand({
+      FunctionName: 'test_function'
+      // Payload: fromUtf8(JSON.stringify(payload)) 
+    });
+
+    try {
+      const response: InvokeCommandOutput = await this.lambdaClient.send(command);
+      console.log('LAMBDA FUNCTION INVOKED WITH RESPONSE:', response);
+      const payload = JSON.parse(toUtf8(response.Payload));
+      const body = JSON.parse(payload.body);
+      console.log('RESPONSE BODY:', body);
+      const identityId = body.IdentityId;
+      const token = body.Token;
+
+      
+
+      const credCommand = new GetCredentialsForIdentityCommand({
+        IdentityId: identityId,
+        Logins: {
+          'cognito-identity.amazonaws.com': token
+        }
+      });
+
+      try {
+        const response: GetCredentialsForIdentityCommandOutput = await this.cognitoIdentityClient.send(credCommand);
+        console.log('it worked!', response);
+
+        const client = new CognitoIdentityClient({
+          region: "us-west-2",
+            credentials: {
+              accessKeyId: response.Credentials.AccessKeyId,
+              secretAccessKey: response.Credentials.SecretKey,
+              sessionToken: response.Credentials.SessionToken,
+              expiration: response.Credentials.Expiration
+            }
+        });
+
+        const describeCommand = new DescribeIdentityPoolCommand({
+          IdentityPoolId: this.authService.identityPoolId
+        });
+
+        try {
+          const response: DescribeIdentityPoolCommandOutput = await client.send(describeCommand);
+          console.log('Success describing Identity Pool:', response);
+        }
+        catch (e: any) {
+          console.log('Error describing Identity Pool:', e);
+        }
+      }
+      catch (e: any) {
+        console.log('it didn not work for some reason:', e);
+      }
+
+      // const describeCommand = new DescribeIdentityPoolCommand({
+      //   IdentityPoolId: this.authService.identityPoolId
+      // });
+
+      // try {
+      //   const response: DescribeIdentityPoolCommandOutput = await this.cognitoIdentityClient.send(describeCommand);
+      //   console.log('Success describing Identity Pool:', response);
+      // }
+      // catch (e: any) {
+      //   console.log('Error describing Identity Pool:', e);
+      // }
+    }
+    catch (e: any) {
+      console.log('Error running the Lambda function:', e);
+    }
+
     // const describeCommand = new DescribeIdentityPoolCommand({
     //   IdentityPoolId: this.authService.identityPoolId
     // });
@@ -512,7 +586,7 @@ export class SignUpMainPageComponent implements OnInit {
     //   console.log('Error getting token for dev identity', e);
     // }
 
-    
+
   }
 
 }
